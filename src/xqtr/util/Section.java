@@ -1,4 +1,4 @@
-package xqtr;
+package xqtr.util;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -15,7 +15,7 @@ public class Section extends JPanel {
 	private Border paddingSet;
 	private Border borderSet;
 	
-	Section() {
+	public Section() {
 		setLayout(new BorderLayout(0, 0));
 		setPadding(10);
 	}

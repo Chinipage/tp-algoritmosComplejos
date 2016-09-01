@@ -1,6 +1,7 @@
-package xqtr;
+package xqtr.util;
 
 import java.util.HashMap;
+
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
@@ -13,23 +14,21 @@ public class Button extends JButton {
 	private HashMap<String, Integer> keyMap;
 	
 	public Button(String label) {
-		new Thread(() -> {
-			try {
-				Thread.sleep(100);
-				addActionListener((ActionListener) SwingUtilities.getRoot(this));
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-	    }).start();
+		
+		Support.setTimeout(100, () -> 
+			addActionListener((ActionListener) SwingUtilities.getRoot(this))
+		);
 		setTextAndMnemonic(label);
 	}
 	
 	public Button(String label, ActionListener listener) {
+		
 		addActionListener(listener);
 		setTextAndMnemonic(label);
 	}
 	
 	private void setTextAndMnemonic(String label) {
+		
 		setText(label.replaceFirst("_", ""));
 		
 		int mnemonicIndex = label.indexOf("_");
@@ -42,6 +41,7 @@ public class Button extends JButton {
 	}
 	
 	private void initKeyMap() {
+		
 		keyMap = new HashMap<>();
 		keyMap.put("A", KeyEvent.VK_A);
 		keyMap.put("B", KeyEvent.VK_B);

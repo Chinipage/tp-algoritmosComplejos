@@ -1,4 +1,4 @@
-package xqtr;
+package xqtr.util;
 
 import java.util.Comparator;
 import java.util.HashMap;
