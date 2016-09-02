@@ -1,15 +1,22 @@
 package xqtr;
 
+import java.util.List;
+
+import org.w3c.dom.Element;
+
+import xqtr.util.Support;
+
 public class Model {
 	
-	private String[] programs;
+	private List<String> programs;
 	
 	public Model() {
 		
-		programs = new String[]{"", "Guava", "Lozenge", "Cashew", "Goon", "Wobble", "Bobbin", "Noodle"};
+		Element configXML = Support.parseXML("Config.xml");
+		programs = Support.transform(configXML.getElementsByTagName("program"), e -> e.getTextContent());
 	}
 	
-	public String[] getPrograms() {
+	public List<String> getPrograms() {
 		
 		return programs;
 	}

@@ -1,6 +1,8 @@
 package xqtr.util;
 
 import java.awt.event.ItemListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JComboBox;
 import javax.swing.SwingUtilities;
@@ -8,16 +10,27 @@ import javax.swing.SwingUtilities;
 @SuppressWarnings("serial")
 public class ComboBox extends JComboBox<String> {
 	
+	private List<String> model;
+	
 	public ComboBox() {
 		
-		this(new String[0]);
+		this(null);
 	}
 	
-	public ComboBox(String[] model) {
+	public ComboBox(List<String> model) {
 		
-		super(model);
+		this.model = model;
+		addItems();
+		
 		Support.setTimeout(100, () -> 
 			addItemListener((ItemListener) SwingUtilities.getRoot(this))
 		);
+	}
+	
+	private void addItems() {
+		
+		List<String> items = model != null ? model : new ArrayList<String>();
+		addItem("");
+		items.forEach(item -> addItem(item));
 	}
 }

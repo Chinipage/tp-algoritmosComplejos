@@ -18,6 +18,7 @@ public class Form {
 	private Dimension labelWidth;
 	
 	public Form() {
+		
 		elements = new HashMap<>();
 	}
 	
@@ -28,12 +29,13 @@ public class Form {
 	}
 	
 	private Dimension calculateLabelWidth() {
+		
 		return new JLabel(elements.keySet().stream().max(Comparator.comparing(String::length))
 				.get() + ":").getPreferredSize();
-//		return elements.keySet().stream().mapToInt( k -> k.length() ).max().getAsInt() * 10;
 	}
 	
 	public void addElement(String label, JComponent field) {
+		
 		elements.put(label, field);
 	}
 	
