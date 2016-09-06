@@ -2,11 +2,11 @@ package xqtr;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.Arrays;
 
 import javax.swing.JFrame;
 
@@ -35,9 +35,9 @@ public class Frame extends JFrame implements ActionListener, ItemListener {
 		add(makeFooter(), BorderLayout.SOUTH);
 		
 		add(new Page());
-
+		
 		setTitle("XQTR");
-		setSize(480, 640);
+		setSize(440, 550);
 		setMinimumSize(new Dimension(360, 240));
 		setLocationRelativeTo(null); // centra la ventana en la pantalla
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -46,11 +46,11 @@ public class Frame extends JFrame implements ActionListener, ItemListener {
 	private Section makeHeader() {
 		
 		Section header = new Section();
-		header.setHeight(80);
+		header.setHeight(90);
 		header.setBorder(0, 0, 1, 0);
 		
 		programComboBox = new ComboBox(model.getPrograms());
-		profileComboBox = new ComboBox();
+		profileComboBox = new ComboBox(Arrays.asList("(Default)"));
 		
 		Form form = new Form();
 		form.addElement("Program", programComboBox);
@@ -83,9 +83,11 @@ public class Frame extends JFrame implements ActionListener, ItemListener {
 	public void itemStateChanged(ItemEvent event) {
 		
 		if(event.getStateChange() == ItemEvent.SELECTED) {
-			String programName = event.getItem().toString();
-			setTitle(programName + " - XQTR");
-			System.out.println("Selected program: " + programName);
+			
+			if (event.getSource() == programComboBox) {
+				String programName = event.getItem().toString();
+				setTitle(programName.isEmpty() ? "XQTR" : programName + " - XQTR");
+			}
 		}
 	}
 }

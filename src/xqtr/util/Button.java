@@ -11,33 +11,42 @@ import javax.swing.SwingUtilities;
 @SuppressWarnings("serial")
 public class Button extends JButton {
 	
-	private HashMap<String, Integer> keyMap;
+	private static HashMap<String, Integer> keyMap;
 	
 	public Button(String label) {
 		
 		Support.setTimeout(100, () -> 
 			addActionListener((ActionListener) SwingUtilities.getRoot(this))
 		);
-		setTextAndMnemonic(label);
+		init(label);
 	}
 	
 	public Button(String label, ActionListener listener) {
 		
 		addActionListener(listener);
-		setTextAndMnemonic(label);
+		init(label);
 	}
 	
-	private void setTextAndMnemonic(String label) {
+	private void init(String label) {
+		
+		determineMnemonic(label);
+		setFocusable(false);
+	}
+	
+	private void determineMnemonic(String label) {
+		if(keyMap == null) initKeyMap();
 		
 		setText(label.replaceFirst("_", ""));
 		
 		int mnemonicIndex = label.indexOf("_");
 		if(mnemonicIndex == -1 || mnemonicIndex == label.length() - 1) return;
 		
-		initKeyMap();
-		String mnemonic = Character.toString(getText().charAt(mnemonicIndex)).toUpperCase();
-		setMnemonic(keyMap.get(mnemonic));
+		setMnemonic(getText().charAt(mnemonicIndex));
 		setDisplayedMnemonicIndex(mnemonicIndex);
+	}
+	
+	public void setMnemonic(char mnemonic) {
+		setMnemonic(keyMap.get(Character.toString(mnemonic).toUpperCase()));
 	}
 	
 	private void initKeyMap() {

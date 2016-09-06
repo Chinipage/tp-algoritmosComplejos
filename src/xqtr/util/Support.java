@@ -1,8 +1,14 @@
 package xqtr.util;
 
 import java.io.File;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -58,5 +64,29 @@ public class Support {
 	public static <B> List<B> transform(NodeList list, Function<Node, B> function) {
 		
 		return Support.transform(nodeList(list), function);
+	}
+	
+	public static Date dateFromString(String string) {
+		
+		Map<String, String> patterns = new HashMap<String, String>();
+		patterns.put("\\d{2}:\\d{2}", "HH:mm");
+		patterns.put("\\d{2}:\\d{2}:\\d{2}", "HH:mm:ss");
+		patterns.put("\\d{2}:\\d{2}:\\d{2}.\\d{3}", "HH:mm:ss.SSS");
+		patterns.put("\\d{4}", "yyyy");
+		patterns.put("\\d{4}-\\d{2}", "yyyy-MM");
+		patterns.put("\\d{4}-\\d{2}-\\d{2}", "yyyy-MM-dd");
+		patterns.put("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}", "yyyy-MM-dd HH:mm");
+		patterns.put("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}", "yyyy-MM-dd HH:mm:ss");
+		patterns.put("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}.\\d{3}", "yyyy-MM-dd HH:mm:ss.SSS");
+		
+		String format = patterns.get(patterns.keySet().stream().filter(p -> Pattern.matches(p, string)).findFirst().get());
+		
+		try {
+			return (new SimpleDateFormat(format)).parse(string);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
+		return null;
 	}
 }
