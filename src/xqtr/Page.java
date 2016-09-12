@@ -46,9 +46,19 @@ public class Page extends JScrollPane {
 		Range range = new Range(0, 100, 80);
 		range.setUnit("%");
 		
-		form.addElement("Audio source", new FileBrowser());
-		form.addElement("Image source", new FileBrowser());
-		form.addElement("Video target", new FileBrowser("out.mp4"));
+		FileBrowser audioSource = new FileBrowser();
+		audioSource.setFormat("mp3 wav aac");
+		
+		FileBrowser imageSource = new FileBrowser();
+		imageSource.setFormat("jpg jpeg png");
+		
+		FileBrowser videoTarget = new FileBrowser("out.mp4");
+		videoTarget.setFormat("mp4 mov avi");
+		videoTarget.setSaveModeEnabled(true);
+		
+		form.addElement("Audio source", audioSource);
+		form.addElement("Image source", imageSource);
+		form.addElement("Video target", videoTarget);
 		form.addElement("Limit duration", sequence);
 		form.addElement("Adjust volume", range);
 	}

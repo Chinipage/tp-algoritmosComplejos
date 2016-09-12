@@ -8,7 +8,9 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.Arrays;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 import xqtr.util.Button;
 import xqtr.util.ComboBox;
@@ -36,11 +38,12 @@ public class Frame extends JFrame implements ActionListener, ItemListener {
 		
 		add(new Page());
 		
-		setTitle("XQTR");
+		setTitle(Application.name);
 		setSize(440, 550);
 		setMinimumSize(new Dimension(360, 240));
 		setLocationRelativeTo(null); // centra la ventana en la pantalla
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setIconImage(new ImageIcon("Icon.png").getImage());
 	}
 	
 	private Section makeHeader() {
@@ -77,7 +80,32 @@ public class Frame extends JFrame implements ActionListener, ItemListener {
 	
 	public void actionPerformed(ActionEvent event) {
 		
-		System.out.println("Button pressed: " + event.getActionCommand());
+		switch(event.getActionCommand()) {
+		case "Execute":
+			JOptionPane.showMessageDialog(null, "<html><i>TO-DO");
+			break;
+		case "About":
+			String aboutText = "<html><h1>" + Application.name + "</h1>";
+			aboutText += "<h2>Executor App v" + Application.version + "</h2>";
+			aboutText += "<h3>Made by:</h3>";
+			aboutText += "<ul><li>&nbsp;Martínez, Andrés</li>";
+			aboutText += "<li>&nbsp;Rodríguez Arias, Mariano</li>";
+			aboutText += "<li>&nbsp;Vigilante, Federico</li></ul>";
+			aboutText += "<h3>Made for:</h3>";
+			aboutText += "<ul><li>&nbsp;Sznajdleder, Pablo Augusto</li>";
+			aboutText += "<li>&nbsp;Algoritmos Complejos para Estructuras de Datos Avanzadas";
+			aboutText += new String(new char[15]).replace("\0", "&nbsp;");
+			aboutText += "</li><li>&nbsp;Facultad Regional Buenos Aires</li>";
+			aboutText += "<li>&nbsp;Universidad Tecnológica Nacional</li></ul>";
+			aboutText += "<h3>Made with:</h3>";
+			aboutText += "<ul><li>&nbsp;Ubuntu 16.04 Xenial Xerus</li>";
+			aboutText += "<li>&nbsp;Eclipse Neon 4.6 for Java Developers</li>";
+			aboutText += "<li>&nbsp;Java SE Development Kit 8 (OpenJDK 8)</li>";
+			aboutText += "<li>&nbsp;Git version control system with GitHub</li></ul>";
+			aboutText += "</html>";
+			JOptionPane.showMessageDialog(null, aboutText);
+			break;
+		}
 	}
 	
 	public void itemStateChanged(ItemEvent event) {

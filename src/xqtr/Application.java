@@ -14,6 +14,9 @@ package xqtr;
 import javax.swing.UIManager;
 
 public class Application {
+	
+	public static String name = "XQTR";
+	public static String version = "1.0";
 
 	public static void main(String[] args) {
 		

@@ -89,4 +89,14 @@ public class Support {
 		
 		return null;
 	}
+	
+	public static String getFileExtension(File file) {
+		String fileName = file.getName();
+		int i = fileName.lastIndexOf('.');
+		return i != -1 ? fileName.substring(i+1) : "";
+	}
+	
+	public static String replaceLast(String text, String regex, String replacement) {
+        return text.replaceFirst("(.*)" + regex, "$1" + replacement);
+    }
 }
