@@ -48,6 +48,7 @@ public class Page extends JScrollPane {
 		
 		FileBrowser audioSource = new FileBrowser();
 		audioSource.setFormat("mp3 wav aac");
+		audioSource.setMultiModeEnabled(true);
 		
 		FileBrowser imageSource = new FileBrowser();
 		imageSource.setFormat("jpg jpeg png");

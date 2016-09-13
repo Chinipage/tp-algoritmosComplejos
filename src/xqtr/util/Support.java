@@ -1,8 +1,11 @@
 package xqtr.util;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +15,9 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import javax.swing.AbstractAction;
+import javax.swing.JComponent;
+import javax.swing.KeyStroke;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -19,6 +25,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import xqtr.Application;
 
 public class Support {
 	
@@ -99,4 +107,30 @@ public class Support {
 	public static String replaceLast(String text, String regex, String replacement) {
         return text.replaceFirst("(.*)" + regex, "$1" + replacement);
     }
+	
+	public static void addKeyBinding(JComponent comp, String keys, ActionListener action) {
+		for(String key : keys.split(" ")) {
+			if(key.equals("SPACE")) {
+				key = " ";
+			}
+			String cmd = Application.name + Instant.now().toEpochMilli();
+			KeyStroke stroke = key.length() == 1 ? KeyStroke.getKeyStroke(key.charAt(0)) :
+				KeyStroke.getKeyStroke(key);
+			comp.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(stroke, cmd);
+			comp.getActionMap().put(cmd, new Dispatcher(cmd, action));
+		}
+	}
+
+	@SuppressWarnings("serial")
+	static private class Dispatcher extends AbstractAction {
+		ActionListener dispatcher;
+		
+		Dispatcher(final String cmd, final ActionListener dispatch) {
+			super(cmd);
+			this.dispatcher = dispatch;
+		}
+		public void actionPerformed(ActionEvent evt) {
+			this.dispatcher.actionPerformed(evt);
+		}
+	}
 }

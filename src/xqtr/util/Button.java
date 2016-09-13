@@ -6,7 +6,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
 import javax.swing.JButton;
-import javax.swing.SwingUtilities;
 
 @SuppressWarnings("serial")
 public class Button extends JButton {
@@ -16,7 +15,7 @@ public class Button extends JButton {
 	public Button(String label) {
 		
 		Support.setTimeout(100, () -> 
-			addActionListener((ActionListener) SwingUtilities.getRoot(this))
+			addActionListener((ActionListener) this.getTopLevelAncestor())
 		);
 		init(label);
 	}

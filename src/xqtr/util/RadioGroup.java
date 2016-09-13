@@ -22,6 +22,8 @@ import javax.swing.JRadioButton;
 import javax.swing.KeyStroke;
 import javax.swing.LayoutFocusTraversalPolicy;
 
+import xqtr.libs.WrapLayout;
+
 @SuppressWarnings("serial")
 public class RadioGroup extends JPanel {
 	

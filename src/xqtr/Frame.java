@@ -85,25 +85,25 @@ public class Frame extends JFrame implements ActionListener, ItemListener {
 			JOptionPane.showMessageDialog(null, "<html><i>TO-DO");
 			break;
 		case "About":
-			String aboutText = "<html><h1>" + Application.name + "</h1>";
-			aboutText += "<h2>Executor App v" + Application.version + "</h2>";
-			aboutText += "<h3>Made by:</h3>";
-			aboutText += "<ul><li>&nbsp;Martínez, Andrés</li>";
-			aboutText += "<li>&nbsp;Rodríguez Arias, Mariano</li>";
-			aboutText += "<li>&nbsp;Vigilante, Federico</li></ul>";
-			aboutText += "<h3>Made for:</h3>";
-			aboutText += "<ul><li>&nbsp;Sznajdleder, Pablo Augusto</li>";
-			aboutText += "<li>&nbsp;Algoritmos Complejos para Estructuras de Datos Avanzadas";
-			aboutText += new String(new char[15]).replace("\0", "&nbsp;");
-			aboutText += "</li><li>&nbsp;Facultad Regional Buenos Aires</li>";
-			aboutText += "<li>&nbsp;Universidad Tecnológica Nacional</li></ul>";
-			aboutText += "<h3>Made with:</h3>";
-			aboutText += "<ul><li>&nbsp;Ubuntu 16.04 Xenial Xerus</li>";
-			aboutText += "<li>&nbsp;Eclipse Neon 4.6 for Java Developers</li>";
-			aboutText += "<li>&nbsp;Java SE Development Kit 8 (OpenJDK 8)</li>";
-			aboutText += "<li>&nbsp;Git version control system with GitHub</li></ul>";
-			aboutText += "</html>";
-			JOptionPane.showMessageDialog(null, aboutText);
+			String msg = "<html><h1>" + Application.name + "</h1>";
+			msg += "<h2>Executor App v" + Application.version + "</h2>";
+			msg += "<h3>Made by:</h3>";
+			msg += "<ul><li>&nbsp;Martínez, Andrés</li>";
+			msg += "<li>&nbsp;Rodríguez Arias, Mariano</li>";
+			msg += "<li>&nbsp;Vigilante, Federico</li></ul>";
+			msg += "<h3>Made for:</h3>";
+			msg += "<ul><li>&nbsp;Sznajdleder, Pablo Augusto</li>";
+			msg += "<li>&nbsp;Algoritmos Complejos para Estructuras de Datos Avanzadas";
+			msg += new String(new char[15]).replace("\0", "&nbsp;");
+			msg += "</li><li>&nbsp;Facultad Regional Buenos Aires</li>";
+			msg += "<li>&nbsp;Universidad Tecnológica Nacional</li></ul>";
+			msg += "<h3>Made with:</h3>";
+			msg += "<ul><li>&nbsp;Ubuntu 16.04 Xenial Xerus</li>";
+			msg += "<li>&nbsp;Eclipse Neon 4.6 for Java Developers</li>";
+			msg += "<li>&nbsp;Java SE Development Kit 8 (OpenJDK 8)</li>";
+			msg += "<li>&nbsp;Git version control system with GitHub</li></ul>";
+			msg += "</html>";
+			JOptionPane.showMessageDialog(null, msg, "About", JOptionPane.INFORMATION_MESSAGE);
 			break;
 		}
 	}
@@ -114,7 +114,7 @@ public class Frame extends JFrame implements ActionListener, ItemListener {
 			
 			if (event.getSource() == programComboBox) {
 				String programName = event.getItem().toString();
-				setTitle(programName.isEmpty() ? "XQTR" : programName + " - XQTR");
+				setTitle(programName.isEmpty() ? Application.name : programName + " - " + Application.name);
 			}
 		}
 	}

@@ -1,4 +1,4 @@
-package xqtr.util;
+package xqtr.libs;
 
 import java.awt.*;
 import javax.swing.JScrollPane;

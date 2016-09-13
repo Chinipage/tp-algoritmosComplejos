@@ -28,7 +28,14 @@ public class FileTypeFilter extends FileFilter {
 
 	public String getDescription() {
 		String desc = String.join(", ", Support.transform(validExtensions, String::toUpperCase));
-		return Support.replaceLast(desc, ",", " and") + " Files";
+		return "Valid Files (" + desc + ")"; 
 	}
 	
+	public List<String> getExtensions() {
+		return validExtensions;
+	}
+	
+	public String getDefaultExtension() {
+		return validExtensions.get(0);
+	}
 }
