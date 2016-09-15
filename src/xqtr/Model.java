@@ -13,7 +13,8 @@ public class Model {
 	public Model() {
 		
 		Element configXML = Support.parseXML("Config.xml");
-		programs = Support.transform(configXML.getElementsByTagName("program"), e -> e.getTextContent());
+		programs = Support.map(e -> e.getTextContent(),
+				Support.nodeList(configXML.getElementsByTagName("program")));
 	}
 	
 	public List<String> getPrograms() {

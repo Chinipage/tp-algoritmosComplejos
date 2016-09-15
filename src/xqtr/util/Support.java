@@ -2,15 +2,21 @@ package xqtr.util;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -64,14 +70,18 @@ public class Support {
 		return IntStream.range(0, list.getLength()).mapToObj(list::item).collect(Collectors.toList());
 	}
 	
-	public static <A, B> List<B> transform(List<A> list, Function<A, B> function) {
-		
-		return list.stream().map(function).collect(Collectors.toList());	
+	@SuppressWarnings("unchecked")
+	public static <A, B> List<B> map(Function<A, B> fn, List<A> list) {
+		return fn == null ? (List<B>) list : list.stream().map(fn).collect(Collectors.toList());	
 	}
 	
-	public static <B> List<B> transform(NodeList list, Function<Node, B> function) {
-		
-		return Support.transform(nodeList(list), function);
+	@SafeVarargs
+	public static <A, B> List<B> map(Function<A, B> fn, A... list) {
+		return map(fn, Arrays.asList(list));
+	}
+	
+	public static <A> List<A> filter(Predicate<? super A> fn, List<A> list) {
+		return fn == null ? list : list.stream().filter(fn).collect(Collectors.toList());	
 	}
 	
 	public static Date dateFromString(String string) {
@@ -87,7 +97,8 @@ public class Support {
 		patterns.put("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}", "yyyy-MM-dd HH:mm:ss");
 		patterns.put("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}.\\d{3}", "yyyy-MM-dd HH:mm:ss.SSS");
 		
-		String format = patterns.get(patterns.keySet().stream().filter(p -> Pattern.matches(p, string)).findFirst().get());
+		String format = patterns.get(patterns.keySet().stream()
+				.filter(p -> Pattern.matches(p, string)).findFirst().get());
 		
 		try {
 			return (new SimpleDateFormat(format)).parse(string);
@@ -132,5 +143,69 @@ public class Support {
 		public void actionPerformed(ActionEvent evt) {
 			this.dispatcher.actionPerformed(evt);
 		}
+	}
+	
+	public static void addMouseListener(JComponent comp, String method, ActionListener action) {
+		comp.addMouseListener(new MouseListener() {
+			
+			private boolean isMethod(String candidate) {
+				return map(String::toLowerCase, method.split(" ")).contains(candidate);
+			}
+			
+			private ActionEvent mouseToAction(MouseEvent event) {
+				return new ActionEvent(event.getSource(), event.getID(), event.paramString());
+			}
+			
+			public void mouseReleased(MouseEvent event) {
+				if(isMethod("release")) {
+					action.actionPerformed(mouseToAction(event));
+				}
+			}
+			
+			public void mousePressed(MouseEvent event) {
+				if(isMethod("press")) {
+					action.actionPerformed(mouseToAction(event));
+				}
+			}
+			
+			public void mouseExited(MouseEvent event) {
+				if(isMethod("exit")) {
+					action.actionPerformed(mouseToAction(event));
+				}
+			}
+			
+			public void mouseEntered(MouseEvent event) {
+				if(isMethod("enter")) {
+					action.actionPerformed(mouseToAction(event));
+				}
+			}
+			
+			public void mouseClicked(MouseEvent event) {
+				if (isMethod("click") && event.getClickCount() == 1
+						|| isMethod("doubleclick") && event.getClickCount() == 2
+						|| isMethod("rightclick") && event.getButton() == MouseEvent.BUTTON3) {
+					action.actionPerformed(mouseToAction(event));
+				}
+			}
+		});
+	}
+	
+	public static void addKeyListener(JComponent comp, String key, ActionListener action) {
+		comp.addKeyListener(new KeyAdapter() {
+			
+			private boolean isKey(String candidate) {
+				return map(String::toLowerCase, key.split(" ")).contains(candidate.toLowerCase());
+			}
+			
+			private ActionEvent keyToAction(KeyEvent event) {
+				return new ActionEvent(event.getSource(), event.getID(), event.paramString());
+			}
+			
+			public void keyPressed(KeyEvent event) {
+				if(isKey(KeyEvent.getKeyText(event.getKeyCode()))) {
+					action.actionPerformed(keyToAction(event));
+				}
+			}
+		});
 	}
 }

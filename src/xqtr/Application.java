@@ -16,7 +16,7 @@ import javax.swing.UIManager;
 public class Application {
 	
 	public static String name = "XQTR";
-	public static String version = "0.3";
+	public static String version = "0.3.2";
 
 	public static void main(String[] args) {
 		

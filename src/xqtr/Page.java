@@ -1,19 +1,18 @@
 package xqtr;
 
 import java.awt.FlowLayout;
-import java.util.ArrayList;
+import java.io.File;
 import java.util.LinkedHashMap;
-import java.util.List;
 
 import javax.swing.JScrollPane;
 
 import xqtr.util.Section;
+import xqtr.util.Support;
 import xqtr.ctrl.Choice;
 import xqtr.ctrl.FileBrowser;
 import xqtr.ctrl.Range;
 import xqtr.ctrl.Sequence;
 import xqtr.util.Form;
-import xqtr.util.RadioGroup;
 
 @SuppressWarnings("serial")
 public class Page extends JScrollPane {
@@ -53,7 +52,7 @@ public class Page extends JScrollPane {
 		FileBrowser imageSource = new FileBrowser();
 		imageSource.setFormat("jpg jpeg png");
 		
-		FileBrowser videoTarget = new FileBrowser("out.mp4");
+		FileBrowser videoTarget = new FileBrowser(Support.map(File::new, "out.mp4"));
 		videoTarget.setFormat("mp4 mov avi");
 		videoTarget.setSaveModeEnabled(true);
 		
@@ -71,7 +70,7 @@ public class Page extends JScrollPane {
 		seqTo.setValue("00:10:00");
 		
 		form.addElement("input", new FileBrowser());
-		form.addElement("output", new FileBrowser("trimmed-video.avi"));
+		form.addElement("output", new FileBrowser(Support.map(File::new, "trimmed-video.avi")));
 		form.addElement("from", seqFrom);
 		form.addElement("to", seqTo);
 	}
@@ -91,6 +90,6 @@ public class Page extends JScrollPane {
 	private void exampleForm4() {
 		
 		form.addElement("Files to merge", new FileBrowser());
-		form.addElement("Combined file", new FileBrowser("merge.wav"));
+		form.addElement("Combined file", new FileBrowser(Support.map(File::new, "merge.wav")));
 	}
 }

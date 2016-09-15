@@ -27,7 +27,7 @@ public class FileTypeFilter extends FileFilter {
 	}
 
 	public String getDescription() {
-		String desc = String.join(", ", Support.transform(validExtensions, String::toUpperCase));
+		String desc = String.join(", ", Support.map(String::toUpperCase, validExtensions));
 		return "Valid Files (" + desc + ")"; 
 	}
 	
