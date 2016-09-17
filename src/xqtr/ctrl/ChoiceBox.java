@@ -7,13 +7,13 @@ import xqtr.util.ComboBox;
 import xqtr.util.RadioGroup;
 
 @SuppressWarnings("serial")
-public class Choice extends Control {
+public class ChoiceBox extends Control {
 
 	private LinkedHashMap<String, String> model;
 	private ComboBox comboBox;
 	private RadioGroup radioGroup;
 	
-	public Choice(LinkedHashMap<String, String> model) {
+	public ChoiceBox(LinkedHashMap<String, String> model) {
 		
 		this.model = model;
 		renderControl();

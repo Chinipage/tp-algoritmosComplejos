@@ -8,10 +8,10 @@ import javax.swing.JScrollPane;
 
 import xqtr.util.Section;
 import xqtr.util.Support;
-import xqtr.ctrl.Choice;
+import xqtr.ctrl.ChoiceBox;
 import xqtr.ctrl.FileBrowser;
-import xqtr.ctrl.Range;
-import xqtr.ctrl.Sequence;
+import xqtr.ctrl.RangeBox;
+import xqtr.ctrl.SequenceBox;
 import xqtr.util.Form;
 
 @SuppressWarnings("serial")
@@ -37,12 +37,12 @@ public class Page extends JScrollPane {
 	
 	private void exampleForm1() {
 		
-		Sequence sequence = new Sequence();
+		SequenceBox sequence = new SequenceBox();
 		sequence.setMinimum(0.0);
 		sequence.setStep(0.1);
 		sequence.setUnit("min.");
 		
-		Range range = new Range(0, 100, 80);
+		RangeBox range = new RangeBox(0, 100, 80);
 		range.setUnit("%");
 		
 		FileBrowser audioSource = new FileBrowser();
@@ -65,8 +65,8 @@ public class Page extends JScrollPane {
 	
 	private void exampleForm2() {
 		
-		Sequence seqFrom = new Sequence(Sequence.TIME);
-		Sequence seqTo = new Sequence(Sequence.TIME);
+		SequenceBox seqFrom = new SequenceBox(SequenceBox.TIME);
+		SequenceBox seqTo = new SequenceBox(SequenceBox.TIME);
 		seqTo.setValue("00:10:00");
 		
 		form.addElement("input", new FileBrowser());
@@ -80,7 +80,7 @@ public class Page extends JScrollPane {
 		LinkedHashMap<String, String> model = new LinkedHashMap<>();
 		model.put("Clockwise", "-1");
 		model.put("Counterclockwise", "1");
-		Choice choice = new Choice(model);
+		ChoiceBox choice = new ChoiceBox(model);
 		
 		form.addElement("input", new FileBrowser());
 		form.addElement("output", new FileBrowser());

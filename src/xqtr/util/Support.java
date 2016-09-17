@@ -2,8 +2,8 @@ package xqtr.util;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
@@ -13,6 +13,7 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -69,7 +70,17 @@ public class Support {
 		
 		return IntStream.range(0, list.getLength()).mapToObj(list::item).collect(Collectors.toList());
 	}
-	
+
+	public static List<Element> elementList(NodeList list) {
+
+		List<Element> elementList = new LinkedList<Element>();
+
+		for(int i=0; i<list.getLength(); i++) {
+			elementList.add((Element) list.item(i));
+		}
+
+		return elementList;
+	}
 	@SuppressWarnings("unchecked")
 	public static <A, B> List<B> map(Function<A, B> fn, List<A> list) {
 		return fn == null ? (List<B>) list : list.stream().map(fn).collect(Collectors.toList());	

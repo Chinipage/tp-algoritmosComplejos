@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.w3c.dom.Element;
 
+import xqtr.model.Controller;
 import xqtr.util.Support;
 
 public class Model {
@@ -12,9 +13,11 @@ public class Model {
 	
 	public Model() {
 		
-		Element configXML = Support.parseXML("Config.xml");
+	/*	Element configXML = Support.parseXML("Config.xml");
 		programs = Support.map(e -> e.getTextContent(),
-				Support.nodeList(configXML.getElementsByTagName("program")));
+				Support.nodeList(configXML.getElementsByTagName("program")));*/
+		Controller.getInstance().loadConfig();
+		programs = Controller.getInstance().getExecutableProgramNames();
 	}
 	
 	public List<String> getPrograms() {
