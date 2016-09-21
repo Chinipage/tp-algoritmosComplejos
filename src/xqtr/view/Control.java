@@ -1,4 +1,4 @@
-package xqtr.ctrl;
+package xqtr.view;
 
 import java.awt.Component;
 import java.awt.Dimension;

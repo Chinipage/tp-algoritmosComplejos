@@ -8,10 +8,10 @@ import javax.swing.JScrollPane;
 
 import xqtr.util.Section;
 import xqtr.util.Support;
-import xqtr.ctrl.ChoiceBox;
-import xqtr.ctrl.FileBrowser;
-import xqtr.ctrl.RangeBox;
-import xqtr.ctrl.SequenceBox;
+import xqtr.view.ChoiceBox;
+import xqtr.view.FileBrowser;
+import xqtr.view.RangeBox;
+import xqtr.view.SequenceBox;
 import xqtr.util.Form;
 
 @SuppressWarnings("serial")

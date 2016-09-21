@@ -4,6 +4,7 @@ import java.util.LinkedList;
 
 import org.w3c.dom.Element;
 
+import xqtr.Controller;
 import xqtr.util.Support;
 
 public class Profile {

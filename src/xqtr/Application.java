@@ -13,8 +13,6 @@ package xqtr;
 
 import javax.swing.UIManager;
 
-import xqtr.model.Controller;
-
 public class Application {
 	
 	public static String name = "XQTR";
@@ -30,10 +28,7 @@ public class Application {
 				e.printStackTrace();
 			}
 			
-			Model model = new Model();
-			Frame mainFrame = new Frame(model);
-			mainFrame.setVisible(true);
-			Controller.getInstance().loadConfig();
+			new Frame(Controller.getInstance()).setVisible(true);
 		});
 	}
 }

@@ -1,10 +1,11 @@
-package xqtr.model;
+package xqtr;
 
 import java.util.LinkedList;
 import java.util.List;
 
 import org.w3c.dom.Element;
 
+import xqtr.model.Program;
 import xqtr.util.Support;
 
 public class Controller {
@@ -17,6 +18,7 @@ public class Controller {
 			synchronized (Controller.class) {
 				if (instance == null) {
 					instance = new Controller();
+					instance.loadConfig();
 				}
 			}
 		}

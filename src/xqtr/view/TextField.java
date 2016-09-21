@@ -1,4 +1,4 @@
-package xqtr.ctrl;
+package xqtr.view;
 
 import javax.swing.JPasswordField;
 

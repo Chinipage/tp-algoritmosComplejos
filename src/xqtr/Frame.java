@@ -20,14 +20,14 @@ import xqtr.util.Section;
 @SuppressWarnings("serial")
 public class Frame extends JFrame implements ActionListener, ItemListener {
 
-	private Model model;
+	private Controller controller;
 	
 	private ComboBox programComboBox;
 	private ComboBox profileComboBox;
 	
-	public Frame(Model model) {
+	public Frame(Controller controller) {
 		
-		this.model = model;
+		this.controller = controller;
 		initUI();
 	}
 
@@ -52,7 +52,7 @@ public class Frame extends JFrame implements ActionListener, ItemListener {
 		header.setHeight(90);
 		header.setBorder(0, 0, 1, 0);
 		
-		programComboBox = new ComboBox(model.getPrograms());
+		programComboBox = new ComboBox(controller.getExecutableProgramNames());
 		profileComboBox = new ComboBox(Arrays.asList("(Default)"));
 		
 		Form form = new Form();

@@ -4,13 +4,14 @@ import java.util.LinkedList;
 
 import org.w3c.dom.Element;
 
+import xqtr.Controller;
 import xqtr.util.Support;
 
 public class Program {
 
 	private LinkedList<Profile> profiles = new LinkedList<Profile>();
 
-	protected String name;
+	public String name;
 	private String bin;
 
 
@@ -18,7 +19,7 @@ public class Program {
 		this.profiles.add(new Profile(profileNode));
 	}
 
-	Program(Element programNode){
+	public Program(Element programNode){
 
 		this.name = programNode.getAttribute("name");
 		this.bin = programNode.getAttribute("bin");
