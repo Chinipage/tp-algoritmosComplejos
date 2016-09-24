@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
@@ -218,5 +219,17 @@ public class Support {
 				}
 			}
 		});
+	}
+
+	public static HashMap<String, String> deepCopyVariables (HashMap<String, String> originalVariables){
+
+		HashMap<String, String> newVariables = new HashMap<String, String>();
+
+		for(Entry<String, String> e : originalVariables.entrySet()) {
+
+			 newVariables.put(e.getKey(), e.getValue());
+		}
+
+		return newVariables;
 	}
 }

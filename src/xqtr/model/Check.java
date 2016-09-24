@@ -1,19 +1,25 @@
 package xqtr.model;
 
+import java.util.HashMap;
+
 import org.w3c.dom.Element;
+
+import xqtr.Controller;
 
 public class Check extends Parameter {
 
 	private String yvalue;
 	private String nvalue;
 
-	Check(Element parameterNode) {
+	Check(Element parameterNode, HashMap<String, String> variables) {
 
-		this.name = parameterNode.getAttribute("name");
-		this.id = parameterNode.getAttribute("id");
-		this.value = parameterNode.getAttribute("value");
-		this.yvalue = parameterNode.getAttribute("yvalue");
-		this.nvalue = parameterNode.getAttribute("nvalue");
+		Controller controller = Controller.getInstance();
+
+		this.name = controller.replaceVariables(parameterNode.getAttribute("name"), variables);
+		this.id = controller.replaceVariables(parameterNode.getAttribute("id"), variables);
+		this.value = controller.replaceVariables(parameterNode.getAttribute("value"), variables);
+		this.yvalue = controller.replaceVariables(parameterNode.getAttribute("yvalue"), variables);
+		this.nvalue = controller.replaceVariables(parameterNode.getAttribute("nvalue"), variables);
 	}
 	
 }

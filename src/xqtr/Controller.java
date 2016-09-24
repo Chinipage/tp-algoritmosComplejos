@@ -1,7 +1,9 @@
 package xqtr;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map.Entry;
 
 import org.w3c.dom.Element;
 
@@ -25,31 +27,72 @@ public class Controller {
 		return instance;
 	}
 
-	//Config XML tags
-	public static String programTag(){
+	/*Config XML tags*/
+	public String programTag(){
 		return "program";
 	}
 
-	public static String profileTag(){
+	public String profileTag(){
 		return "profile";
 	}
 
-	public static String parameterTag(){
+	public String parameterTag(){
 		return "parameter";
 	}
 
-	//Load Config Xml
-	private void addNewProgram(Element programNode){
+	public String variableTag(){
+		return "var";
+	}
 
-		this.programs.add(new Program(programNode));
+	/*Variables management (quizas esto deberia estar en support, no se)*/
+	public String replaceVariables(String attribute, HashMap<String, String> variables){
+
+		String replacedAttribute = attribute;
+
+		/*No pude usar el metodo foreach con una expresion lambda ya que no puedo usar dentro
+		 * de esa misma espresion las variables locales del metodo que la contiene
+		 */
+		for(Entry<String, String> e : variables.entrySet()) {
+
+			 String variableName = e.getKey();
+			 String variableValue = e.getValue();
+
+			 replacedAttribute = replacedAttribute.replaceAll("\\{" + variableName + "\\}", variableValue);
+		}
+
+		return replacedAttribute;
+
+	}
+
+	public HashMap<String, String> getVariables(Element node){
+
+		HashMap<String, String> variables = new HashMap<String, String>();
+
+		Support.elementList(node.getElementsByTagName(this.variableTag())).forEach((globalVariable) -> {
+			variables.put(globalVariable.getAttribute("id"), globalVariable.getAttribute("value"));
+		});
+
+		System.out.println("Node variables of " + node.getNodeName());
+		variables.forEach((id, value) -> {
+			System.out.println("id: " + id + " value: " + value);
+		});
+
+		return variables;
+	}
+
+	/*Load Config Xml*/
+	private void addNewProgram(Element programNode, HashMap<String, String> variables){
+
+		this.programs.add(new Program(programNode, variables));
 	}
 
 	public void loadConfig(){
 
 		Element configXML = Support.parseXML("Config2.xml");
+		HashMap<String, String> globalVariables = this.getVariables(configXML);
 
-		Support.elementList(configXML.getElementsByTagName(Controller.programTag())).forEach((programNode) -> {
-			this.addNewProgram(programNode);
+		Support.elementList(configXML.getElementsByTagName(Controller.getInstance().programTag())).forEach((programNode) -> {
+			this.addNewProgram(programNode, globalVariables);
 		});
 	}
 
@@ -58,7 +101,7 @@ public class Controller {
 		List<String> programsNamesList = new LinkedList<String>();
 
 		this.programs.forEach((program) -> {
-			programsNamesList.add(program.name);
+			programsNamesList.add(program.getName());
 		});
 
 		return programsNamesList;
