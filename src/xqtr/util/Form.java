@@ -3,20 +3,23 @@ package xqtr.util;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JComponent;
 import javax.swing.JPanel;
+
+import xqtr.view.Control;
 
 import javax.swing.JLabel;
 
 public class Form {
 	
-	private Map<String, JComponent> elements;
+	private Map<String, Control> elements;
 	private Dimension labelSize;
 	
 	public Form() {
@@ -24,7 +27,7 @@ public class Form {
 		elements = new LinkedHashMap<>();
 	}
 	
-	public Form(JPanel container, Map<String, JComponent> elements) {
+	public Form(JPanel container, Map<String, Control> elements) {
 		
 		this.elements = elements;
 		labelSize = calculatelabelSize();
@@ -38,7 +41,7 @@ public class Form {
 		return new Dimension(width+1, 0);
 	}
 	
-	public void addElement(String label, JComponent control) {
+	public void addElement(String label, Control control) {
 		
 		label = Character.toUpperCase(label.charAt(0)) + label.substring(1);
 		elements.put(label, control);
@@ -61,14 +64,11 @@ public class Form {
 		};
 		outer.setLayout(new BoxLayout(outer, BoxLayout.Y_AXIS));
 		
-		for(Map.Entry<String, JComponent> entry : elements.entrySet()) {
-		    String labelText = entry.getKey() + ":";
-		    JComponent control = entry.getValue();
-		    
-		    JPanel inner = new JPanel();
+		elements.forEach((name, control) -> {
+			JPanel inner = new JPanel();
 		    inner.setLayout(new BoxLayout(inner, BoxLayout.X_AXIS));
 		    
-		    JLabel label = new JLabel(labelText, JLabel.RIGHT);
+		    JLabel label = new JLabel(name + ":", JLabel.RIGHT);
 		    label.setPreferredSize(labelSize);
 		    
 		    inner.add(label);
@@ -78,8 +78,17 @@ public class Form {
 		    inner.add(fieldPanel);
 		    outer.add(inner);
 		    outer.add(Box.createRigidArea(new Dimension(0, 10)));
-		}
+		});
 		
 		container.add(outer);
+	}
+	
+	public Map<String, String> submit() {
+		
+		Map<String, String> result = new LinkedHashMap<>();
+		elements.forEach((name, control) -> {
+			result.put(name, control.getValue());
+		});
+		return result;
 	}
 }

@@ -6,9 +6,9 @@ import org.w3c.dom.Element;
 
 import xqtr.Controller;
 
-public class Choise extends Parameter {
+public class Choice extends Parameter {
 
-	Choise(Element parameterNode, HashMap<String, String> variables) {
+	Choice(Element parameterNode, HashMap<String, String> variables) {
 
 		Controller controller = Controller.getInstance();
 

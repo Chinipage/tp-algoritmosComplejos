@@ -13,14 +13,17 @@ package xqtr;
 
 import javax.swing.UIManager;
 
+import xqtr.util.Support;
+
 public class Application {
 	
 	public static String name = "XQTR";
-	public static String version = "0.3.2";
+	public static String version = "0.4";
+	public static Frame frame;
 
 	public static void main(String[] args) {
 		
-		javax.swing.SwingUtilities.invokeLater(() -> {
+		Support.delay(() -> {
 			
 			try {
 				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -28,7 +31,8 @@ public class Application {
 				e.printStackTrace();
 			}
 			
-			new Frame(Controller.getInstance()).setVisible(true);
+			frame = new Frame(Controller.getInstance()); 
+			frame.setVisible(true);
 		});
 	}
 }

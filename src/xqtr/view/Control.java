@@ -26,4 +26,8 @@ public abstract class Control extends JPanel {
 	static Component createSeparator(int length) {
 		return Box.createRigidArea(new Dimension(length, 0));
 	}
+	
+	public abstract String getValue();
+	
+	public abstract void setValue(String value);
 }

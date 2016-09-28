@@ -179,4 +179,12 @@ public class FileBrowser extends Control {
 			return true;
 		}
 	}
+	
+	public void setValue(String value) {
+		setModel(Support.map(File::new, Support.listFromString(value)));
+	}
+	
+	public String getValue() {
+		return model.stream().map(f -> f.getPath()).reduce("", (a,b) -> a + " \"" + b + "\"").trim();
+	}
 }

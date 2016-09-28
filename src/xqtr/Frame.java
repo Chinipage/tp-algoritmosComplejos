@@ -13,17 +13,18 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import xqtr.util.Button;
-import xqtr.util.ComboBox;
 import xqtr.util.Form;
 import xqtr.util.Section;
+import xqtr.view.ChoiceBox;
 
 @SuppressWarnings("serial")
 public class Frame extends JFrame implements ActionListener, ItemListener {
 
 	private Controller controller;
 	
-	private ComboBox programComboBox;
-	private ComboBox profileComboBox;
+	private ChoiceBox programSelector;
+	private ChoiceBox profileSelector;
+	private Page page;
 	
 	public Frame(Controller controller) {
 		
@@ -36,7 +37,8 @@ public class Frame extends JFrame implements ActionListener, ItemListener {
 		add(makeHeader(), BorderLayout.NORTH);
 		add(makeFooter(), BorderLayout.SOUTH);
 		
-		add(new Page());
+		page = new Page();
+		add(page);
 		
 		setTitle(Application.name);
 		setSize(440, 550);
@@ -52,12 +54,14 @@ public class Frame extends JFrame implements ActionListener, ItemListener {
 		header.setHeight(90);
 		header.setBorder(0, 0, 1, 0);
 		
-		programComboBox = new ComboBox(controller.getExecutableProgramNames());
-		profileComboBox = new ComboBox(Arrays.asList("(Default)"));
+		programSelector = new ChoiceBox(controller.getExecutableProgramNames());
+		programSelector.useComboMode(true);
+		profileSelector = new ChoiceBox(Arrays.asList("(Default)"));
+		profileSelector.useComboMode(true);
 		
 		Form form = new Form();
-		form.addElement("Program", programComboBox);
-		form.addElement("Profile", profileComboBox);
+		form.addElement("Program", programSelector);
+		form.addElement("Profile", profileSelector);
 		form.placeIn(header);
 		
 		return header;
@@ -82,7 +86,7 @@ public class Frame extends JFrame implements ActionListener, ItemListener {
 		
 		switch(event.getActionCommand()) {
 		case "Execute":
-			JOptionPane.showMessageDialog(null, "<html><i>TO-DO");
+			new Result(page.print()).setVisible(true);
 			break;
 		case "About":
 			String msg = "<html><h1>" + Application.name + "</h1>";
@@ -112,7 +116,7 @@ public class Frame extends JFrame implements ActionListener, ItemListener {
 		
 		if(event.getStateChange() == ItemEvent.SELECTED) {
 			
-			if (event.getSource() == programComboBox) {
+			if (event.getSource() == programSelector.getComboBox()) {
 				String programName = event.getItem().toString();
 				setTitle(programName.isEmpty() ? Application.name : programName + " - " + Application.name);
 			}

@@ -14,7 +14,7 @@ public class Button extends JButton {
 	
 	public Button(String label) {
 		
-		Support.setTimeout(100, () -> 
+		Support.delay(() -> 
 			addActionListener((ActionListener) this.getTopLevelAncestor())
 		);
 		init(label);

@@ -56,15 +56,23 @@ public class SequenceBox extends Unitable {
 		((SpinnerNumberModel) model).setStepSize(step);
 	}
 	
-	public void setValue(Object value) {
+	public void setValue(String value) {
 		
 		switch(type) {
 		case TIME:
-			model.setValue(Support.dateFromString((String) value));
+			model.setValue(Support.dateFromString(value));
 			break;
 		case NUMBER:
 		default:
-			model.setValue(value);
+			model.setValue(Double.parseDouble(value));
 		}
+	}
+	
+	public void setValue(double value) {
+		setValue(Double.toString(value));
+	}
+	
+	public String getValue() {
+		return model.getValue().toString();
 	}
 }

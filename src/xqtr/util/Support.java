@@ -10,9 +10,11 @@ import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +28,7 @@ import java.util.stream.IntStream;
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -38,16 +41,8 @@ import xqtr.Application;
 
 public class Support {
 	
-	public static void setTimeout(int delay, Runnable runnable) {
-		
-	    new Thread(() -> {
-	        try {
-	            Thread.sleep(delay);
-	            runnable.run();
-	        } catch (Exception e) {
-	            System.err.println(e);
-	        }
-	    }).start();
+	public static void delay(Runnable runnable) {
+		SwingUtilities.invokeLater(runnable);
 	}
 	
 	public static Element parseXML(String path) {
@@ -140,6 +135,7 @@ public class Support {
 			KeyStroke stroke = key.length() == 1 ? KeyStroke.getKeyStroke(key.charAt(0)) :
 				KeyStroke.getKeyStroke(key);
 			comp.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(stroke, cmd);
+			comp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, cmd);
 			comp.getActionMap().put(cmd, new Dispatcher(cmd, action));
 		}
 	}
@@ -231,5 +227,30 @@ public class Support {
 		}
 
 		return newVariables;
+	}
+	
+	public static Map<String, String> dictFromString(String string) {
+		Map<String, String> dict = new LinkedHashMap<>();
+		
+		for(String element : string.split(";")) {
+			String[] pair = element.split(":");
+			String key = pair[0].trim();
+			String value = pair[1].trim();
+			dict.put(key, value);
+		}
+		
+		return dict;
+	}
+	
+	public static List<String> listFromString(String string) {
+		List<String> list = new ArrayList<>();
+		
+		String separator = string.indexOf(";") != -1 ? ";" : ",";
+		
+		for(String element : string.split(separator)) {
+			list.add(element.trim());
+		}
+		
+		return list;
 	}
 }

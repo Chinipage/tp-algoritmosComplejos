@@ -37,12 +37,15 @@ public class ComboBox extends JComboBox<String> {
 		if(listener != null) {
 			addItemListener(listener);
 		} else {
-			Support.setTimeout(100, () -> 
+			Support.delay(() -> 
 				addItemListener((ItemListener) SwingUtilities.getRoot(this))
 			);
 		}
 		
 		setRenderer(new ComboRenderer());
+		Support.addKeyListener(this, "DOWN UP", e -> {
+			if(!isPopupVisible()) showPopup();
+		});
 	}
 	
 	private void addItems() {

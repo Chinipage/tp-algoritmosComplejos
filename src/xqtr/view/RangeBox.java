@@ -46,7 +46,15 @@ public class RangeBox extends Unitable {
 		slider.setMinorTickSpacing(range * step / range);
 	}
 	
+	public void setValue(String value) {
+		setValue(Integer.parseInt(value));
+	}
+	
 	public void setValue(int value) {
 		slider.setValue(value);
+	}
+	
+	public String getValue() {
+		return Integer.toString(slider.getValue());
 	}
 }

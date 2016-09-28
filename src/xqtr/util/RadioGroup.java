@@ -143,7 +143,14 @@ public class RadioGroup extends JPanel {
 		return (JRadioButton) buttonList.get(buttonList.size()-1);
 	}
 	
-	public String getSelected() {
-		return selected.getText();
+	public String getSelectedItem() {
+		return selected != null ? selected.getText() : null;
+	}
+	
+	public void setSelectedItem(String value) {
+		buttonList.forEach(button -> {
+			button.setSelected(button.getText().equals(value));
+			selected = (JRadioButton) button;
+		});
 	}
 }

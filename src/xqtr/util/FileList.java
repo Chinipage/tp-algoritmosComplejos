@@ -15,7 +15,6 @@ import javax.swing.Box;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.DropMode;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -28,7 +27,7 @@ import javax.swing.filechooser.FileFilter;
 import xqtr.libs.FileItemMovable;
 
 @SuppressWarnings("serial")
-public class FileList extends JDialog implements ActionListener {
+public class FileList extends Dialog implements ActionListener {
 	
 	private CustomListModel model;
     private JList<JLabel> list = new JList<>();
@@ -63,15 +62,12 @@ public class FileList extends JDialog implements ActionListener {
 		add(toolbar, BorderLayout.NORTH);
 		add(scrollPane);
 		
-		Support.setTimeout(100, () -> list.requestFocus());
+		Support.delay(() -> list.requestFocus());
 		
 		setTitle("Files");
 		setSize(360, 240);
 		setMinimumSize(new Dimension(240, 120));
-		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		setLocationRelativeTo(getParent());
-		setModalityType(ModalityType.APPLICATION_MODAL);
-		Support.addKeyBinding(getRootPane(), "ESCAPE SPACE", e -> setVisible(false ));
+		Support.addKeyBinding(getRootPane(), "SPACE", e -> dispose());
 	}
 	
 	public void setModel(List<File> files) {

@@ -7,30 +7,34 @@ public class TextField extends Control {
 	
 	private JPasswordField textField = new JPasswordField();
 	
-	public static boolean CONCEALED = true;
-	public static boolean UNCONCEALED = false;
-	
 	public TextField() {
-		this(false);
+		this("");
 	}
 	
-	public TextField(boolean concealed) {
+	public TextField(String value) {
+		setValue(value);
 		
 		textField.setPreferredSize(defaultSize);
 		textField.setFont(defaultFont);
 		
-		if(!concealed) {
-			reveal();
-		}
-		
+		setConcealed(false);
 		add(textField);
 	}
 	
-	public void conceal() {
-		textField.setEchoChar('•');
+	public void setConcealed(boolean concealed) {
+		
+		if(concealed) {
+			textField.setEchoChar('•');
+		} else {
+			textField.setEchoChar((char)0);
+		}
 	}
 	
-	public void reveal() {
-		textField.setEchoChar((char)0);
+	public String getValue() {
+		return new String(textField.getPassword());
+	}
+	
+	public void setValue(String value) {
+		textField.setText(value);
 	}
 }

@@ -20,7 +20,7 @@ public abstract class Parameter {
 				newParameter = new Check(parameterNode, variables);
 				break;
 			case "choise":
-				newParameter = new Choise(parameterNode, variables);
+				newParameter = new Choice(parameterNode, variables);
 				break;
 			case "color":
 				newParameter = new Color(parameterNode, variables);
