@@ -4,9 +4,8 @@ import java.util.HashMap;
 
 import org.w3c.dom.Element;
 
-public abstract class Parameter {
+public abstract class Parameter extends ModelNode {
 
-	protected String name;
 	protected String id;
 	protected String value;
 

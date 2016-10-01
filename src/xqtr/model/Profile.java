@@ -5,12 +5,10 @@ import java.util.LinkedList;
 
 import org.w3c.dom.Element;
 
-import xqtr.Controller;
 import xqtr.util.Support;
 
-public class Profile {
+public class Profile extends ModelNode {
 
-	private String name;
 	private String args = "";
 
 	private LinkedList<Profile> subProfiles = new LinkedList<Profile>();
@@ -28,24 +26,23 @@ public class Profile {
 
 	Profile(Element profileNode, HashMap<String, String> variables){
 
-		Controller controller = Controller.getInstance();
 		HashMap<String, String> declaredVariables;
 
 		/*Genero el nuevo diccionario de variables para los perfiles*/
 		declaredVariables = Support.deepCopyVariables(variables);
-		declaredVariables.putAll(controller.getVariables(profileNode));
+		declaredVariables.putAll(this.getVariables(profileNode));
 
-		this.name = controller.replaceVariables(profileNode.getAttribute("name"), variables);
+		this.name = this.replaceVariables(profileNode.getAttribute("name"), variables);
 		
 		if(profileNode.hasAttribute("args")) {
-			this.args = controller.replaceVariables(profileNode.getAttribute("args"), variables);
+			this.args = this.replaceVariables(profileNode.getAttribute("args"), variables);
 		}
 
-		Support.elementList(profileNode.getElementsByTagName(Controller.getInstance().profileTag())).forEach((subProfileNode) -> {
+		Support.elementList(profileNode.getElementsByTagName(this.profileTag())).forEach((subProfileNode) -> {
 			this.addNewProfile(subProfileNode, declaredVariables);
 		});
 
-		Support.elementList(profileNode.getElementsByTagName(Controller.getInstance().parameterTag())).forEach((parameterNode) -> {
+		Support.elementList(profileNode.getElementsByTagName(this.parameterTag())).forEach((parameterNode) -> {
 			this.addNewParameter(parameterNode, declaredVariables);
 		});
 

@@ -4,8 +4,6 @@ import java.util.HashMap;
 
 import org.w3c.dom.Element;
 
-import xqtr.Controller;
-
 public class Sequence extends Parameter {
 
 	private String type;
@@ -13,13 +11,11 @@ public class Sequence extends Parameter {
 
 	Sequence(Element parameterNode, HashMap<String, String> variables) {
 
-		Controller controller = Controller.getInstance();
-
-		this.name = controller.replaceVariables(parameterNode.getAttribute("name"), variables);
-		this.id = controller.replaceVariables(parameterNode.getAttribute("id"), variables);
-		this.value = controller.replaceVariables(parameterNode.getAttribute("value"), variables);
-		this.type = controller.replaceVariables(parameterNode.getAttribute("type"), variables);
-		this.format = controller.replaceVariables(parameterNode.getAttribute("format"), variables);
+		this.name = this.replaceVariables(parameterNode.getAttribute("name"), variables);
+		this.id = this.replaceVariables(parameterNode.getAttribute("id"), variables);
+		this.value = this.replaceVariables(parameterNode.getAttribute("value"), variables);
+		this.type = this.replaceVariables(parameterNode.getAttribute("type"), variables);
+		this.format = this.replaceVariables(parameterNode.getAttribute("format"), variables);
 	}
 
 }

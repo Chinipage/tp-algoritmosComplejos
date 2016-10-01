@@ -5,14 +5,12 @@ import java.util.LinkedList;
 
 import org.w3c.dom.Element;
 
-import xqtr.Controller;
 import xqtr.util.Support;
 
-public class Program {
+public class Program extends ModelNode {
 
 	private LinkedList<Profile> profiles = new LinkedList<Profile>();
 
-	private String name;
 	private String bin;
 
 	public String getName() {
@@ -29,17 +27,16 @@ public class Program {
 
 	public Program(Element programNode, HashMap<String, String> variables){
 
-		Controller controller = Controller.getInstance();
 		HashMap<String, String> declaredVariables;
 
 		/*Genero el nuevo diccionario de variables para los perfiles*/
 		declaredVariables = Support.deepCopyVariables(variables);
-		declaredVariables.putAll(controller.getVariables(programNode));
+		declaredVariables.putAll(this.getVariables(programNode));
 
-		this.name = controller.replaceVariables(programNode.getAttribute("name"), variables);
-		this.bin = controller.replaceVariables(programNode.getAttribute("bin"), variables);
+		this.name = this.replaceVariables(programNode.getAttribute("name"), variables);
+		this.bin = this.replaceVariables(programNode.getAttribute("bin"), variables);
 
-		Support.elementList(programNode.getElementsByTagName(Controller.getInstance().profileTag())).forEach((profileNode) -> {
+		Support.elementList(programNode.getElementsByTagName(this.profileTag())).forEach((profileNode) -> {
 			this.addNewProfile(profileNode, declaredVariables);
 		});
 
