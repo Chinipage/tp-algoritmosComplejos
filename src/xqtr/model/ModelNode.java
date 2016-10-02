@@ -1,34 +1,29 @@
 package xqtr.model;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map.Entry;
 
 import org.w3c.dom.Element;
-
-import xqtr.util.Support;
+import org.w3c.dom.NodeList;
 
 public abstract class ModelNode {
-	
-	protected String name;
 
-	/*Config XML tags*/
-	protected String programTag(){
-		return "program";
+	protected HashMap<String, String> attributes = new HashMap<String, String>();
+	protected final String programTag = "program";
+	protected final String profileTag = "profile";
+	protected final String parameterTag = "parameter";
+	protected final String variableTag = "var";
+
+	protected String getAttribute(String key) {
+		return attributes.get(key);
 	}
 
-	protected String profileTag(){
-		return "profile";
+	protected void setAttribute(String key, String value) {
+		attributes.put(key, value);
 	}
 
-	protected String parameterTag(){
-		return "parameter";
-	}
-
-	protected String variableTag(){
-		return "var";
-	}
-
-	/*Variables management (quizas esto deberia estar en support, no se)*/
 	protected String replaceVariables(String attribute, HashMap<String, String> variables){
 
 		String replacedAttribute = attribute;
@@ -52,16 +47,52 @@ public abstract class ModelNode {
 
 		HashMap<String, String> variables = new HashMap<String, String>();
 
-		Support.elementList(node.getElementsByTagName(this.variableTag())).forEach((globalVariable) -> {
-			variables.put(globalVariable.getAttribute("id"), globalVariable.getAttribute("value"));
-		});
-
-		System.out.println("Node variables of " + node.getNodeName());
-		variables.forEach((id, value) -> {
-			System.out.println("id: " + id + " value: " + value);
+		this.elementList(node.getElementsByTagName(variableTag)).forEach((variable) -> {
+			variables.put(variable.getAttribute("id"), variable.getAttribute("value"));
 		});
 
 		return variables;
+	}
+
+	public List<Element> elementList(NodeList list) {
+
+		List<Element> elementList = new LinkedList<Element>();
+
+		for(int i=0; i<list.getLength(); i++) {
+			elementList.add((Element) list.item(i));
+		}
+
+		return elementList;
+	}
+
+	public HashMap<String, String> deepCopyVariables (HashMap<String, String> originalVariables){
+
+		HashMap<String, String> newVariables = new HashMap<String, String>();
+
+		for(Entry<String, String> e : originalVariables.entrySet()) {
+
+			 newVariables.put(e.getKey(), e.getValue());
+		}
+
+		return newVariables;
+	}
+
+	protected void initializeAttributes(Element node, HashMap<String, String> variables) {
+
+		this.attributesKeys().forEach(attributeKey -> {
+			if(node.hasAttribute(attributeKey))
+				attributes.put(attributeKey, this.replaceVariables(node.getAttribute(attributeKey), variables));
+		});
+
+	}
+
+	protected  List<String> attributesKeys() {
+
+		LinkedList<String> attributesKeys = new LinkedList<String>();
+
+		attributesKeys.add("name");
+
+		return attributesKeys;
 	}
 
 }

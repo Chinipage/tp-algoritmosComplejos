@@ -1,13 +1,14 @@
 package xqtr.model;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Arrays;
 
 import org.w3c.dom.Element;
 
-public abstract class Parameter extends ModelNode {
+import xqtr.util.Support;
 
-	protected String id;
-	protected String value;
+public abstract class Parameter extends ModelNode {
 
 	public static Parameter newParameter(Element parameterNode, HashMap<String, String> variables) {
 	
@@ -43,4 +44,38 @@ public abstract class Parameter extends ModelNode {
 		return newParameter;
 	}
 
+	protected  List<String> attributesKeys() {
+
+		List<String> attributesKeys = super.attributesKeys();
+
+		attributesKeys.add("id");
+		attributesKeys.add("value");
+
+		return attributesKeys;
+	}
+
+	protected List<String> neccesaryAttributes() {
+
+		List<String> attributesKeys = super.attributesKeys();
+
+		attributesKeys.add("id");
+		attributesKeys.add("value");
+
+		return attributesKeys;
+	}
+
+	protected Boolean isExecutable() {
+
+		return Support.allSatisfy(this.neccesaryAttributes(), attribute -> {return attributes.containsKey(attribute);});
+	}
+
+	protected void initializeAttributes(Element node, HashMap<String, String> variables) {
+
+		super.initializeAttributes(node, variables);
+
+		Arrays.asList(node.getAttribute("class").split(" ")).forEach(attribute -> {
+			attributes.put(attribute, "true");
+		});
+
+	}
 }

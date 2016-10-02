@@ -15,10 +15,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
@@ -67,16 +65,6 @@ public class Support {
 		return IntStream.range(0, list.getLength()).mapToObj(list::item).collect(Collectors.toList());
 	}
 
-	public static List<Element> elementList(NodeList list) {
-
-		List<Element> elementList = new LinkedList<Element>();
-
-		for(int i=0; i<list.getLength(); i++) {
-			elementList.add((Element) list.item(i));
-		}
-
-		return elementList;
-	}
 	@SuppressWarnings("unchecked")
 	public static <A, B> List<B> map(Function<A, B> fn, List<A> list) {
 		return fn == null ? (List<B>) list : list.stream().map(fn).collect(Collectors.toList());	
@@ -216,18 +204,6 @@ public class Support {
 			}
 		});
 	}
-
-	public static HashMap<String, String> deepCopyVariables (HashMap<String, String> originalVariables){
-
-		HashMap<String, String> newVariables = new HashMap<String, String>();
-
-		for(Entry<String, String> e : originalVariables.entrySet()) {
-
-			 newVariables.put(e.getKey(), e.getValue());
-		}
-
-		return newVariables;
-	}
 	
 	public static Map<String, String> dictFromString(String string) {
 		Map<String, String> dict = new LinkedHashMap<>();
@@ -252,5 +228,12 @@ public class Support {
 		}
 		
 		return list;
+	}
+
+	public static <T> Boolean allSatisfy(List<T> list, Function<? super T, ? super Boolean> condition){
+		for(T t : list)
+			if(!(Boolean) condition.apply(t)) return false;
+
+		return true;
 	}
 }

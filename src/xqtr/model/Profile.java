@@ -2,14 +2,13 @@ package xqtr.model;
 
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 
 import org.w3c.dom.Element;
 
 import xqtr.util.Support;
 
 public class Profile extends ModelNode {
-
-	private String args = "";
 
 	private LinkedList<Profile> subProfiles = new LinkedList<Profile>();
 	private LinkedList<Parameter> parameters = new LinkedList<Parameter>();
@@ -29,22 +28,43 @@ public class Profile extends ModelNode {
 		HashMap<String, String> declaredVariables;
 
 		/*Genero el nuevo diccionario de variables para los perfiles*/
-		declaredVariables = Support.deepCopyVariables(variables);
+		declaredVariables = this.deepCopyVariables(variables);
 		declaredVariables.putAll(this.getVariables(profileNode));
 
-		this.name = this.replaceVariables(profileNode.getAttribute("name"), variables);
-		
-		if(profileNode.hasAttribute("args")) {
-			this.args = this.replaceVariables(profileNode.getAttribute("args"), variables);
-		}
+		this.initializeAttributes(profileNode, variables);
 
-		Support.elementList(profileNode.getElementsByTagName(this.profileTag())).forEach((subProfileNode) -> {
+		this.elementList(profileNode.getElementsByTagName(profileTag)).forEach((subProfileNode) -> {
 			this.addNewProfile(subProfileNode, declaredVariables);
 		});
 
-		Support.elementList(profileNode.getElementsByTagName(this.parameterTag())).forEach((parameterNode) -> {
+		this.elementList(profileNode.getElementsByTagName(parameterTag)).forEach((parameterNode) -> {
 			this.addNewParameter(parameterNode, declaredVariables);
 		});
+
+	}
+
+	protected  List<String> attributesKeys() {
+
+		List<String> attributesKeys = super.attributesKeys();
+
+		attributesKeys.add("args");
+
+		return attributesKeys;
+	}
+
+	protected List<String> neccesaryAttributes() {
+
+		List<String> attributesKeys = super.attributesKeys();
+
+		attributesKeys.add("name");
+
+		return attributesKeys;
+	}
+
+	protected Boolean isExecutable() {
+
+		return (Support.allSatisfy(this.neccesaryAttributes(), attribute -> {return attributes.containsKey(attribute);}) &&
+				Support.allSatisfy(parameters, parameter -> {return parameter.isExecutable();}));
 
 	}
 }
