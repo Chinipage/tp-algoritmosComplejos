@@ -24,16 +24,23 @@ public class RootNode extends ModelNode {
 		this.programs.add(new Program(programNode, variables));
 	}
 
-	public List<String> getExecutableProgramNames() {
+	private Program getProgram(String programName) {
+		return programs.stream().filter(program -> program.getAttribute("name").equals(programName)).findFirst().get();
+	}
 
-		List<String> executablePrograms = new LinkedList<String>();
+	public List<String> getProgramsNames() {
+
+		List<String> programsList = new LinkedList<String>();
 		
 		programs.forEach(program -> {
-			if(program.isExecutable())
-				executablePrograms.add(program.getAttribute("name"));
+			programsList.add(program.getAttribute("name"));
 		});
 
-		return executablePrograms;
+		return programsList;
+	}
+
+	public List<String> getExecutableProfilesNames(String programName) {
+		return this.getProgram(programName).getExecutableProfilesNames();
 	}
 
 }

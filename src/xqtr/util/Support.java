@@ -230,10 +230,4 @@ public class Support {
 		return list;
 	}
 
-	public static <T> Boolean allSatisfy(List<T> list, Function<? super T, ? super Boolean> condition){
-		for(T t : list)
-			if(!(Boolean) condition.apply(t)) return false;
-
-		return true;
-	}
 }

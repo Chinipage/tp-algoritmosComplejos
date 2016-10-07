@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.regex.Pattern;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -43,12 +44,21 @@ public abstract class ModelNode {
 
 	}
 
+	protected Boolean isValidVariableId(String id) {
+		Pattern pattern = Pattern.compile("^[_A-Za-z][A-Z-a-z0-9]+$");
+	    return pattern.matcher(id).matches();
+	}
+
 	protected HashMap<String, String> getVariables(Element node){
 
 		HashMap<String, String> variables = new HashMap<String, String>();
 
 		this.elementList(node.getElementsByTagName(variableTag)).forEach((variable) -> {
-			variables.put(variable.getAttribute("id"), variable.getAttribute("value"));
+			
+			String id = variable.getAttribute("id"), value = variable.getAttribute("value");
+
+			if(this.isValidVariableId(id))
+				variables.put(id, this.replaceVariables(value, variables));
 		});
 
 		return variables;
@@ -91,6 +101,7 @@ public abstract class ModelNode {
 		LinkedList<String> attributesKeys = new LinkedList<String>();
 
 		attributesKeys.add("name");
+		attributesKeys.add("class");
 
 		return attributesKeys;
 	}

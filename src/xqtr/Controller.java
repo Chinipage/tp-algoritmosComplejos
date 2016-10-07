@@ -29,6 +29,6 @@ public class Controller {
 
 	public List<String> getExecutableProgramNames(){
 
-		return modelRootNode.getExecutableProgramNames();
+		return modelRootNode.getProgramsNames();
 	}
 }

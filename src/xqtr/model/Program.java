@@ -6,8 +6,6 @@ import java.util.List;
 
 import org.w3c.dom.Element;
 
-import xqtr.util.Support;
-
 public class Program extends ModelNode {
 
 	private LinkedList<Profile> profiles = new LinkedList<Profile>();
@@ -51,10 +49,15 @@ public class Program extends ModelNode {
 		return attributesKeys;
 	}
 
-	protected Boolean isExecutable() {
+	protected List<String> getExecutableProfilesNames() {
 
-		return (Support.allSatisfy(this.neccesaryAttributes(), attribute -> {return attributes.containsKey(attribute);}) &&
-				Support.allSatisfy(profiles, profile -> {return profile.isExecutable();}));
+		List<String> profilesNames = new LinkedList<String>();
 
+		profiles.forEach(profile ->	{
+			if(profile.isExecutable())
+				profilesNames.addAll(profile.getExecutableProfilesNames());	
+		});
+
+		return profilesNames;
 	}
 }

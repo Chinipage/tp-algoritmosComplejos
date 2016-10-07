@@ -6,8 +6,6 @@ import java.util.List;
 
 import org.w3c.dom.Element;
 
-import xqtr.util.Support;
-
 public class Profile extends ModelNode {
 
 	private LinkedList<Profile> subProfiles = new LinkedList<Profile>();
@@ -63,8 +61,34 @@ public class Profile extends ModelNode {
 
 	protected Boolean isExecutable() {
 
-		return (Support.allSatisfy(this.neccesaryAttributes(), attribute -> {return attributes.containsKey(attribute);}) &&
-				Support.allSatisfy(parameters, parameter -> {return parameter.isExecutable();}));
+		return this.neccesaryAttributes().stream().allMatch(attribute -> attributes.containsKey(attribute)) &&
+				parameters.stream().allMatch(parameter -> parameter.isExecutable());
 
+	}
+
+	private Boolean hasAttribute(String attributeName) {
+		return attributes.containsKey(attributeName);
+	}
+
+	private Boolean hasClass(String className) {
+		return this.hasAttribute("class") || this.getAttribute("class").contains(className);
+	}
+
+	private Boolean isHidden() {
+		return this.hasClass("hidden");
+	}
+
+	protected List<String> getExecutableProfilesNames() {
+
+		List<String> profiles = new LinkedList<String>();
+
+		if(!this.isHidden()) profiles.add(this.getAttribute("name"));
+
+		subProfiles.forEach(profile -> {
+			if(profile.isExecutable())
+				profiles.addAll(profile.getExecutableProfilesNames());	
+		});
+
+		return profiles;
 	}
 }

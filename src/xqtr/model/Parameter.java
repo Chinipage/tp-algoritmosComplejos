@@ -6,8 +6,6 @@ import java.util.Arrays;
 
 import org.w3c.dom.Element;
 
-import xqtr.util.Support;
-
 public abstract class Parameter extends ModelNode {
 
 	public static Parameter newParameter(Element parameterNode, HashMap<String, String> variables) {
@@ -66,7 +64,7 @@ public abstract class Parameter extends ModelNode {
 
 	protected Boolean isExecutable() {
 
-		return Support.allSatisfy(this.neccesaryAttributes(), attribute -> {return attributes.containsKey(attribute);});
+		return this.neccesaryAttributes().stream().allMatch(attribute -> attributes.containsKey(attribute));
 	}
 
 	protected void initializeAttributes(Element node, HashMap<String, String> variables) {
