@@ -2,6 +2,8 @@ package xqtr.util;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -17,6 +19,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
@@ -27,6 +30,11 @@ import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.text.JTextComponent;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -198,7 +206,7 @@ public class Support {
 			}
 			
 			public void keyPressed(KeyEvent event) {
-				if(isKey(KeyEvent.getKeyText(event.getKeyCode()))) {
+				if(key == null || isKey(KeyEvent.getKeyText(event.getKeyCode()))) {
 					action.actionPerformed(keyToAction(event));
 				}
 			}
@@ -228,6 +236,30 @@ public class Support {
 		}
 		
 		return list;
+	}
+	
+	public static Optional<Character> getMnemonic(String text) {
+		int i = text.indexOf("_");
+		if(i == -1 || i == text.length() - 1) return Optional.empty();
+		return Optional.of(text.charAt(i + 1));
+	}
+	
+	public static void addChangeListener(JTextComponent text, ChangeListener changeListener) {
+		text.addCaretListener(new CaretListener() {
+			public void caretUpdate(CaretEvent e) {
+				delay(() -> {
+					changeListener.stateChanged(new ChangeEvent("change"));
+				});
+			}
+		});
+	    text.addFocusListener(new FocusListener() {
+			public void focusGained(FocusEvent e) {
+				changeListener.stateChanged(new ChangeEvent("focus"));
+			}
+			public void focusLost(FocusEvent e) {
+				changeListener.stateChanged(new ChangeEvent("blur"));
+			}
+	    });
 	}
 
 }

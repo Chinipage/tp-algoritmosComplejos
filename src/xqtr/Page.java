@@ -12,6 +12,7 @@ import xqtr.view.ChoiceBox;
 import xqtr.view.FileBrowser;
 import xqtr.view.RangeBox;
 import xqtr.view.SequenceBox;
+import xqtr.view.TextField;
 import xqtr.util.Form;
 
 @SuppressWarnings("serial")
@@ -62,6 +63,7 @@ public class Page extends JScrollPane {
 		form.addElement("Video target", videoTarget);
 		form.addElement("Limit duration", sequence);
 		form.addElement("Adjust volume", range);
+		form.addElement("Test text", new TextField());
 	}
 	
 	private void exampleForm2() {

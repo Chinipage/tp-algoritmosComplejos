@@ -17,11 +17,8 @@ public abstract class Parameter extends ModelNode {
 			case "check":
 				newParameter = new Check(parameterNode, variables);
 				break;
-			case "choise":
+			case "choice":
 				newParameter = new Choice(parameterNode, variables);
-				break;
-			case "color":
-				newParameter = new Color(parameterNode, variables);
 				break;
 			case "file":
 				newParameter = new File(parameterNode, variables);

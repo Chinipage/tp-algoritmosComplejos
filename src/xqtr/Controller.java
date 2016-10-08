@@ -7,6 +7,9 @@ import xqtr.model.RootNode;
 import xqtr.util.Support;
 
 public class Controller {
+	
+	private String currentProgram;
+	private String currentProfile;
 
 	private static Controller instance = null;
 	private RootNode modelRootNode;
@@ -23,12 +26,28 @@ public class Controller {
 		return instance;
 	}
 
-	public void loadConfig(){
+	public void loadConfig() {
 		modelRootNode = new RootNode(Support.parseXML("Config2.xml"));
 	}
 
-	public List<String> getExecutableProgramNames(){
+	public List<String> getExecutableProgramNames() {
 
 		return modelRootNode.getProgramsNames();
+	}
+	
+	public void setCurrentProgram(String programName) {
+		currentProgram = programName;
+	}
+	
+	public void setCurrentProfile(String profileName) {
+		currentProfile = profileName;
+	}
+	
+	public String getCurrentProgram() {
+		return currentProgram;
+	}
+	
+	public String getCurrentProfile() {
+		return currentProfile;
 	}
 }

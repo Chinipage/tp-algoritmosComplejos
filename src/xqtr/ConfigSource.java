@@ -1,5 +1,9 @@
 package xqtr;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 import javax.swing.BorderFactory;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
@@ -7,17 +11,23 @@ import javax.swing.JTextPane;
 import xqtr.util.Dialog;
 
 @SuppressWarnings("serial")
-public class Result extends Dialog {
+public class ConfigSource extends Dialog {
 	
 	private String result;
 	
-	public Result(String result) {
+	public ConfigSource() {
 		
-		this.result = result;
+		try {
+			result = Files.lines(Paths.get(Application.configPath))
+						.reduce("", (a, b) -> a + "\n" + b).substring(1);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
 		renderUI();
-		setTitle("Result");
-		setSize(420, 280);
+		setTitle("Configuration");
+		setSize(720, 480);
+		setVisible(true);
 	}
 	
 	private void renderUI() {
@@ -27,7 +37,6 @@ public class Result extends Dialog {
 		
 		textPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		textPane.setEditable(false);
-		textPane.setContentType("text/html");
 		textPane.setText(result);
 		
 		scrollPane.getViewport().add(textPane);

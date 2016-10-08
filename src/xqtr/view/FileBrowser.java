@@ -1,8 +1,10 @@
 package xqtr.view;
 
+import java.awt.Component;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.io.File;
@@ -11,10 +13,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JFileChooser;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.TransferHandler;
+import javax.swing.event.ChangeEvent;
 
+import xqtr.Application;
 import xqtr.util.Button;
 import xqtr.util.FileTypeFilter;
 import xqtr.util.Support;
@@ -31,6 +36,7 @@ public class FileBrowser extends Control {
 	private String defaultExtension = "";
 	private List<String> validExtensions;
 	private List<File> model;
+	private ActionListener deleteAction = e -> pathField.setText("");
 	
 	public FileBrowser() {
 		this(new ArrayList<>());
@@ -39,15 +45,18 @@ public class FileBrowser extends Control {
 	public FileBrowser(List<File> model) {
 		setModel(model);
 		
+		Application.undoHandler.handle(pathField);
 		pathField.setFont(defaultFont);
 		pathField.setEditable(false);
-		pathField.addFocusListener(new FocusListener() {	
+		pathField.addFocusListener(new FocusListener() {
 			public void focusGained(FocusEvent e) { browseButton.setMnemonic('B'); }
 			public void focusLost(FocusEvent e) { browseButton.setMnemonic(0); }
 		});
 		pathField.setTransferHandler(new FileDroppableField());
+		Support.addChangeListener(pathField, e -> changeListener(e));
 		Support.addMouseListener(pathField, "CLICK", e -> displayFileList());
 		Support.addKeyListener(pathField, "SPACE", e -> displayFileList());
+		Support.addKeyListener(pathField, "DELETE", deleteAction);
 		browseButton.addActionListener(e -> addFilesWithChooser());
 		
 		add(pathField);
@@ -186,5 +195,28 @@ public class FileBrowser extends Control {
 	
 	public String getValue() {
 		return model.stream().map(f -> f.getPath()).reduce("", (a,b) -> a + " \"" + b + "\"").trim();
+	}
+	
+	private void changeListener(ChangeEvent e) {
+		JMenuItem deleteItem = (JMenuItem) Application.frame.menu.get("Delete");
+		switch((String) e.getSource()) {
+		case "focus":
+			Support.delay(() -> {
+				deleteItem.setEnabled(!pathField.getText().isEmpty());
+				deleteItem.addActionListener(deleteAction);
+			});
+			break;
+		case "blur":
+			Support.delay(() -> {
+				Component comp = Application.frame.getFocusOwner();
+				if(comp == null || !comp.equals(Application.frame.menu.getRootPane())) {
+					deleteItem.setEnabled(false);
+					deleteItem.removeActionListener(deleteAction);
+				}
+			});
+			break;
+		case "change":
+			deleteItem.setEnabled(!pathField.getText().isEmpty());
+		}
 	}
 }
