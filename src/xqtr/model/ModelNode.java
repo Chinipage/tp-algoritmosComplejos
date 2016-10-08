@@ -34,7 +34,7 @@ public abstract class ModelNode {
 
 		StringBuffer replacedString = new StringBuffer();
 
-		Pattern variablePattern = Pattern.compile("(?:\\{)(.*)(?:\\})"),
+		Pattern variablePattern = Pattern.compile("(?:\\{)([^}]*)(?:\\})"),
 				idPattern = Pattern.compile("(_?[A-Za-z][A-Za-z0-9]*)"),
 				equationPattern = Pattern.compile("^([0-9]+\\s?[-+*/]\\s?[0-9]+(\\s?[-+*/]\\s?[0-9]+)*)$");
 
