@@ -2,7 +2,6 @@ package xqtr.model;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Arrays;
 
 import org.w3c.dom.Element;
 
@@ -64,13 +63,17 @@ public abstract class Parameter extends ModelNode {
 		return this.neccesaryAttributes().stream().allMatch(attribute -> attributes.containsKey(attribute));
 	}
 
-	protected void initializeAttributes(Element node, HashMap<String, String> variables) {
-
-		super.initializeAttributes(node, variables);
-
-		Arrays.asList(node.getAttribute("class").split(" ")).forEach(attribute -> {
-			attributes.put(attribute, "true");
-		});
-
+	//Interfaz para la vista---------------------------------------------------------------------
+	public String getAttribute(String key) {
+		return attributes.get(key);
 	}
+
+	public Boolean hasAttribute(String attributeName) {
+		return attributes.containsKey(attributeName);
+	}
+
+	public Boolean hasClass(String className) {
+		return this.hasAttribute("class") || this.getAttribute("class").contains(className);
+	}
+
 }

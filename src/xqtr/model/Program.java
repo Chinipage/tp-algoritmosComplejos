@@ -11,7 +11,7 @@ public class Program extends ModelNode {
 	private LinkedList<Profile> profiles = new LinkedList<Profile>();
 
 	private void addNewProfile(Element profileNode, HashMap<String, String> declaredVaraibles) {
-		this.profiles.add(new Profile(profileNode, declaredVaraibles));
+		this.profiles.add(new Profile(this, profileNode, declaredVaraibles));
 	}
 
 	public Program(Element programNode, HashMap<String, String> variables){
@@ -59,5 +59,20 @@ public class Program extends ModelNode {
 		});
 
 		return profilesNames;
+	}
+
+	protected Profile getProfile(String profileName) {
+
+		Profile searchedProfile;
+
+		for(Profile prof : profiles)
+			if((searchedProfile = prof.getProfile(profileName)) != null)
+				return searchedProfile;
+
+		return null;
+	}
+
+	protected String getCommand() {
+		return this.getAttribute("bin");
 	}
 }

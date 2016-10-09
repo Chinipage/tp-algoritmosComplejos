@@ -25,7 +25,7 @@ public class RootNode extends ModelNode {
 	}
 
 	private Program getProgram(String programName) {
-		return programs.stream().filter(program -> program.getAttribute("name").equals(programName)).findFirst().get();
+		return programs.stream().filter(program -> program.getAttribute("name").equals(programName)).findFirst().orElse(null);
 	}
 
 	public List<String> getProgramsNames() {
@@ -40,7 +40,48 @@ public class RootNode extends ModelNode {
 	}
 
 	public List<String> getExecutableProfilesNames(String programName) {
-		return this.getProgram(programName).getExecutableProfilesNames();
+
+		List<String> executableProfilesNames = new LinkedList<String>();
+		Program program = this.getProgram(programName);
+
+		if((program != null))
+			executableProfilesNames.addAll(program.getExecutableProfilesNames());
+		
+		return executableProfilesNames;
+	}
+
+	protected Profile getProfile(String programName, String profileName) {
+
+		Program program;
+		Profile profile = null;
+
+		if((program = this.getProgram(programName)) != null)
+			profile = program.getProfile(profileName);
+
+		return profile;
+		
+	}
+
+	public List<Parameter> getParameters(String programName, String profileName) {
+
+		Profile profile;
+		List<Parameter> parameters = new LinkedList<Parameter>();
+
+		if((profile = this.getProfile(programName, profileName)) != null)
+			parameters.addAll(profile.getParameters());
+
+		return parameters;
+	}
+
+	public String getCommand(String programName, String profileName, HashMap<String, String> arguments) {
+		
+		String command = null;
+		Profile profile;
+
+		if((profile = this.getProfile(programName, profileName)) != null)
+				command = this.replaceVariables(profile.getCommand(), arguments);
+
+		return command; 
 	}
 
 }

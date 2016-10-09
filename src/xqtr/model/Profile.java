@@ -10,9 +10,10 @@ public class Profile extends ModelNode {
 
 	private LinkedList<Profile> subProfiles = new LinkedList<Profile>();
 	private LinkedList<Parameter> parameters = new LinkedList<Parameter>();
+	private ModelNode parent;	//Solo deberia tener Profile o Program
 
 	private void addNewProfile(Element profileNode, HashMap<String, String> variables) {
-		this.subProfiles.add(new Profile(profileNode, variables));
+		this.subProfiles.add(new Profile(this, profileNode, variables));
 	}
 
 	private void addNewParameter(Element parameterNode, HashMap<String, String> variables) {
@@ -21,9 +22,14 @@ public class Profile extends ModelNode {
 
 	}
 
-	Profile(Element profileNode, HashMap<String, String> variables){
+	protected List<Parameter> getParameters() {
+		return parameters;
+	}
+
+	Profile(ModelNode p, Element profileNode, HashMap<String, String> variables){
 
 		HashMap<String, String> declaredVariables;
+		parent = p;
 
 		/*Genero el nuevo diccionario de variables para los perfiles*/
 		declaredVariables = this.deepCopyVariables(variables);
@@ -66,10 +72,6 @@ public class Profile extends ModelNode {
 
 	}
 
-	private Boolean hasAttribute(String attributeName) {
-		return attributes.containsKey(attributeName);
-	}
-
 	private Boolean hasClass(String className) {
 		return this.hasAttribute("class") || this.getAttribute("class").contains(className);
 	}
@@ -90,5 +92,23 @@ public class Profile extends ModelNode {
 		});
 
 		return profiles;
+	}
+
+	protected Profile getProfile(String profileName) {
+
+		Profile searchedProfile;
+
+		if(this.getAttribute("name") == profileName)
+			return this;
+
+		for(Profile prof : subProfiles)
+			if((searchedProfile = prof.getProfile(profileName)) != null)
+				return searchedProfile;
+
+		return null;
+	}
+
+	protected String getCommand() {
+		return parent.getCommand() + this.getAttribute("args");
 	}
 }

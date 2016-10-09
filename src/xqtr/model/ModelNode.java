@@ -17,10 +17,11 @@ import org.w3c.dom.NodeList;
 public abstract class ModelNode {
 
 	protected HashMap<String, String> attributes = new HashMap<String, String>();
-	protected final String programTag = "program";
-	protected final String profileTag = "profile";
-	protected final String parameterTag = "parameter";
-	protected final String variableTag = "var";
+	protected static final String programTag = "program";
+	protected static final String profileTag = "profile";
+	protected static final String parameterTag = "parameter";
+	protected static final String variableTag = "var";
+	protected static final String xmlVersion = "1.0";
 
 	protected String getAttribute(String key) {
 		return attributes.get(key);
@@ -30,18 +31,18 @@ public abstract class ModelNode {
 		attributes.put(key, value);
 	}
 
+	protected Boolean hasAttribute(String attributeName) {
+		return attributes.containsKey(attributeName);
+	}
+
 	protected String replaceVariables(String string, HashMap<String, String> variables){
 
 		StringBuffer replacedString = new StringBuffer();
-
 		Pattern variablePattern = Pattern.compile("(?:\\{)([^}]*)(?:\\})"),
 				idPattern = Pattern.compile("(_?[A-Za-z][A-Za-z0-9]*)"),
-				equationPattern = Pattern.compile("^([0-9]+\\s?[-+*/]\\s?[0-9]+(\\s?[-+*/]\\s?[0-9]+)*)$");
-
+				equationPattern = Pattern.compile("^([0-9]+\\s*[-+*/]\\s*[0-9]+(\\s*[-+*/]\\s*[0-9]+)*)$");
 		ScriptEngineManager mgr = new ScriptEngineManager();
 	    ScriptEngine engine = mgr.getEngineByName("JavaScript");
-
-
 		Matcher variableMatcher = variablePattern.matcher(string); 
 
 		while(variableMatcher.find()) {
@@ -105,7 +106,7 @@ public abstract class ModelNode {
 		return variables;
 	}
 
-	public List<Element> elementList(NodeList list) {
+	protected List<Element> elementList(NodeList list) {
 
 		List<Element> elementList = new LinkedList<Element>();
 
@@ -116,7 +117,7 @@ public abstract class ModelNode {
 		return elementList;
 	}
 
-	public HashMap<String, String> deepCopyVariables (HashMap<String, String> originalVariables){
+	protected HashMap<String, String> deepCopyVariables (HashMap<String, String> originalVariables){
 
 		HashMap<String, String> newVariables = new HashMap<String, String>();
 
@@ -145,6 +146,11 @@ public abstract class ModelNode {
 		attributesKeys.add("class");
 
 		return attributesKeys;
+	}
+
+	protected String getCommand() {
+		//Este metodo se redefine en RootNode, Program y Profile. No se usa en Parameter.
+		return "";
 	}
 
 }
