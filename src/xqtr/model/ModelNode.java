@@ -4,7 +4,12 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -25,27 +30,56 @@ public abstract class ModelNode {
 		attributes.put(key, value);
 	}
 
-	protected String replaceVariables(String attribute, HashMap<String, String> variables){
+	protected String replaceVariables(String string, HashMap<String, String> variables){
 
-		String replacedAttribute = attribute;
+		StringBuffer replacedString = new StringBuffer();
 
-		/*No pude usar el metodo foreach con una expresion lambda ya que no puedo usar dentro
-		 * de esa misma espresion las variables locales del metodo que la contiene
-		 */
-		for(Entry<String, String> e : variables.entrySet()) {
+		Pattern variablePattern = Pattern.compile("(?:\\{)([^}]*)(?:\\})"),
+				idPattern = Pattern.compile("(_?[A-Za-z][A-Za-z0-9]*)"),
+				equationPattern = Pattern.compile("^([0-9]+\\s?[-+*/]\\s?[0-9]+(\\s?[-+*/]\\s?[0-9]+)*)$");
 
-			 String variableName = e.getKey();
-			 String variableValue = e.getValue();
+		ScriptEngineManager mgr = new ScriptEngineManager();
+	    ScriptEngine engine = mgr.getEngineByName("JavaScript");
 
-			 replacedAttribute = replacedAttribute.replaceAll("\\{" + variableName + "\\}", variableValue);
+
+		Matcher variableMatcher = variablePattern.matcher(string); 
+
+		while(variableMatcher.find()) {
+
+			StringBuffer resultBuffer = new StringBuffer();
+			String resultReplacement;
+			Matcher idMatcher = idPattern.matcher(variableMatcher.group(1)), equationMatcher;
+
+			//if(variableMatcher.group(0).isEmpty()) TODO Con esto podria loguear un error dado que esta mal usada la variable.
+
+			//Reemplazo las variables con los ids que tenga en el HashMap.
+			while(idMatcher.find()) {
+				if(variables.containsKey(idMatcher.group(1)))
+					idMatcher.appendReplacement(resultBuffer, variables.get(idMatcher.group(1)));
+			}
+
+			idMatcher.appendTail(resultBuffer);
+			resultReplacement = resultBuffer.toString();
+
+			//Si lo que quedo es una ecuacion, resuelvo la ecuacion.
+			equationMatcher = equationPattern.matcher(resultBuffer);
+			if(equationMatcher.matches())
+				try {
+					resultReplacement = engine.eval(resultReplacement).toString();
+				} catch (ScriptException e1) {
+					e1.printStackTrace();
+				}
+
+			variableMatcher.appendReplacement(replacedString, resultReplacement);
 		}
 
-		return replacedAttribute;
+		variableMatcher.appendTail(replacedString);
 
+		return replacedString.toString();
 	}
 
 	protected Boolean isValidVariableId(String id) {
-		Pattern pattern = Pattern.compile("^[_A-Za-z][A-Z-a-z0-9]+$");
+		Pattern pattern = Pattern.compile("^(_?[A-Za-z][A-Za-z0-9]*)$");
 	    return pattern.matcher(id).matches();
 	}
 
@@ -55,10 +89,17 @@ public abstract class ModelNode {
 
 		this.elementList(node.getElementsByTagName(variableTag)).forEach((variable) -> {
 			
-			String id = variable.getAttribute("id"), value = variable.getAttribute("value");
+			String id = variable.getAttribute("id"),
+				value = variable.getAttribute("value");
 
+			/*TODO encontrar la manera de tener aca las vriables
+			 * anteriores para poder reemplazar en las actuales. Por ahora
+			 * no puede haber variables de variables.
+			 */
 			if(this.isValidVariableId(id))
 				variables.put(id, this.replaceVariables(value, variables));
+			
+			//TODO Loguear que la variable no es valida
 		});
 
 		return variables;
