@@ -10,22 +10,22 @@ import xqtr.util.RadioGroup;
 import xqtr.util.Support;
 
 @SuppressWarnings("serial")
-public class ChoiceBox extends Control {
+public class ChoiceView extends Control {
 
 	private Map<String, String> model;
 	private ComboBox comboBox;
 	private RadioGroup radioGroup;
 	private boolean comboMode;
 	
-	public ChoiceBox(String model) {
+	public ChoiceView(String model) {
 		this(Support.dictFromString(model));
 	}
 	
-	public ChoiceBox(List<String> model) {
+	public ChoiceView(List<String> model) {
 		this(model.stream().collect(Collectors.toMap(String::new, String::new)));
 	}
 	
-	public ChoiceBox(Map<String, String> model) {
+	public ChoiceView(Map<String, String> model) {
 		
 		this.model = model;
 		renderControl();

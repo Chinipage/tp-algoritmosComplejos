@@ -25,12 +25,12 @@ import javax.swing.text.DefaultEditorKit;
 import xqtr.util.Support;
 
 @SuppressWarnings("serial")
-public class Menu extends JMenuBar {
+public class MenuBar extends JMenuBar {
 
 	private List<JMenu> menus = new ArrayList<>();
 	private List<JMenuItem> items = new ArrayList<>(); 
 	
-	public Menu() {
+	public MenuBar() {
 		
 		add("_File/_Program/");
 		add("File/P_rofile/");

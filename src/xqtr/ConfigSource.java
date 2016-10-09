@@ -4,14 +4,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import javax.swing.BorderFactory;
-import javax.swing.JScrollPane;
-import javax.swing.JTextPane;
-
-import xqtr.util.Dialog;
+import xqtr.util.TextDialog;
 
 @SuppressWarnings("serial")
-public class ConfigSource extends Dialog {
+public class ConfigSource extends TextDialog {
 	
 	private String result;
 	
@@ -24,23 +20,12 @@ public class ConfigSource extends Dialog {
 			e.printStackTrace();
 		}
 		
-		renderUI();
+		result = result.replaceAll("<(.+?)>", "<b>&lt;$1&gt;</b>").replaceAll("\\n", "<br>");
+		
+		displayText(result);
 		setTitle("Configuration");
 		setSize(720, 480);
 		setVisible(true);
-	}
-	
-	private void renderUI() {
-		
-		JScrollPane scrollPane = new JScrollPane();
-		JTextPane textPane = new JTextPane();
-		
-		textPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-		textPane.setEditable(false);
-		textPane.setText(result);
-		
-		scrollPane.getViewport().add(textPane);
-		add(scrollPane);
 	}
 
 }

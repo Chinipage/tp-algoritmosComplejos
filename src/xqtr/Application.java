@@ -19,7 +19,7 @@ import xqtr.util.Support;
 public class Application {
 	
 	public static final String name = "XQTR";
-	public static final String version = "0.7";
+	public static final String version = "0.7.5";
 	public static final String configPath = "Config.xml";
 	
 	public static Frame frame;
@@ -27,7 +27,6 @@ public class Application {
 	public static UndoHandler undoHandler = new UndoHandler();
 
 	public static void main(String[] args) {
-		
 		Support.delay(() -> {
 			
 			try {
@@ -40,5 +39,5 @@ public class Application {
 			frame = new Frame(controller); 
 			frame.setVisible(true);
 		});
-	}
+	}   
 }

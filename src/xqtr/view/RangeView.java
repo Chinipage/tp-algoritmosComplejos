@@ -4,19 +4,19 @@ import javax.swing.JLabel;
 import javax.swing.JSlider;
 
 @SuppressWarnings("serial")
-public class RangeBox extends Unitable {
+public class RangeView extends Unitable {
 	
 	JSlider slider;
 	
-	public RangeBox(int min, int max) {
+	public RangeView(int min, int max) {
 		this(min, max, (max - min) / 2);
 	}
 	
-	public RangeBox(int min, int max, int value) {
+	public RangeView(int min, int max, int value) {
 		this(min, max, value, (max - min) * 1 / 10);
 	}
 	
-	public RangeBox(int min, int max, int value, int step) {
+	public RangeView(int min, int max, int value, int step) {
 		
 		slider = new JSlider(min, max);
 		slider.setPaintTicks(true);

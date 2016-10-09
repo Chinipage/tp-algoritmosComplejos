@@ -16,18 +16,18 @@ import javax.swing.JOptionPane;
 import xqtr.util.Button;
 import xqtr.util.Form;
 import xqtr.util.Section;
-import xqtr.view.ChoiceBox;
+import xqtr.view.ChoiceView;
 
 @SuppressWarnings("serial")
 public class Frame extends JFrame implements ActionListener, ItemListener {
 
-	public Menu menu;
+	public MenuBar menu;
 	public Section header;
 	public Section footer;
 	
 	private Controller controller;
-	private ChoiceBox programSelector;
-	private ChoiceBox profileSelector;
+	private ChoiceView programSelector;
+	private ChoiceView profileSelector;
 	private Page page;
 	
 	public Frame(Controller controller) {
@@ -37,7 +37,7 @@ public class Frame extends JFrame implements ActionListener, ItemListener {
 
 	private void initUI() {
 		
-		menu = new Menu();
+		menu = new MenuBar();
 		setJMenuBar(menu);
 		
 		header = makeHeader();
@@ -63,9 +63,9 @@ public class Frame extends JFrame implements ActionListener, ItemListener {
 		header.setHeight(90);
 		header.setBorder(0, 0, 1, 0);
 		
-		programSelector = new ChoiceBox(controller.getExecutableProgramNames());
+		programSelector = new ChoiceView(controller.getExecutableProgramNames());
 		programSelector.useComboMode(true);
-		profileSelector = new ChoiceBox(Arrays.asList("(Default)"));
+		profileSelector = new ChoiceView(Arrays.asList("(Default)"));
 		profileSelector.useComboMode(true);
 		
 		Form form = new Form();
@@ -82,7 +82,7 @@ public class Frame extends JFrame implements ActionListener, ItemListener {
 		footer.setHeight(50);
 		footer.setBorder(1, 0, 0, 0);
 		
-		Button runButton = new Button("_Execute");
+		Button runButton = new Button("E_xecute");
 		Button aboutButton = new Button("_About");
 		
 		footer.add(runButton, BorderLayout.EAST);
@@ -104,7 +104,7 @@ public class Frame extends JFrame implements ActionListener, ItemListener {
 	}
 	
 	public void execute() {
-		JOptionPane.showMessageDialog(null, "<html><i>TO-DO");
+		new Result("ping -c 3 google.com");
 	}
 	
 	public void showAboutDialog() {

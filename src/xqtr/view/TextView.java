@@ -11,16 +11,16 @@ import xqtr.Application;
 import xqtr.util.Support;
 
 @SuppressWarnings("serial")
-public class TextField extends Control {
+public class TextView extends Control {
 	
 	private JPasswordField textField = new JPasswordField();
 	private ActionListener deleteAction = e -> textField.replaceSelection("");
 	
-	public TextField() {
+	public TextView() {
 		this("");
 	}
 	
-	public TextField(String value) {
+	public TextView(String value) {
 		setValue(value);
 		
 		Application.undoHandler.handle(textField);

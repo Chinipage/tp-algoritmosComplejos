@@ -26,7 +26,7 @@ import xqtr.util.Support;
 import xqtr.util.FileList;
 
 @SuppressWarnings("serial")
-public class FileBrowser extends Control {
+public class FileView extends Control {
 
 	private JTextField pathField = new JTextField();
 	private Button browseButton = new Button("Browse");
@@ -38,11 +38,11 @@ public class FileBrowser extends Control {
 	private List<File> model;
 	private ActionListener deleteAction = e -> pathField.setText("");
 	
-	public FileBrowser() {
+	public FileView() {
 		this(new ArrayList<>());
 	}
 	
-	public FileBrowser(List<File> model) {
+	public FileView(List<File> model) {
 		setModel(model);
 		
 		Application.undoHandler.handle(pathField);

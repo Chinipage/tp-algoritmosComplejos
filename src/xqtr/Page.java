@@ -8,11 +8,11 @@ import javax.swing.JScrollPane;
 
 import xqtr.util.Section;
 import xqtr.util.Support;
-import xqtr.view.ChoiceBox;
-import xqtr.view.FileBrowser;
-import xqtr.view.RangeBox;
-import xqtr.view.SequenceBox;
-import xqtr.view.TextField;
+import xqtr.view.ChoiceView;
+import xqtr.view.FileView;
+import xqtr.view.RangeView;
+import xqtr.view.SequenceView;
+import xqtr.view.TextView;
 import xqtr.util.Form;
 
 @SuppressWarnings("serial")
@@ -38,22 +38,22 @@ public class Page extends JScrollPane {
 	
 	private void exampleForm1() {
 		
-		SequenceBox sequence = new SequenceBox();
+		SequenceView sequence = new SequenceView();
 		sequence.setMinimum(0.0);
 		sequence.setStep(0.1);
 		sequence.setUnit("min.");
 		
-		RangeBox range = new RangeBox(0, 100, 80);
+		RangeView range = new RangeView(0, 100, 80);
 		range.setUnit("%");
 		
-		FileBrowser audioSource = new FileBrowser();
+		FileView audioSource = new FileView();
 		audioSource.setFormat("mp3 wav aac");
 		audioSource.setMultiModeEnabled(true);
 		
-		FileBrowser imageSource = new FileBrowser();
+		FileView imageSource = new FileView();
 		imageSource.setFormat("jpg jpeg png");
 		
-		FileBrowser videoTarget = new FileBrowser();
+		FileView videoTarget = new FileView();
 		videoTarget.setFormat("mp4 mov avi");
 		videoTarget.setSaveModeEnabled(true);
 		videoTarget.setValue("out.mp4");
@@ -63,35 +63,35 @@ public class Page extends JScrollPane {
 		form.addElement("Video target", videoTarget);
 		form.addElement("Limit duration", sequence);
 		form.addElement("Adjust volume", range);
-		form.addElement("Test text", new TextField());
+		form.addElement("Test text", new TextView());
 	}
 	
 	private void exampleForm2() {
 		
-		SequenceBox seqFrom = new SequenceBox(SequenceBox.TIME);
-		SequenceBox seqTo = new SequenceBox(SequenceBox.TIME);
+		SequenceView seqFrom = new SequenceView(SequenceView.TIME);
+		SequenceView seqTo = new SequenceView(SequenceView.TIME);
 		seqTo.setValue("00:10:00");
 		
-		form.addElement("input", new FileBrowser());
-		form.addElement("output", new FileBrowser(Support.map(File::new, "trimmed-video.avi")));
+		form.addElement("input", new FileView());
+		form.addElement("output", new FileView(Support.map(File::new, "trimmed-video.avi")));
 		form.addElement("from", seqFrom);
 		form.addElement("to", seqTo);
 	}
 	
 	private void exampleForm3() {
 		
-		ChoiceBox choice = new ChoiceBox("Clockwise: -1; Counterclockwise: 1");
+		ChoiceView choice = new ChoiceView("Clockwise: -1; Counterclockwise: 1");
 		choice.setValue("Counterclockwise");
 		
-		form.addElement("input", new FileBrowser());
-		form.addElement("output", new FileBrowser());
+		form.addElement("input", new FileView());
+		form.addElement("output", new FileView());
 		form.addElement("direction", choice);
 	}
 	
 	private void exampleForm4() {
 		
-		form.addElement("Files to merge", new FileBrowser());
-		form.addElement("Combined file", new FileBrowser(Support.map(File::new, "merge.wav")));
+		form.addElement("Files to merge", new FileView());
+		form.addElement("Combined file", new FileView(Support.map(File::new, "merge.wav")));
 	}
 	
 	public String print() {

@@ -8,7 +8,7 @@ import javax.swing.SpinnerNumberModel;
 import xqtr.util.Support;
 
 @SuppressWarnings("serial")
-public class SequenceBox extends Unitable {
+public class SequenceView extends Unitable {
 	
 	public static final int NUMBER = 0;
 	public static final int TIME = 1;
@@ -17,11 +17,11 @@ public class SequenceBox extends Unitable {
 	private JSpinner spinner = new JSpinner();
 	private SpinnerModel model;
 	
-	public SequenceBox() {
+	public SequenceView() {
 		this(NUMBER);
 	}
 	
-	public SequenceBox(int type) {
+	public SequenceView(int type) {
 		
 		this.type = type;
 		switch(type) {

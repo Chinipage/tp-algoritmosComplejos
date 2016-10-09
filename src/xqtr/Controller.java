@@ -27,7 +27,7 @@ public class Controller {
 	}
 
 	public void loadConfig() {
-		modelRootNode = new RootNode(Support.parseXML("Config2.xml"));
+		modelRootNode = new RootNode(Support.parseXML(Application.configPath));
 	}
 
 	public List<String> getExecutableProgramNames() {
