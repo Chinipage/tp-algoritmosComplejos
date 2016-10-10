@@ -5,9 +5,9 @@ import java.util.List;
 
 import org.w3c.dom.Element;
 
-public class File extends Parameter {
+public class ModelFile extends Parameter {
 
-	File(Element parameterNode, HashMap<String, String> variables) {
+	ModelFile(Element parameterNode, HashMap<String, String> variables) {
 		this.initializeAttributes(parameterNode, variables);
 	}
 

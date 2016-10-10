@@ -48,7 +48,7 @@ public class Controller {
 	//Interfaz con Modelo------------------------------------------------------------------------
 
 	public void loadConfig() {
-		modelRootNode = new RootNode(Support.parseXML(Application.configPath));
+		modelRootNode = new RootNode(Support.parseXML(Application.configPath), Application.errorLogPath);
 	}
 
 	//TODO Deprecado. Usar getProgramsNames().

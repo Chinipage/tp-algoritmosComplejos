@@ -20,7 +20,7 @@ public abstract class Parameter extends ModelNode {
 				newParameter = new Choice(parameterNode, variables);
 				break;
 			case "file":
-				newParameter = new File(parameterNode, variables);
+				newParameter = new ModelFile(parameterNode, variables);
 				break;
 			case "range":
 				newParameter = new Range(parameterNode, variables);

@@ -11,6 +11,8 @@
 
 package xqtr;
 
+import java.io.File;
+
 import javax.swing.UIManager;
 
 import xqtr.libs.UndoHandler;
@@ -21,6 +23,7 @@ public class Application {
 	public static final String name = "XQTR";
 	public static final String version = "0.7.5";
 	public static final String configPath = "Config.xml";
+	public static final File errorLogPath = new File("error.log");
 	
 	public static Frame frame;
 	public static Controller controller;

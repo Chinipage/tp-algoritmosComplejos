@@ -1,5 +1,6 @@
 package xqtr.model;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -10,13 +11,19 @@ public class RootNode extends ModelNode {
 
 	private LinkedList<Program> programs = new LinkedList<Program>();
 
-	public RootNode(Element rootElement){
+	public RootNode(Element rootElement, File errorLogFile){
 
-		HashMap<String, String> variables = this.getVariables(rootElement);
+		HashMap<String, String> variables;
+
+		this.openErrorLogFile(errorLogFile);
+
+		variables = this.getVariables(rootElement);
 
 		this.elementList(rootElement.getElementsByTagName(programTag)).forEach(programNode -> {
 			this.addNewProgram(programNode, variables);
 		});
+
+		this.closeErrorLogFile();
 	}
 
 	private void addNewProgram(Element programNode, HashMap<String, String> variables){

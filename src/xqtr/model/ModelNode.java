@@ -1,5 +1,9 @@
 package xqtr.model;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,7 +20,10 @@ import org.w3c.dom.NodeList;
 
 public abstract class ModelNode {
 
+	private static FileWriter fw; //No se si hace falta tenerlo en una variable para que no se lo lleve el gc.
+	private static PrintWriter errorPw = null;
 	protected HashMap<String, String> attributes = new HashMap<String, String>();
+
 	protected static final String programTag = "program";
 	protected static final String profileTag = "profile";
 	protected static final String parameterTag = "parameter";
@@ -35,6 +42,29 @@ public abstract class ModelNode {
 		return attributes.containsKey(attributeName);
 	}
 
+	protected Boolean openErrorLogFile(File errorLogFile) {
+
+		try {
+			fw = new FileWriter(errorLogFile, true); //True para usar append
+			errorPw = new PrintWriter(fw);
+		} catch (Exception e) {
+			errorPw = null;
+			return false;
+		}
+
+		return true;
+	}
+
+	protected void closeErrorLogFile() {
+		if(errorPw != null) errorPw.close();
+	}
+
+	protected void logError(String error) {
+		if(errorPw != null) {
+			errorPw.println(LocalDateTime.now().toString() + ":" + error);
+		}
+	}
+
 	protected String replaceVariables(String string, HashMap<String, String> variables){
 
 		StringBuffer replacedString = new StringBuffer();
@@ -50,8 +80,6 @@ public abstract class ModelNode {
 			StringBuffer resultBuffer = new StringBuffer();
 			String resultReplacement;
 			Matcher idMatcher = idPattern.matcher(variableMatcher.group(1)), equationMatcher;
-
-			//if(variableMatcher.group(0).isEmpty()) TODO Con esto podria loguear un error dado que esta mal usada la variable.
 
 			//Reemplazo las variables con los ids que tenga en el HashMap.
 			while(idMatcher.find()) {
@@ -99,8 +127,8 @@ public abstract class ModelNode {
 			 */
 			if(this.isValidVariableId(id))
 				variables.put(id, this.replaceVariables(value, variables));
-			
-			//TODO Loguear que la variable no es valida
+			else
+				this.logError("Invalid variable Id: " + id);
 		});
 
 		return variables;

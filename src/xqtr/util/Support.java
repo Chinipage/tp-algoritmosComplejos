@@ -50,7 +50,8 @@ public class Support {
 	public static void delay(Runnable runnable) {
 		SwingUtilities.invokeLater(runnable);
 	}
-	
+
+	//TODO Mover al RootNode.
 	public static Element parseXML(String path) {
 		
 		try {
