@@ -9,12 +9,12 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
-public abstract class Control extends JPanel {
+public abstract class AbstractControl extends JPanel {
 	
 	static Font defaultFont = new Font(null, Font.BOLD, 12);
 	static Dimension defaultSize = new Dimension(0, 29);
 	
-	Control() {
+	AbstractControl() {
 		
 		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 	}

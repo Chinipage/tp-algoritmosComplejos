@@ -20,6 +20,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
@@ -262,4 +265,26 @@ public class Support {
 	    });
 	}
 
+	public static void setTimeout(int delay, Runnable runnable) {
+		ScheduledExecutorService s = Executors.newScheduledThreadPool(1);
+		s.schedule(runnable, delay, TimeUnit.MILLISECONDS);
+	}
+	
+	public interface TimeTask {
+		public void run(ScheduledExecutorService s);
+	}
+	
+	public static void setInterval(int period, TimeTask runnable) {
+		ScheduledExecutorService s = Executors.newScheduledThreadPool(1);
+		s.scheduleAtFixedRate(() -> runnable.run(s), 0, period, TimeUnit.MILLISECONDS);
+	}
+	
+	public static void controllerReady(Runnable runnable) {
+		setInterval(500, s -> {
+			if(Application.controller.isReady()) {
+				runnable.run();	
+				s.shutdown();
+			}
+		});
+	}
 }

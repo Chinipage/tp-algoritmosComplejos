@@ -26,7 +26,7 @@ import xqtr.util.Support;
 import xqtr.util.FileList;
 
 @SuppressWarnings("serial")
-public class FileView extends Control {
+public class FileView extends AbstractControl {
 
 	private JTextField pathField = new JTextField();
 	private Button browseButton = new Button("Browse");

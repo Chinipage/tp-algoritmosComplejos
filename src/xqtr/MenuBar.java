@@ -31,7 +31,12 @@ public class MenuBar extends JMenuBar {
 	private List<JMenuItem> items = new ArrayList<>(); 
 	
 	public MenuBar() {
-		
+		setVisible(false);
+		Support.delay(() -> addMenus());
+		Support.setTimeout(1000, () -> setVisible(true));
+	}
+	
+	private void addMenus() {
 		add("_File/_Program/");
 		add("File/P_rofile/");
 		add("File/-");

@@ -11,7 +11,7 @@ import xqtr.Application;
 import xqtr.util.Support;
 
 @SuppressWarnings("serial")
-public class TextView extends Control {
+public class TextView extends AbstractControl {
 	
 	private JPasswordField textField = new JPasswordField();
 	private ActionListener deleteAction = e -> textField.replaceSelection("");

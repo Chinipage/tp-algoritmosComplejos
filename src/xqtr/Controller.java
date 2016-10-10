@@ -27,11 +27,16 @@ public class Controller {
 	}
 
 	public void loadConfig() {
-		modelRootNode = new RootNode(Support.parseXML(Application.configPath));
+		Support.setTimeout(100, () -> {
+			modelRootNode = new RootNode(Support.parseXML(Application.configPath));
+		});
+	}
+	
+	public boolean isReady() {
+		return modelRootNode != null;
 	}
 
 	public List<String> getExecutableProgramNames() {
-
 		return modelRootNode.getProgramsNames();
 	}
 	

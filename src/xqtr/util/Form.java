@@ -3,9 +3,8 @@ package xqtr.util;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
 
@@ -13,13 +12,13 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
-import xqtr.view.Control;
+import xqtr.view.AbstractControl;
 
 import javax.swing.JLabel;
 
 public class Form {
 	
-	private Map<String, Control> elements;
+	private Map<String, Component> elements;
 	private Dimension labelSize;
 	
 	public Form() {
@@ -27,7 +26,7 @@ public class Form {
 		elements = new LinkedHashMap<>();
 	}
 	
-	public Form(JPanel container, Map<String, Control> elements) {
+	public Form(JPanel container, Map<String, Component> elements) {
 		
 		this.elements = elements;
 		labelSize = calculatelabelSize();
@@ -41,7 +40,7 @@ public class Form {
 		return new Dimension(width+1, 0);
 	}
 	
-	public void addElement(String label, Control control) {
+	public void addElement(String label, Component control) {
 		
 		label = Character.toUpperCase(label.charAt(0)) + label.substring(1);
 		elements.put(label, control);
@@ -87,7 +86,9 @@ public class Form {
 		
 		Map<String, String> result = new LinkedHashMap<>();
 		elements.forEach((name, control) -> {
-			result.put(name, control.getValue());
+			if(control instanceof AbstractControl) {
+				result.put(name, ((AbstractControl) control).getValue());
+			}
 		});
 		return result;
 	}

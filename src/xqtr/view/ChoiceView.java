@@ -5,12 +5,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import xqtr.util.ComboBox;
 import xqtr.util.RadioGroup;
 import xqtr.util.Support;
 
 @SuppressWarnings("serial")
-public class ChoiceView extends Control {
+public class ChoiceView extends AbstractControl {
 
 	private Map<String, String> model;
 	private ComboBox comboBox;
@@ -33,11 +32,6 @@ public class ChoiceView extends Control {
 	
 	public boolean isComboMode() {
 		return comboMode || model.size() > 5;
-	}
-	
-	public void useComboMode(boolean value) {
-		comboMode = value;
-		renderControl();
 	}
 	
 	private void renderControl() {
@@ -68,9 +62,5 @@ public class ChoiceView extends Control {
 		} else {
 			return model.get(radioGroup.getSelectedItem());
 		}
-	}
-	
-	public ComboBox getComboBox() {
-		return comboBox;
 	}
 }
