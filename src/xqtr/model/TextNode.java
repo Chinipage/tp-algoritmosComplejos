@@ -5,9 +5,9 @@ import java.util.List;
 
 import org.w3c.dom.Element;
 
-public class Choice extends Parameter {
+public class TextNode extends ParameterNode {
 
-	Choice(Element parameterNode, HashMap<String, String> variables) {
+	TextNode(Element parameterNode, HashMap<String, String> variables) {
 		this.initializeAttributes(parameterNode, variables);
 	}
 

@@ -5,34 +5,34 @@ import java.util.List;
 
 import org.w3c.dom.Element;
 
-public abstract class Parameter extends ModelNode {
+public abstract class ParameterNode extends ModelNode {
 
-	public static Parameter newParameter(Element parameterNode, HashMap<String, String> variables) {
+	public static ParameterNode newParameter(Element parameterNode, HashMap<String, String> variables) {
 	
-		Parameter newParameter;
+		ParameterNode newParameter;
 		
 		switch(parameterNode.getTagName()) {
 	
 			case "check":
-				newParameter = new Check(parameterNode, variables);
+				newParameter = new CheckNode(parameterNode, variables);
 				break;
 			case "choice":
-				newParameter = new Choice(parameterNode, variables);
+				newParameter = new ChoiceNode(parameterNode, variables);
 				break;
 			case "file":
-				newParameter = new ModelFile(parameterNode, variables);
+				newParameter = new FileNode(parameterNode, variables);
 				break;
 			case "range":
-				newParameter = new Range(parameterNode, variables);
+				newParameter = new RangeNode(parameterNode, variables);
 				break;
 			case "seq":
-				newParameter = new Sequence(parameterNode, variables);
+				newParameter = new SequenceNode(parameterNode, variables);
 				break;
 			case "text":
-				newParameter = new Text(parameterNode, variables);
+				newParameter = new TextNode(parameterNode, variables);
 				break;
 			default:
-				newParameter = new Text(parameterNode, variables);
+				newParameter = new TextNode(parameterNode, variables);
 		}
 
 		return newParameter;

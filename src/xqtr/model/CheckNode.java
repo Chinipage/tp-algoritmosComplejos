@@ -6,9 +6,9 @@ import java.util.List;
 
 import org.w3c.dom.Element;
 
-public class Check extends Parameter {
+public class CheckNode extends ParameterNode {
 
-	Check(Element parameterNode, HashMap<String, String> variables) {
+	CheckNode(Element parameterNode, HashMap<String, String> variables) {
 		this.initializeAttributes(parameterNode, variables);
 	}
 

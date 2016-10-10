@@ -5,9 +5,9 @@ import java.util.List;
 
 import org.w3c.dom.Element;
 
-public class ModelFile extends Parameter {
+public class SequenceNode extends ParameterNode {
 
-	ModelFile(Element parameterNode, HashMap<String, String> variables) {
+	SequenceNode(Element parameterNode, HashMap<String, String> variables) {
 		this.initializeAttributes(parameterNode, variables);
 	}
 
@@ -15,6 +15,7 @@ public class ModelFile extends Parameter {
 
 		List<String> attributesKeys = super.attributesKeys();
 
+		attributesKeys.add("type");
 		attributesKeys.add("format");
 
 		return attributesKeys;

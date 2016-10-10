@@ -6,27 +6,27 @@ import java.util.List;
 
 import org.w3c.dom.Element;
 
-public class Profile extends ModelNode {
+public class ProfileNode extends ModelNode {
 
-	private LinkedList<Profile> subProfiles = new LinkedList<Profile>();
-	private LinkedList<Parameter> parameters = new LinkedList<Parameter>();
+	private LinkedList<ProfileNode> subProfiles = new LinkedList<ProfileNode>();
+	private LinkedList<ParameterNode> parameters = new LinkedList<ParameterNode>();
 	private ModelNode parent;	//Solo deberia tener Profile o Program
 
 	private void addNewProfile(Element profileNode, HashMap<String, String> variables) {
-		this.subProfiles.add(new Profile(this, profileNode, variables));
+		this.subProfiles.add(new ProfileNode(this, profileNode, variables));
 	}
 
 	private void addNewParameter(Element parameterNode, HashMap<String, String> variables) {
 
-		this.parameters.add(Parameter.newParameter(parameterNode, variables));
+		this.parameters.add(ParameterNode.newParameter(parameterNode, variables));
 
 	}
 
-	protected List<Parameter> getParameters() {
+	protected List<ParameterNode> getParameters() {
 		return parameters;
 	}
 
-	Profile(ModelNode p, Element profileNode, HashMap<String, String> variables){
+	ProfileNode(ModelNode p, Element profileNode, HashMap<String, String> variables){
 
 		HashMap<String, String> declaredVariables;
 		parent = p;
@@ -94,14 +94,14 @@ public class Profile extends ModelNode {
 		return profiles;
 	}
 
-	protected Profile getProfile(String profileName) {
+	protected ProfileNode getProfile(String profileName) {
 
-		Profile searchedProfile;
+		ProfileNode searchedProfile;
 
 		if(this.getAttribute("name") == profileName)
 			return this;
 
-		for(Profile prof : subProfiles)
+		for(ProfileNode prof : subProfiles)
 			if((searchedProfile = prof.getProfile(profileName)) != null)
 				return searchedProfile;
 

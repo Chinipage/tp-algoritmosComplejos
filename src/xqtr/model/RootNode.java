@@ -9,7 +9,7 @@ import org.w3c.dom.Element;
 
 public class RootNode extends ModelNode {
 
-	private LinkedList<Program> programs = new LinkedList<Program>();
+	private LinkedList<ProgramNode> programs = new LinkedList<ProgramNode>();
 
 	public RootNode(Element rootElement, File errorLogFile){
 
@@ -28,10 +28,10 @@ public class RootNode extends ModelNode {
 
 	private void addNewProgram(Element programNode, HashMap<String, String> variables){
 
-		this.programs.add(new Program(programNode, variables));
+		this.programs.add(new ProgramNode(programNode, variables));
 	}
 
-	private Program getProgram(String programName) {
+	private ProgramNode getProgram(String programName) {
 		return programs.stream().filter(program -> program.getAttribute("name").equals(programName)).findFirst().orElse(null);
 	}
 
@@ -49,7 +49,7 @@ public class RootNode extends ModelNode {
 	public List<String> getExecutableProfilesNames(String programName) {
 
 		List<String> executableProfilesNames = new LinkedList<String>();
-		Program program = this.getProgram(programName);
+		ProgramNode program = this.getProgram(programName);
 
 		if((program != null))
 			executableProfilesNames.addAll(program.getExecutableProfilesNames());
@@ -57,10 +57,10 @@ public class RootNode extends ModelNode {
 		return executableProfilesNames;
 	}
 
-	protected Profile getProfile(String programName, String profileName) {
+	protected ProfileNode getProfile(String programName, String profileName) {
 
-		Program program;
-		Profile profile = null;
+		ProgramNode program;
+		ProfileNode profile = null;
 
 		if((program = this.getProgram(programName)) != null)
 			profile = program.getProfile(profileName);
@@ -69,10 +69,10 @@ public class RootNode extends ModelNode {
 		
 	}
 
-	public List<Parameter> getParameters(String programName, String profileName) {
+	public List<ParameterNode> getParameters(String programName, String profileName) {
 
-		Profile profile;
-		List<Parameter> parameters = new LinkedList<Parameter>();
+		ProfileNode profile;
+		List<ParameterNode> parameters = new LinkedList<ParameterNode>();
 
 		if((profile = this.getProfile(programName, profileName)) != null)
 			parameters.addAll(profile.getParameters());
@@ -83,7 +83,7 @@ public class RootNode extends ModelNode {
 	public String getCommand(String programName, String profileName, HashMap<String, String> arguments) {
 		
 		String command = null;
-		Profile profile;
+		ProfileNode profile;
 
 		if((profile = this.getProfile(programName, profileName)) != null)
 				command = this.replaceVariables(profile.getCommand(), arguments);

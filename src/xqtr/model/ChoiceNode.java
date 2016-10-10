@@ -5,14 +5,13 @@ import java.util.List;
 
 import org.w3c.dom.Element;
 
-public class Range extends Parameter {
+public class ChoiceNode extends ParameterNode {
 
-	Range(Element parameterNode, HashMap<String, String> variables) {
+	ChoiceNode(Element parameterNode, HashMap<String, String> variables) {
 		this.initializeAttributes(parameterNode, variables);
 	}
 
 	protected  List<String> attributesKeys() {
 		return super.attributesKeys();
 	}
-
 }

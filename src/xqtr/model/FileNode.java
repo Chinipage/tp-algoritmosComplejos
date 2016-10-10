@@ -5,9 +5,9 @@ import java.util.List;
 
 import org.w3c.dom.Element;
 
-public class Sequence extends Parameter {
+public class FileNode extends ParameterNode {
 
-	Sequence(Element parameterNode, HashMap<String, String> variables) {
+	FileNode(Element parameterNode, HashMap<String, String> variables) {
 		this.initializeAttributes(parameterNode, variables);
 	}
 
@@ -15,7 +15,6 @@ public class Sequence extends Parameter {
 
 		List<String> attributesKeys = super.attributesKeys();
 
-		attributesKeys.add("type");
 		attributesKeys.add("format");
 
 		return attributesKeys;

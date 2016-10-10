@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import xqtr.model.Parameter;
+import xqtr.model.ParameterNode;
 import xqtr.model.RootNode;
 import xqtr.util.Support;
 
@@ -88,9 +88,9 @@ public class Controller {
 		return executableProfilesNames;
 	}
 
-	public List<Parameter> getParameters(String programName, String profileName) {
+	public List<ParameterNode> getParameters(String programName, String profileName) {
 
-		List<Parameter> parameters = new LinkedList<Parameter>();
+		List<ParameterNode> parameters = new LinkedList<ParameterNode>();
 
 		if(modelRootNode != null)
 			parameters.addAll(modelRootNode.getParameters(programName, profileName));

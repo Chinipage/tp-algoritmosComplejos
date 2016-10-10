@@ -6,15 +6,15 @@ import java.util.List;
 
 import org.w3c.dom.Element;
 
-public class Program extends ModelNode {
+public class ProgramNode extends ModelNode {
 
-	private LinkedList<Profile> profiles = new LinkedList<Profile>();
+	private LinkedList<ProfileNode> profiles = new LinkedList<ProfileNode>();
 
 	private void addNewProfile(Element profileNode, HashMap<String, String> declaredVaraibles) {
-		this.profiles.add(new Profile(this, profileNode, declaredVaraibles));
+		this.profiles.add(new ProfileNode(this, profileNode, declaredVaraibles));
 	}
 
-	public Program(Element programNode, HashMap<String, String> variables){
+	public ProgramNode(Element programNode, HashMap<String, String> variables){
 
 		HashMap<String, String> declaredVariables;
 
@@ -61,11 +61,11 @@ public class Program extends ModelNode {
 		return profilesNames;
 	}
 
-	protected Profile getProfile(String profileName) {
+	protected ProfileNode getProfile(String profileName) {
 
-		Profile searchedProfile;
+		ProfileNode searchedProfile;
 
-		for(Profile prof : profiles)
+		for(ProfileNode prof : profiles)
 			if((searchedProfile = prof.getProfile(profileName)) != null)
 				return searchedProfile;
 
