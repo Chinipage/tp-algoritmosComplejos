@@ -1,4 +1,4 @@
-package xqtr.util;
+package xqtr.view;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -12,6 +12,8 @@ import javax.swing.JList;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
+
+import xqtr.util.Support;
 
 @SuppressWarnings("serial")
 public class ComboBox extends JComboBox<String> {
@@ -30,9 +32,7 @@ public class ComboBox extends JComboBox<String> {
 	
 	@SuppressWarnings("unchecked")
 	public ComboBox(List<String> model, ItemListener listener) {
-		
-		this.model = model;
-		addItems();
+		setModel(model);
 		
 		if(listener != null) {
 			addItemListener(listener);
@@ -48,10 +48,15 @@ public class ComboBox extends JComboBox<String> {
 		});
 	}
 	
+	public void setModel(List<String> model) {
+		this.model = model;
+		addItems();
+	}
+	
 	private void addItems() {
 		
 		List<String> items = model != null ? model : new ArrayList<String>();
-		addItem("");
+		if(items.isEmpty()) addItem("");
 		items.forEach(item -> addItem(item));
 	}
 	

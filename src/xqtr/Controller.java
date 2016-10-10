@@ -29,6 +29,10 @@ public class Controller {
 		return instance;
 	}
 
+	public boolean isReady() {
+		return modelRootNode != null;
+	}
+
 	public void setCurrentProgram(String programName) {
 		currentProgram = programName;
 	}
@@ -48,7 +52,9 @@ public class Controller {
 	//Interfaz con Modelo------------------------------------------------------------------------
 
 	public void loadConfig() {
-		modelRootNode = new RootNode(Support.parseXML(Application.configPath), Application.errorLogPath);
+		Support.setTimeout(100, () -> {
+			modelRootNode = new RootNode(Support.parseXML(Application.configPath), Application.errorLogPath);
+		});
 	}
 
 	//TODO Deprecado. Usar getProgramsNames().

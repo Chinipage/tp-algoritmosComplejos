@@ -21,7 +21,7 @@ import xqtr.util.Support;
 public class Application {
 	
 	public static final String name = "XQTR";
-	public static final String version = "0.7.5";
+	public static final String version = "0.8";
 	public static final String configPath = "Config.xml";
 	public static final File errorLogPath = new File("error.log");
 	

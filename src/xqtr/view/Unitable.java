@@ -5,7 +5,7 @@ import java.awt.Component;
 import javax.swing.JLabel;
 
 @SuppressWarnings("serial")
-public abstract class Unitable extends Control {
+public abstract class Unitable extends AbstractControl {
 
 	private JLabel unitLabel = new JLabel();
 	private Component separator = createSeparator(6);

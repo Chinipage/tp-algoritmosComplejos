@@ -6,17 +6,19 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.util.Arrays;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.SwingConstants;
 
 import xqtr.util.Button;
 import xqtr.util.Form;
 import xqtr.util.Section;
-import xqtr.view.ChoiceView;
+import xqtr.util.Support;
+import xqtr.view.ComboBox;
 
 @SuppressWarnings("serial")
 public class Frame extends JFrame implements ActionListener, ItemListener {
@@ -26,8 +28,8 @@ public class Frame extends JFrame implements ActionListener, ItemListener {
 	public Section footer;
 	
 	private Controller controller;
-	private ChoiceView programSelector;
-	private ChoiceView profileSelector;
+	private ComboBox programSelector;
+	private ComboBox profileSelector;
 	private Page page;
 	
 	public Frame(Controller controller) {
@@ -37,22 +39,29 @@ public class Frame extends JFrame implements ActionListener, ItemListener {
 
 	private void initUI() {
 		
+		JLabel loadingLabel = new JLabel("Loading...", SwingConstants.CENTER);
+		loadingLabel.setIcon(new ImageIcon("Spinner.gif"));
+		add(loadingLabel);
+		
 		menu = new MenuBar();
 		setJMenuBar(menu);
 		
-		header = makeHeader();
-		add(header, BorderLayout.NORTH);
-		
-		footer = makeFooter();
-		add(footer, BorderLayout.SOUTH);
-		
-		page = new Page();
-		add(page);
+		Support.setTimeout(50, () -> {
+			header = makeHeader();
+			add(header, BorderLayout.NORTH);
+			
+			footer = makeFooter();
+			add(footer, BorderLayout.SOUTH);
+			
+			page = new Page();
+			remove(loadingLabel);
+			add(page);
+		});
 		
 		setTitle(Application.name);
 		setSize(440, 550);
 		setMinimumSize(new Dimension(360, 240));
-		setLocationRelativeTo(null); // centra la ventana en la pantalla
+		setLocationRelativeTo(null);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setIconImage(new ImageIcon("Icon.png").getImage());
 	}
@@ -63,15 +72,18 @@ public class Frame extends JFrame implements ActionListener, ItemListener {
 		header.setHeight(90);
 		header.setBorder(0, 0, 1, 0);
 		
-		programSelector = new ChoiceView(controller.getExecutableProgramNames());
-		programSelector.useComboMode(true);
-		profileSelector = new ChoiceView(Arrays.asList("(Default)"));
-		profileSelector.useComboMode(true);
+		programSelector = new ComboBox();
+		profileSelector = new ComboBox();
 		
 		Form form = new Form();
 		form.addElement("Program", programSelector);
 		form.addElement("Profile", profileSelector);
-		form.placeIn(header);
+		form.placeIn(header);			
+		
+		Support.controllerReady(() -> {
+			programSelector.setModel(controller.getExecutableProgramNames());
+			profileSelector.setModel(Support.map(e -> e, "(Default)"));
+		});
 		
 		return header;
 	}
@@ -133,11 +145,11 @@ public class Frame extends JFrame implements ActionListener, ItemListener {
 		
 		if(event.getStateChange() == ItemEvent.SELECTED) {
 			
-			if(event.getSource() == programSelector.getComboBox()) {
+			if(event.getSource() == programSelector) {
 				String programName = event.getItem().toString();
 				setTitle(programName.isEmpty() ? Application.name : programName + " - " + Application.name);
 				controller.setCurrentProgram(programName);
-			} else if(event.getSource() == profileSelector.getComboBox()) {
+			} else if(event.getSource() == profileSelector) {
 				controller.setCurrentProfile(event.getItem().toString());
 				JMenuItem parametersItem = (JMenuItem) menu.get("Parameters");
 				parametersItem.setEnabled(true);
