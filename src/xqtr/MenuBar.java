@@ -16,7 +16,6 @@ import javax.swing.JComponent;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.MenuElement;
@@ -32,8 +31,10 @@ public class MenuBar extends JMenuBar {
 	
 	public MenuBar() {
 		setVisible(false);
-		Support.delay(() -> addMenus());
-		Support.setTimeout(1000, () -> setVisible(true));
+		Support.setTimeout(1000, () -> {
+			addMenus();
+			setVisible(Boolean.parseBoolean(Application.properties.get("menubar.visible")));
+		});
 	}
 	
 	private void addMenus() {
@@ -56,8 +57,8 @@ public class MenuBar extends JMenuBar {
 		add("_Tools/");
 		add("Tools/_Configuration", e -> new ConfigSource());
 		add("Tools/_Parameters");
-		add("Tools/Command _History", e -> JOptionPane.showMessageDialog(null, "<html><i>TO-DO"));
-		add("Tools/Error _Log", e -> JOptionPane.showMessageDialog(null, "<html><i>TO-DO"));
+		add("Tools/Command _History", e -> Support.displayMessage("TO-DO"));
+		add("Tools/Error _Log", e -> new ErrorLog());
 		
 		add(Box.createHorizontalGlue());
 		add("_Help/_About " + Application.name, e -> Application.frame.showAboutDialog());
@@ -100,7 +101,7 @@ public class MenuBar extends JMenuBar {
 		
 		JCheckBoxMenuItem headerItem = new JCheckBoxMenuItem("Header");
 		headerItem.setMnemonic('H');
-		headerItem.setSelected(true);
+		headerItem.setSelected(Application.frame.header.isVisible());
 		headerItem.addItemListener(e -> {
 			Application.frame.header.setVisible(e.getStateChange() == ItemEvent.SELECTED);
 		});
@@ -108,7 +109,7 @@ public class MenuBar extends JMenuBar {
 		
 		JCheckBoxMenuItem footerItem = new JCheckBoxMenuItem("Footer");
 		footerItem.setMnemonic('F');
-		footerItem.setSelected(true);
+		footerItem.setSelected(Application.frame.footer.isVisible());
 		footerItem.addItemListener(e -> {
 			Application.frame.footer.setVisible(e.getStateChange() == ItemEvent.SELECTED);
 		});

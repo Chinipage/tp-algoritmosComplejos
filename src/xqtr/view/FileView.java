@@ -14,7 +14,6 @@ import java.util.List;
 
 import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.TransferHandler;
 import javax.swing.event.ChangeEvent;
@@ -155,8 +154,7 @@ public class FileView extends AbstractControl {
 				break;
 			}
 			
-			JOptionPane.showMessageDialog(null, "Please select a valid file.",
-					"Invalid File", JOptionPane.WARNING_MESSAGE);
+			Support.displayMessage("Warning: Invalid file");
 		}
 	}
 	

@@ -1,6 +1,5 @@
 package xqtr;
 
-
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -32,6 +31,15 @@ public class Controller {
 	public boolean isReady() {
 		return modelRootNode != null;
 	}
+	
+	public void whenReady(Runnable runnable) {
+		Support.setInterval(500, s -> {
+			if(isReady()) {
+				runnable.run();	
+				s.shutdown();
+			}
+		});
+	}
 
 	public void setCurrentProgram(String programName) {
 		currentProgram = programName;
@@ -53,7 +61,7 @@ public class Controller {
 
 	public void loadConfig() {
 		Support.setTimeout(100, () -> {
-			modelRootNode = new RootNode(Support.parseXML(Application.configPath), Application.errorLogPath);
+			modelRootNode = new RootNode();
 		});
 	}
 

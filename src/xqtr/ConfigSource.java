@@ -4,23 +4,29 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import xqtr.util.Support;
 import xqtr.util.TextDialog;
 
 @SuppressWarnings("serial")
 public class ConfigSource extends TextDialog {
 	
-	private String result;
+	private String result = new String();
 	
 	public ConfigSource() {
 		
+		String configFilePath = Application.properties.get("config.file.path");
+		
 		try {
-			result = Files.lines(Paths.get(Application.configPath))
+			result = Files.lines(Paths.get(configFilePath))
 						.reduce("", (a, b) -> a + "\n" + b).substring(1);
 		} catch (IOException e) {
-			e.printStackTrace();
+			Support.displayMessage("Error: " + configFilePath + " not found");
+			Support.delay(() -> dispose());
 		}
 		
-		result = result.replaceAll("<(.+?)>", "<b>&lt;$1&gt;</b>").replaceAll("\\n", "<br>");
+		result = "<font face=\"monospace\" size=3>" + result.replaceAll("<(.+?)>", "<b>&lt;$1&gt;</b>")
+					.replaceAll("\"(.+?)\"", "</b>\"$1\"<b>").replaceAll("\\n", "<br>")
+					.replaceAll("\\s", "&nbsp;") + "</font>";
 		
 		displayText(result);
 		setTitle("Configuration");

@@ -116,8 +116,7 @@ public class FileList extends Dialog implements ActionListener {
 	private boolean addFiles(File[] files, int index) {
 		List<File> fileList = Support.map(null, files);
 		if(!areFilesValid(fileList)) {
-			JOptionPane.showMessageDialog(null, "Please select a valid file.",
-					"Invalid File", JOptionPane.WARNING_MESSAGE);
+			Support.displayMessage("Warning: Invalid file");
 			return false;
 		}
 		fileList.forEach(file -> {

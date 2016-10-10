@@ -5,18 +5,30 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+
+import xqtr.Application;
+import xqtr.util.Support;
 
 public class RootNode extends ModelNode {
 
 	private LinkedList<ProgramNode> programs = new LinkedList<ProgramNode>();
 
-	public RootNode(Element rootElement, File errorLogFile){
+	public RootNode() {
 
 		HashMap<String, String> variables;
 
-		this.openErrorLogFile(errorLogFile);
+		openErrorLogFile();
 
+		Element rootElement = parseConfigXML();
+		
 		variables = this.getVariables(rootElement);
 
 		this.elementList(rootElement.getElementsByTagName(programTag)).forEach(programNode -> {
@@ -24,6 +36,45 @@ public class RootNode extends ModelNode {
 		});
 
 		this.closeErrorLogFile();
+	}
+	
+	private Element parseConfigXML() {
+		String configFileName = Application.properties.get("config.file.path");
+		File configFile = Support.loadResource(configFileName);
+		
+		if(!Support.getFileExtension(configFile).equals("xml")) {
+			Support.displayMessage("Critical Error: Configuration file must be an XML");
+		}
+		try {
+			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder builder = factory.newDocumentBuilder();
+			builder.setErrorHandler(new ErrorHandler() { 
+				public void warning(SAXParseException exception) throws SAXException {
+					Support.displayMessage("Warning: " + getMessage(exception));
+				}
+				
+				public void fatalError(SAXParseException exception) throws SAXException {
+					Support.displayMessage("Critical Error: " + getMessage(exception));
+				}
+				
+				public void error(SAXParseException exception) throws SAXException {
+					Support.displayMessage("Error: " + getMessage(exception));
+				}
+				private String getMessage(SAXParseException ex) {
+					String m = "There was a problem while reading config parameters.\n";
+					m += String.format("[%s:%d:%d] ", configFile, ex.getLineNumber(), ex.getColumnNumber());
+					m += ex.getMessage();
+					return m;
+				}
+			});
+			Document document = builder.parse(configFile);
+			Element root = document.getDocumentElement();
+			root.normalize();
+			return root;
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	private void addNewProgram(Element programNode, HashMap<String, String> variables){

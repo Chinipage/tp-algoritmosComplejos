@@ -25,6 +25,8 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultEditorKit;
 import javax.swing.text.DocumentFilter;
 
+import xqtr.util.Support;
+
 interface CommandListener {
 	void commandOutput(String text);
 	void commandCompleted(String cmd, int result);
@@ -39,6 +41,7 @@ public class Terminal extends JPanel implements CommandListener {
 	private Command command;
 	
 	public Terminal(String commandText) {
+		
 		command = new Command(this);
 		setLayout(new BorderLayout());
 		textArea = new JTextArea();
@@ -77,9 +80,12 @@ public class Terminal extends JPanel implements CommandListener {
 			}
 		});
 		
-		if(!command.isRunning()) {
-			command.execute(commandText);
-        }
+		Support.setTimeout(100, () -> {
+			if(!command.isRunning()) {
+				command.execute(commandText);
+	        }
+		});
+
 	}
 	
 	private class Command {

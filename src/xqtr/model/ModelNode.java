@@ -18,6 +18,8 @@ import javax.script.ScriptException;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import xqtr.Application;
+
 public abstract class ModelNode {
 
 	private static FileWriter fw; //No se si hace falta tenerlo en una variable para que no se lo lleve el gc.
@@ -42,7 +44,9 @@ public abstract class ModelNode {
 		return attributes.containsKey(attributeName);
 	}
 
-	protected Boolean openErrorLogFile(File errorLogFile) {
+	protected Boolean openErrorLogFile() {
+		
+		File errorLogFile = new File(Application.properties.get("error.log.path"));
 
 		try {
 			fw = new FileWriter(errorLogFile, true); //True para usar append

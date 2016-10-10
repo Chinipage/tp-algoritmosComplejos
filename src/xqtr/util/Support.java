@@ -31,6 +31,7 @@ import java.util.stream.IntStream;
 
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
+import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.event.CaretEvent;
@@ -38,11 +39,7 @@ import javax.swing.event.CaretListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.text.JTextComponent;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -52,24 +49,6 @@ public class Support {
 	
 	public static void delay(Runnable runnable) {
 		SwingUtilities.invokeLater(runnable);
-	}
-
-	//TODO Mover al RootNode.
-	public static Element parseXML(String path) {
-		
-		try {
-			File inputFile = new File(path);
-			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder builder = factory.newDocumentBuilder();
-			Document document = builder.parse(inputFile);
-			Element root = document.getDocumentElement();
-			root.normalize();
-			return root;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return null;
 	}
 	
 	public static List<Node> nodeList(NodeList list) {
@@ -280,12 +259,30 @@ public class Support {
 		s.scheduleAtFixedRate(() -> runnable.run(s), 0, period, TimeUnit.MILLISECONDS);
 	}
 	
-	public static void controllerReady(Runnable runnable) {
-		setInterval(500, s -> {
-			if(Application.controller.isReady()) {
-				runnable.run();	
-				s.shutdown();
-			}
-		});
+	public static void displayMessage(String message) {
+		String title = "Message";
+		int colonIndex = message.indexOf(':');
+		if(colonIndex >= 0) {
+			title = message.substring(0, colonIndex);
+			message = message.substring(colonIndex + 1).trim();
+		}
+		int type = JOptionPane.INFORMATION_MESSAGE;
+		if(title.contains("Error")) {
+			type = JOptionPane.ERROR_MESSAGE;
+		} else if(title.equals("Warning")) {
+			type = JOptionPane.WARNING_MESSAGE;
+		}
+		JOptionPane.showMessageDialog(null, message, title, type);
+		if(title.equals("Critical Error")) {
+			System.exit(1);
+		}
+	}
+	
+	public static File loadResource(String name) {
+		File resource = new File(name);
+		if(!resource.exists()) {
+			displayMessage("Critical Error: Resource " + name + " not found");
+		}
+		return resource;
 	}
 }

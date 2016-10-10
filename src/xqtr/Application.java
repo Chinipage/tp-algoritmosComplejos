@@ -11,22 +11,20 @@
 
 package xqtr;
 
-import java.io.File;
-
 import javax.swing.UIManager;
 
 import xqtr.libs.UndoHandler;
 import xqtr.util.Support;
+import xqtr.util.UserProperties;
 
 public class Application {
 	
 	public static final String name = "XQTR";
-	public static final String version = "0.8";
-	public static final String configPath = "Config.xml";
-	public static final File errorLogPath = new File("error.log");
+	public static final String version = "0.8.1";
 	
 	public static Frame frame;
 	public static Controller controller;
+	public static UserProperties properties;
 	public static UndoHandler undoHandler = new UndoHandler();
 
 	public static void main(String[] args) {
@@ -38,9 +36,10 @@ public class Application {
 				e.printStackTrace();
 			}
 			
+			properties = new UserProperties();
 			controller = Controller.getInstance();
 			frame = new Frame(controller); 
 			frame.setVisible(true);
 		});
-	}   
+	}
 }

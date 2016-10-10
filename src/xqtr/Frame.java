@@ -11,7 +11,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 
 import xqtr.util.Button;
@@ -59,16 +58,26 @@ public class Frame extends JFrame implements ActionListener, ItemListener {
 		});
 		
 		setTitle(Application.name);
-		setSize(440, 550);
-		setMinimumSize(new Dimension(360, 240));
+		setFrameSize();
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setIconImage(new ImageIcon("Icon.png").getImage());
 	}
 	
+	private void setFrameSize() {
+		setMinimumSize(new Dimension(360, 240));
+		int width = Integer.parseInt(Application.properties.get("frame.width"));
+		int height = Integer.parseInt(Application.properties.get("frame.height"));
+		setSize(width, height);
+		if(Boolean.parseBoolean(Application.properties.get("frame.maximized"))) {
+			setExtendedState(JFrame.MAXIMIZED_BOTH);
+		}
+	}
+	
 	private Section makeHeader() {
 		
 		Section header = new Section();
+		header.setVisible(Boolean.parseBoolean(Application.properties.get("header.visible")));
 		header.setHeight(90);
 		header.setBorder(0, 0, 1, 0);
 		
@@ -80,7 +89,7 @@ public class Frame extends JFrame implements ActionListener, ItemListener {
 		form.addElement("Profile", profileSelector);
 		form.placeIn(header);			
 		
-		Support.controllerReady(() -> {
+		controller.whenReady(() -> {
 			programSelector.setModel(controller.getExecutableProgramNames());
 			profileSelector.setModel(Support.map(e -> e, "(Default)"));
 		});
@@ -91,6 +100,7 @@ public class Frame extends JFrame implements ActionListener, ItemListener {
 	private Section makeFooter() {
 		
 		Section footer = new Section();
+		footer.setVisible(Boolean.parseBoolean(Application.properties.get("footer.visible")));
 		footer.setHeight(50);
 		footer.setBorder(1, 0, 0, 0);
 		
@@ -138,7 +148,7 @@ public class Frame extends JFrame implements ActionListener, ItemListener {
 		msg += "<li>&nbsp;Java SE Development Kit 8 (OpenJDK 8)</li>";
 		msg += "<li>&nbsp;Git version control system with GitHub</li></ul>";
 		msg += "</html>";
-		JOptionPane.showMessageDialog(null, msg, "About", JOptionPane.INFORMATION_MESSAGE);
+		Support.displayMessage("About: " + msg);
 	}
 	
 	public void itemStateChanged(ItemEvent event) {
