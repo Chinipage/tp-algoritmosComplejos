@@ -18,7 +18,6 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
-import javax.swing.MenuElement;
 import javax.swing.text.DefaultEditorKit;
 
 import xqtr.util.Support;
@@ -41,7 +40,7 @@ public class MenuBar extends JMenuBar {
 		add("_File/_Program/");
 		add("File/P_rofile/");
 		add("File/-");
-		add("File/_Execute|E", e -> Application.frame.execute());
+		add("File/_Execute|E", e -> Application.frame.execute()).setEnabled(false);
 		add("File/_Reload Config|R", e -> Application.controller.loadConfig());
 		add("File/-");
 		add("File/_Quit|Q", e -> System.exit(0));
@@ -56,7 +55,7 @@ public class MenuBar extends JMenuBar {
 		
 		add("_Tools/");
 		add("Tools/_Configuration", e -> new ConfigSource());
-		add("Tools/_Parameters");
+		add("Tools/_Parameters", e -> new Parameters(Application.frame.page.print())).setEnabled(false);
 		add("Tools/Command _History", e -> Support.displayMessage("TO-DO"));
 		add("Tools/Error _Log", e -> new ErrorLog());
 		
@@ -97,7 +96,7 @@ public class MenuBar extends JMenuBar {
 	}
 	
 	private void addViewToggles() {
-		JMenu viewMenu = (JMenu) get("View");
+		JMenu viewMenu = getMenu("View");
 		
 		JCheckBoxMenuItem headerItem = new JCheckBoxMenuItem("Header");
 		headerItem.setMnemonic('H');
@@ -116,9 +115,12 @@ public class MenuBar extends JMenuBar {
 		viewMenu.add(footerItem);
 	}
 	
-	public MenuElement get(String name) {
-		return items.stream().filter(o -> o.getText().equals(name)).findFirst().orElse(
-				menus.stream().filter(o -> o.getText().equals(name)).findFirst().orElse(null));
+	public JMenu getMenu(String name) {
+		return menus.stream().filter(o -> o.getText().equals(name)).findFirst().orElse(null);
+	}
+	
+	public JMenuItem getItem(String name) {
+		return items.stream().filter(o -> o.getText().equals(name)).findFirst().orElse(null);
 	}
 	
 	public JMenuItem add(String path) {
@@ -157,9 +159,9 @@ public class MenuBar extends JMenuBar {
 				break;
 			}
 			
-			Optional<JMenu> _menu = menus.stream().filter(o -> o.getText().equals(name)).findFirst(); 
-			if(_menu.isPresent()) {
-				parent = _menu.get();
+			JMenu _menu = getMenu(name); 
+			if(_menu != null) {
+				parent = _menu;
 			} else {
 				JMenu menu = new JMenu(name.replaceFirst("_", ""));
 				Support.getMnemonic(name).ifPresent(mnemonic -> menu.setMnemonic(mnemonic));

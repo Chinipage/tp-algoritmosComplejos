@@ -43,6 +43,7 @@ public class FileView extends AbstractControl {
 	
 	public FileView(List<File> model) {
 		setModel(model);
+		setDefaultDirectory();
 		
 		Application.undoHandler.handle(pathField);
 		pathField.setFont(defaultFont);
@@ -61,6 +62,16 @@ public class FileView extends AbstractControl {
 		add(pathField);
 		add(createSeparator());
 		add(browseButton);
+	}
+	
+	private void setDefaultDirectory() {
+		
+		String path = Application.properties.get("browser.default.dir");
+		path = path.replaceFirst("^~", System.getProperty("user.home"));
+		File dir = new File(path);
+		if(dir != null && dir.exists() && dir.isDirectory()) {
+			fileChooser.setCurrentDirectory(dir);
+		}
 	}
 	
 	public void setModel(List<File> model) {
@@ -192,11 +203,12 @@ public class FileView extends AbstractControl {
 	}
 	
 	public String getValue() {
+		if(pathField.getText().isEmpty()) return "";
 		return model.stream().map(f -> f.getPath()).reduce("", (a,b) -> a + " \"" + b + "\"").trim();
 	}
 	
 	private void changeListener(ChangeEvent e) {
-		JMenuItem deleteItem = (JMenuItem) Application.frame.menu.get("Delete");
+		JMenuItem deleteItem = Application.frame.menu.getItem("Delete");
 		switch((String) e.getSource()) {
 		case "focus":
 			Support.delay(() -> {

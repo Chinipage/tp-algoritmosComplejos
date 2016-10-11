@@ -10,6 +10,7 @@ public class Parameters extends TextDialog {
 		displayText(params);
 		setTitle("Parameters");
 		setSize(420, 280);
+		setVisible(true);
 	}
 
 }

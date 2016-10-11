@@ -10,14 +10,13 @@ import java.awt.event.ItemListener;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JMenuItem;
 import javax.swing.SwingConstants;
 
 import xqtr.util.Button;
+import xqtr.util.ComboBox;
 import xqtr.util.Form;
 import xqtr.util.Section;
 import xqtr.util.Support;
-import xqtr.view.ComboBox;
 
 @SuppressWarnings("serial")
 public class Frame extends JFrame implements ActionListener, ItemListener {
@@ -25,11 +24,12 @@ public class Frame extends JFrame implements ActionListener, ItemListener {
 	public MenuBar menu;
 	public Section header;
 	public Section footer;
+	public Page page;
+	public Button runButton;
 	
 	private Controller controller;
 	private ComboBox programSelector;
 	private ComboBox profileSelector;
-	private Page page;
 	
 	public Frame(Controller controller) {
 		this.controller = controller;
@@ -90,7 +90,7 @@ public class Frame extends JFrame implements ActionListener, ItemListener {
 		form.placeIn(header);			
 		
 		controller.whenReady(() -> {
-			programSelector.setModel(controller.getExecutableProgramNames());
+			programSelector.setModel(controller.getProgramsNames());
 			profileSelector.setModel(Support.map(e -> e, "(Default)"));
 		});
 		
@@ -103,7 +103,8 @@ public class Frame extends JFrame implements ActionListener, ItemListener {
 		footer.setVisible(Boolean.parseBoolean(Application.properties.get("footer.visible")));
 		footer.setBorder(1, 0, 0, 0);
 		
-		Button runButton = new Button("E_xecute");
+		runButton = new Button("E_xecute");
+		runButton.setEnabled(false);
 		Button aboutButton = new Button("_About");
 		
 		footer.add(runButton, BorderLayout.EAST);
@@ -160,11 +161,7 @@ public class Frame extends JFrame implements ActionListener, ItemListener {
 				controller.setCurrentProgram(programName);
 			} else if(event.getSource() == profileSelector) {
 				controller.setCurrentProfile(event.getItem().toString());
-				JMenuItem parametersItem = (JMenuItem) menu.get("Parameters");
-				parametersItem.setEnabled(true);
-				parametersItem.addActionListener(e -> {
-					new Parameters(page.print()).setVisible(true);
-				});
+				menu.getItem("Parameters").setEnabled(true);
 			}
 		}
 	}

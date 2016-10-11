@@ -12,6 +12,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
+import xqtr.Application;
 import xqtr.view.AbstractControl;
 
 import javax.swing.JLabel;
@@ -40,14 +41,35 @@ public class Form {
 		return new Dimension(width+1, 0);
 	}
 	
+	private boolean isRequired(Component comp) {
+		return comp instanceof AbstractControl && ((AbstractControl)comp).isRequired();
+	}
+	
+	public boolean isComplete() {
+		return elements.values().stream().allMatch(c ->
+			!(c instanceof AbstractControl)
+			|| !((AbstractControl)c).isRequired()
+			|| !((AbstractControl)c).isEmpty()
+		);
+	}
+	
 	public void addElement(String label, Component control) {
 		
 		label = Character.toUpperCase(label.charAt(0)) + label.substring(1);
+		if(isRequired(control)) {
+			label += "*";
+		}
+		
+		if(control instanceof AbstractControl) {
+			((AbstractControl) control).addChangeListener(() -> {
+				setExecution();
+			});
+		}
+		
 		elements.put(label, control);
 	}
 	
 	public void placeIn(JPanel container) {
-		
 		if(elements.isEmpty()) return;
 		
 		if(labelSize == null) {
@@ -81,6 +103,12 @@ public class Form {
 		
 		container.add(outer);
 		outer.remove(outer.getComponents().length-1);
+	}
+	
+	public void setExecution() {
+		boolean enabled = isComplete();
+		Application.frame.runButton.setEnabled(enabled);
+		Application.frame.menu.getItem("Execute").setEnabled(enabled);
 	}
 	
 	public Map<String, String> submit() {

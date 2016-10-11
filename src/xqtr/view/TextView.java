@@ -36,7 +36,7 @@ public class TextView extends AbstractControl {
 	public void setConcealed(boolean concealed) {
 		
 		if(concealed) {
-			textField.setEchoChar('•');
+			textField.setEchoChar('ï¿½');
 		} else {
 			textField.setEchoChar((char)0);
 		}
@@ -51,7 +51,7 @@ public class TextView extends AbstractControl {
 	}
 	
 	private void changeListener(ChangeEvent e) {
-		JMenuItem deleteItem = (JMenuItem) Application.frame.menu.get("Delete");
+		JMenuItem deleteItem = Application.frame.menu.getItem("Delete");
 		switch((String) e.getSource()) {
 		case "focus":
 			Support.delay(() -> {

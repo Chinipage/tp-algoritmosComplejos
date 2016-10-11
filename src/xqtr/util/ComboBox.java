@@ -1,47 +1,37 @@
-package xqtr.view;
+package xqtr.util;
 
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ItemListener;
-import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JList;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
 
-import xqtr.util.Support;
-
 @SuppressWarnings("serial")
 public class ComboBox extends JComboBox<String> {
-	
-	private List<String> model;
 	
 	public ComboBox() {
 		
 		this(null);
 	}
 	
-	public ComboBox(List<String> model) {
-		
-		this(model, null);
-	}
-	
 	@SuppressWarnings("unchecked")
-	public ComboBox(List<String> model, ItemListener listener) {
-		setModel(model);
-		
-		if(listener != null) {
-			addItemListener(listener);
-		} else {
-			Support.setTimeout(500, () ->
-				addItemListener((ItemListener) SwingUtilities.getRoot(this))
-			);
+	public ComboBox(List<String> model) {
+		if(model != null) {
+			setModel(model);
 		}
 		
+		Support.setTimeout(500, () ->
+			addItemListener((ItemListener) SwingUtilities.getRoot(this))
+		);
+		
+		setModel(new MyComboModel());
 		setRenderer(new ComboRenderer());
 		Support.addKeyListener(this, "DOWN UP", e -> {
 			if(!isPopupVisible()) showPopup();
@@ -49,15 +39,17 @@ public class ComboBox extends JComboBox<String> {
 	}
 	
 	public void setModel(List<String> model) {
-		this.model = model;
-		addItems();
+		removeAllItems();
+		addItem("");
+		model.forEach(item -> addItem(item));
 	}
 	
-	private void addItems() {
-		
-		List<String> items = model != null ? model : new ArrayList<String>();
-		if(items.isEmpty()) addItem("");
-		items.forEach(item -> addItem(item));
+	class MyComboModel extends DefaultComboBoxModel<String> {
+	    public void setSelectedItem(Object item) {
+	        if(!item.toString().isEmpty()) {
+	        	super.setSelectedItem(item);
+	        }
+	    };
 	}
 	
 	class ComboRenderer extends BasicComboBoxRenderer {
@@ -76,6 +68,7 @@ public class ComboBox extends JComboBox<String> {
 				setPreferredSize(new Dimension(0, 29));
 				setBorder(new EmptyBorder(6, 6, 6, 6));
 			}
+			setEnabled(index != 0);
 	        return this;
 		}
 	}

@@ -34,6 +34,7 @@ public class Page extends JScrollPane {
 		exampleForm1();
 		
 		form.placeIn(view);
+		Support.setTimeout(100, () -> form.setExecution());
 	}
 	
 	private void exampleForm1() {
@@ -57,13 +58,17 @@ public class Page extends JScrollPane {
 		videoTarget.setFormat("mp4 mov avi");
 		videoTarget.setSaveModeEnabled(true);
 		videoTarget.setValue("out.mp4");
+		videoTarget.setRequired();
+		
+		TextView textField = new TextView();
+		textField.setRequired();
 		
 		form.addElement("Audio source", audioSource);
 		form.addElement("Image source", imageSource);
 		form.addElement("Video target", videoTarget);
 		form.addElement("Limit duration", sequence);
 		form.addElement("Adjust volume", range);
-		form.addElement("Test text", new TextView());
+		form.addElement("Test text", textField);
 	}
 	
 	private void exampleForm2() {

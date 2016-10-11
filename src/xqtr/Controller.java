@@ -65,17 +65,6 @@ public class Controller {
 		});
 	}
 
-	//TODO Deprecado. Usar getProgramsNames().
-	public List<String> getExecutableProgramNames() {
-
-		List<String> executableProgramsNames = new LinkedList<String>();
-
-		if(modelRootNode != null)
-			executableProgramsNames.addAll(modelRootNode.getProgramsNames());
-	
-		return executableProgramsNames;
-	}
-
 	public List<String> getProgramsNames() {
 
 		List<String> programsNames = new LinkedList<String>();
