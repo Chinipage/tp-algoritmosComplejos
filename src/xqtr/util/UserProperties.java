@@ -17,6 +17,7 @@ public class UserProperties extends Properties {
 		
 		String defaults = "config.file.path: Config.xml;"
 						+ "error.log.path: Error.log;"
+						+ "cmd.history.path: History.log;"
 						+ "header.visible: true;"
 						+ "footer.visible: true;"
 						+ "frame.width: 440;"

@@ -20,7 +20,7 @@ import xqtr.util.UserProperties;
 public class Application {
 	
 	public static final String name = "XQTR";
-	public static final String version = "0.8.3";
+	public static final String version = "0.8.4";
 	
 	public static Frame frame;
 	public static Controller controller;
@@ -37,6 +37,7 @@ public class Application {
 			}
 			
 			properties = new UserProperties();
+			History.init();
 			controller = Controller.getInstance();
 			frame = new Frame(controller); 
 			frame.setVisible(true);

@@ -36,7 +36,7 @@ public abstract class AbstractControl extends JPanel {
 	public abstract void setValue(String value);
 	
 	public boolean isEmpty() {
-		return getValue().isEmpty();
+		return getValue().trim().isEmpty();
 	}
 	
 	public boolean isRequired() {

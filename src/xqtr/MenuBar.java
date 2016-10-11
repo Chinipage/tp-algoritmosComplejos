@@ -56,7 +56,7 @@ public class MenuBar extends JMenuBar {
 		add("_Tools/");
 		add("Tools/_Configuration", e -> new ConfigSource());
 		add("Tools/_Parameters", e -> new Parameters(Application.frame.page.print())).setEnabled(false);
-		add("Tools/Command _History", e -> Support.displayMessage("TO-DO"));
+		add("Tools/Command _History", e -> new History());
 		add("Tools/Error _Log", e -> new ErrorLog());
 		
 		add(Box.createHorizontalGlue());

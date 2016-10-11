@@ -9,6 +9,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -284,5 +287,17 @@ public class Support {
 			displayMessage("Critical Error: Resource " + name + " not found");
 		}
 		return resource;
+	}
+	
+	public static String readFile(String fileName) {
+		String result = null;
+		try {
+			result = Files.lines(Paths.get(fileName)).reduce("", (a, b) -> a + "\n" + b).substring(1);
+		} catch (IndexOutOfBoundsException e) {
+			result = "";
+		} catch (IOException e) {
+			displayMessage("Error: " + fileName + " not found");
+		}
+		return result;
 	}
 }

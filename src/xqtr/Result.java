@@ -11,6 +11,7 @@ public class Result extends Dialog {
 
 	public Result(String command) {
 		
+		History.log(command);
 		Terminal terminal = new Terminal(command);
 		add(terminal);
 		
