@@ -80,6 +80,7 @@ public class Form {
 		});
 		
 		container.add(outer);
+		outer.remove(outer.getComponents().length-1);
 	}
 	
 	public Map<String, String> submit() {

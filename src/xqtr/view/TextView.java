@@ -36,7 +36,7 @@ public class TextView extends AbstractControl {
 	public void setConcealed(boolean concealed) {
 		
 		if(concealed) {
-			textField.setEchoChar('â€¢');
+			textField.setEchoChar('•');
 		} else {
 			textField.setEchoChar((char)0);
 		}

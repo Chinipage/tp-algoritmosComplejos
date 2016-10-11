@@ -37,7 +37,7 @@ public class ComboBox extends JComboBox<String> {
 		if(listener != null) {
 			addItemListener(listener);
 		} else {
-			Support.delay(() -> 
+			Support.setTimeout(500, () ->
 				addItemListener((ItemListener) SwingUtilities.getRoot(this))
 			);
 		}

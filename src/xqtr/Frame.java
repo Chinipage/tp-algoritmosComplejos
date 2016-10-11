@@ -40,7 +40,7 @@ public class Frame extends JFrame implements ActionListener, ItemListener {
 		
 		JLabel loadingLabel = new JLabel("Loading...", SwingConstants.CENTER);
 		loadingLabel.setIcon(new ImageIcon("Spinner.gif"));
-		add(loadingLabel);
+		add(loadingLabel); 
 		
 		menu = new MenuBar();
 		setJMenuBar(menu);
@@ -55,6 +55,7 @@ public class Frame extends JFrame implements ActionListener, ItemListener {
 			page = new Page();
 			remove(loadingLabel);
 			add(page);
+			revalidate();
 		});
 		
 		setTitle(Application.name);
@@ -78,7 +79,6 @@ public class Frame extends JFrame implements ActionListener, ItemListener {
 		
 		Section header = new Section();
 		header.setVisible(Boolean.parseBoolean(Application.properties.get("header.visible")));
-		header.setHeight(90);
 		header.setBorder(0, 0, 1, 0);
 		
 		programSelector = new ComboBox();
@@ -101,7 +101,6 @@ public class Frame extends JFrame implements ActionListener, ItemListener {
 		
 		Section footer = new Section();
 		footer.setVisible(Boolean.parseBoolean(Application.properties.get("footer.visible")));
-		footer.setHeight(50);
 		footer.setBorder(1, 0, 0, 0);
 		
 		Button runButton = new Button("E_xecute");
