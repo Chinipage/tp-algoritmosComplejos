@@ -16,8 +16,6 @@ public abstract class AbstractControl extends JPanel {
 	static Font defaultFont = new Font(null, Font.BOLD, 12);
 	static Dimension defaultSize = new Dimension(0, 29);
 	
-	private boolean required;
-	
 	AbstractControl() {
 		
 		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
@@ -37,14 +35,6 @@ public abstract class AbstractControl extends JPanel {
 	
 	public boolean isEmpty() {
 		return getValue().trim().isEmpty();
-	}
-	
-	public boolean isRequired() {
-		return required;
-	}
-	
-	public void setRequired() {
-		required = true;
 	}
 	
 	private String oldValue;

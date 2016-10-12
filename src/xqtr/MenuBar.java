@@ -6,16 +6,19 @@ import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import javax.swing.Action;
 import javax.swing.Box;
+import javax.swing.ButtonGroup;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.text.DefaultEditorKit;
@@ -28,6 +31,9 @@ public class MenuBar extends JMenuBar {
 	private List<JMenu> menus = new ArrayList<>();
 	private List<JMenuItem> items = new ArrayList<>(); 
 	
+	private ButtonGroup programs = new ButtonGroup();
+	private ButtonGroup profiles = new ButtonGroup();
+	
 	public MenuBar() {
 		setVisible(false);
 		Support.setTimeout(1000, () -> {
@@ -37,8 +43,7 @@ public class MenuBar extends JMenuBar {
 	}
 	
 	private void addMenus() {
-		add("_File/_Program/");
-		add("File/P_rofile/");
+		addProgramAndProfile();
 		add("File/-");
 		add("File/_Execute|E", e -> Application.frame.execute()).setEnabled(false);
 		add("File/_Reload Config|R", e -> Application.controller.loadConfig());
@@ -61,6 +66,58 @@ public class MenuBar extends JMenuBar {
 		
 		add(Box.createHorizontalGlue());
 		add("_Help/_About " + Application.name, e -> Application.frame.showAboutDialog());
+	}
+	
+	private void addProgramAndProfile() {
+		add("_File/_Program/");
+		add("File/P_rofile/");
+		
+		JMenu program = getMenu("Program");
+		JMenu profile = getMenu("Profile");
+		
+		Support.setInterval(500, s -> {
+			program.setEnabled(program.getSubElements().length > 0);
+			profile.setEnabled(profile.getSubElements().length > 0);
+		});
+	}
+	
+	private void setRadioItems(List<String> items, JMenu menu, ButtonGroup group, ActionListener action) {
+		menu.removeAll();
+		Collections.list(group.getElements()).forEach(item -> group.remove(item));
+		items.forEach(item -> {
+			JRadioButtonMenuItem radioItem = new JRadioButtonMenuItem(item);
+			radioItem.addActionListener(action);
+			menu.add(radioItem);
+			group.add(radioItem);
+		});
+	}
+	
+	public void setPrograms(List<String> items) {
+		setRadioItems(items, getMenu("Program"), programs, e -> {
+			JRadioButtonMenuItem item = (JRadioButtonMenuItem) e.getSource();
+			Application.frame.programSelector.setSelectedItem(item.getText());
+		});
+	}
+	
+	public void setProfiles(List<String> items) {
+		setRadioItems(items, getMenu("Profile"), profiles, e -> {
+			JRadioButtonMenuItem item = (JRadioButtonMenuItem) e.getSource();
+			Application.frame.profileSelector.setSelectedItem(item.getText());
+		});
+	}
+	
+	private void selectRadioItem(String text, ButtonGroup group) {
+		Collections.list(group.getElements()).forEach(item -> 
+			item.setSelected(item.getText().equals(text))
+		);
+	}
+	
+	public void selectProgram(String text) {
+		selectRadioItem(text, programs);
+	}
+	
+	public void selectProfile(String text) {
+		selectRadioItem(text, profiles);
 	}
 	
 	private void addEditUtils() {
@@ -159,7 +216,7 @@ public class MenuBar extends JMenuBar {
 				break;
 			}
 			
-			JMenu _menu = getMenu(name); 
+			JMenu _menu = getMenu(name);
 			if(_menu != null) {
 				parent = _menu;
 			} else {

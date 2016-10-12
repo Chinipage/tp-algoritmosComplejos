@@ -6,11 +6,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
 
 import xqtr.util.Button;
 import xqtr.util.ComboBox;
@@ -27,9 +26,9 @@ public class Frame extends JFrame implements ActionListener, ItemListener {
 	public Page page;
 	public Button runButton;
 	
-	private Controller controller;
-	private ComboBox programSelector;
-	private ComboBox profileSelector;
+	public Controller controller;
+	public ComboBox programSelector;
+	public ComboBox profileSelector;
 	
 	public Frame(Controller controller) {
 		this.controller = controller;
@@ -38,24 +37,18 @@ public class Frame extends JFrame implements ActionListener, ItemListener {
 
 	private void initUI() {
 		
-		JLabel loadingLabel = new JLabel("Loading...", SwingConstants.CENTER);
-		loadingLabel.setIcon(new ImageIcon("Spinner.gif"));
-		add(loadingLabel); 
+		page = new Page();
+		add(page);
 		
 		menu = new MenuBar();
 		setJMenuBar(menu);
 		
-		Support.setTimeout(50, () -> {
+		Support.setTimeout(100, () -> {
 			header = makeHeader();
 			add(header, BorderLayout.NORTH);
 			
 			footer = makeFooter();
 			add(footer, BorderLayout.SOUTH);
-			
-			page = new Page();
-			remove(loadingLabel);
-			add(page);
-			revalidate();
 		});
 		
 		setTitle(Application.name);
@@ -82,7 +75,9 @@ public class Frame extends JFrame implements ActionListener, ItemListener {
 		header.setBorder(0, 0, 1, 0);
 		
 		programSelector = new ComboBox();
+		programSelector.setEnabled(false);
 		profileSelector = new ComboBox();
+		profileSelector.setEnabled(false);
 		
 		Form form = new Form();
 		form.addElement("Program", programSelector);
@@ -90,8 +85,11 @@ public class Frame extends JFrame implements ActionListener, ItemListener {
 		form.placeIn(header);			
 		
 		controller.whenReady(() -> {
-			programSelector.setModel(controller.getProgramsNames());
-			profileSelector.setModel(Support.map(e -> e, "(Default)"));
+			List<String> programs = controller.getProgramsNames();
+			programSelector.setModel(programs);
+			programSelector.setEnabled(true);
+			menu.setPrograms(programs);
+			page.toggleLoading();
 		});
 		
 		return header;
@@ -132,17 +130,18 @@ public class Frame extends JFrame implements ActionListener, ItemListener {
 	public void showAboutDialog() {
 		String msg = "<html><h1>" + Application.name + "</h1>";
 		msg += "<h2>Executor App v" + Application.version + "</h2>";
-		msg += "<h3>Made by:</h3>";
+		msg += "<h3>Licensed under GNU General Public License v3.0</h3>";
+		msg += "<p>Made by:</p>";
 		msg += "<ul><li>&nbsp;Martínez, Andrés</li>";
 		msg += "<li>&nbsp;Rodríguez Arias, Mariano</li>";
 		msg += "<li>&nbsp;Vigilante, Federico</li></ul>";
-		msg += "<h3>Made for:</h3>";
+		msg += "<p>Made for:</p>";
 		msg += "<ul><li>&nbsp;Sznajdleder, Pablo Augusto</li>";
 		msg += "<li>&nbsp;Algoritmos Complejos para Estructuras de Datos Avanzadas";
 		msg += new String(new char[15]).replace("\0", "&nbsp;");
 		msg += "</li><li>&nbsp;Facultad Regional Buenos Aires</li>";
 		msg += "<li>&nbsp;Universidad Tecnológica Nacional</li></ul>";
-		msg += "<h3>Made with:</h3>";
+		msg += "<p>Made with:</p>";
 		msg += "<ul><li>&nbsp;Ubuntu 16.04 Xenial Xerus</li>";
 		msg += "<li>&nbsp;Eclipse Neon 4.6 for Java Developers</li>";
 		msg += "<li>&nbsp;Java SE Development Kit 8 (OpenJDK 8)</li>";
@@ -157,10 +156,18 @@ public class Frame extends JFrame implements ActionListener, ItemListener {
 			
 			if(event.getSource() == programSelector) {
 				String programName = event.getItem().toString();
-				setTitle(programName.isEmpty() ? Application.name : programName + " - " + Application.name);
+				
+				setTitle(programName + " - " + Application.name);
 				controller.setCurrentProgram(programName);
+				menu.selectProgram(programName);
+				profileSelector.setModel(Support.listFromString("Perfil 1;!Perfil 2;Perfil 3"));
+				profileSelector.setEnabled(true);
+				
 			} else if(event.getSource() == profileSelector) {
-				controller.setCurrentProfile(event.getItem().toString());
+				String profileName = event.getItem().toString();
+				
+				controller.setCurrentProfile(profileName);
+				menu.selectProfile(profileName);
 				menu.getItem("Parameters").setEnabled(true);
 			}
 		}

@@ -5,4 +5,9 @@
 			<file id="audio" name="Audio source" class="open" format="mp3 wav aac" maxsize="10MB"/>
 		</profile>
 	</program>
+	<program name="Programa 2" bin="{ffmpegPath}">
+		<profile name="Profile{a} 1">
+			<file id="audio" name="Audio source" class="open" format="mp3 wav aac" maxsize="10MB"/>
+		</profile>
+	</program>
 </xqtr>

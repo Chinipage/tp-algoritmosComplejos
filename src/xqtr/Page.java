@@ -4,7 +4,10 @@ import java.awt.FlowLayout;
 import java.io.File;
 import java.util.stream.Collectors;
 
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JScrollPane;
+import javax.swing.SwingConstants;
 
 import xqtr.util.Section;
 import xqtr.util.Support;
@@ -13,28 +16,77 @@ import xqtr.view.FileView;
 import xqtr.view.RangeView;
 import xqtr.view.SequenceView;
 import xqtr.view.TextView;
+import xqtr.model.ProfileNode;
 import xqtr.util.Form;
 
 @SuppressWarnings("serial")
-public class Page extends JScrollPane {
-
-	private Form form = new Form();
+public class Page extends Section {
+	
+	private JScrollPane scrollPane;
+	private JLabel loadingLabel;
+	private boolean isLoading;
+	
+	private Form form;
 	
 	public Page() {
+		setPadding(5);
 		
-		setBorder(null);
-		setViewportBorder(null);
-		setHorizontalScrollBarPolicy(HORIZONTAL_SCROLLBAR_NEVER);
+		scrollPane = new JScrollPane();
+		scrollPane.setBorder(null);
+		scrollPane.setViewportBorder(null);
+		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		
 		Section view = new Section();
 		view.setLayout(new FlowLayout());
-		view.setPadding(10,0,10,0);
-		setViewportView(view);
+		view.setPadding(5,0,5,0);
+		scrollPane.setViewportView(view);
 		
+		loadingLabel = new JLabel("Loading...", SwingConstants.CENTER);
+		loadingLabel.setIcon(new ImageIcon("Spinner.gif"));
+		
+		toggleLoading();
+	}
+	
+	public void toggleLoading() {
+		if(isLoading) {
+			remove(loadingLabel);
+			add(scrollPane);
+			isLoading = false;
+		} else {
+			remove(scrollPane);
+			add(loadingLabel);
+			isLoading = true;
+		}
+		revalidate();
+	}
+	
+	public void load(ProfileNode profile) {
+		toggleLoading();
+		
+		((Section)scrollPane.getViewport().getView()).removeAll();
+		form = new Form();
+		
+		makeForm(profile);
+		
+		form.placeIn((Section) scrollPane.getViewport().getView());
+		
+		Support.setTimeout(100, () -> {
+			toggleLoading();
+			Application.frame.runButton.setEnabled(true);
+			Application.frame.menu.getItem("Execute").setEnabled(true);
+		});
+	}
+	
+	private void makeForm(ProfileNode profile) {
+		// TODO Llenar el formulario de acuerdo al perfil
 		exampleForm1();
-		
-		form.placeIn(view);
-		Support.setTimeout(100, () -> form.setExecution());
+	}
+	
+	public String print() {
+
+		return "<html>" + form.submit().entrySet().stream()
+				.map(e -> "<b>" + e.getKey().replaceFirst("\\*$", "") + ":</b> " + e.getValue())
+				.collect(Collectors.joining("<br>"));
 	}
 	
 	private void exampleForm1() {
@@ -58,10 +110,8 @@ public class Page extends JScrollPane {
 		videoTarget.setFormat("mp4 mov avi");
 		videoTarget.setSaveModeEnabled(true);
 		videoTarget.setValue("out.mp4");
-		videoTarget.setRequired();
 		
 		TextView textField = new TextView();
-		textField.setRequired();
 		
 		form.addElement("Audio source", audioSource);
 		form.addElement("Image source", imageSource);
@@ -97,12 +147,5 @@ public class Page extends JScrollPane {
 		
 		form.addElement("Files to merge", new FileView());
 		form.addElement("Combined file", new FileView(Support.map(File::new, "merge.wav")));
-	}
-	
-	public String print() {
-		
-		return "<html>" + form.submit().entrySet().stream()
-				.map(e -> "<b>" + e.getKey() + ":</b> " + e.getValue())
-				.collect(Collectors.joining("<br>"));
 	}
 }
