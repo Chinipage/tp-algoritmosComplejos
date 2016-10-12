@@ -75,12 +75,23 @@ public class Controller {
 		return programsNames;
 	}
 
+	//TODO Deprecado. Usar getProfilesNames()
 	public List<String> getExecutableProfilesNames(String programName) {
 
 		List<String> executableProfilesNames = new LinkedList<String>();
 
 		if(modelRootNode != null)
-			executableProfilesNames.addAll(modelRootNode.getExecutableProfilesNames(programName));
+			executableProfilesNames.addAll(modelRootNode.getProfilesNames(programName));
+
+		return executableProfilesNames;
+	}
+
+	public List<String> getProfilesNames(String programName) {
+
+		List<String> executableProfilesNames = new LinkedList<String>();
+
+		if(modelRootNode != null)
+			executableProfilesNames.addAll(modelRootNode.getProfilesNames(programName));
 
 		return executableProfilesNames;
 	}

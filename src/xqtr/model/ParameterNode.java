@@ -53,7 +53,6 @@ public abstract class ParameterNode extends ModelNode {
 		List<String> attributesKeys = super.attributesKeys();
 
 		attributesKeys.add("id");
-		attributesKeys.add("value");
 
 		return attributesKeys;
 	}

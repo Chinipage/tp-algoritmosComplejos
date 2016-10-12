@@ -89,6 +89,10 @@ public abstract class ModelNode {
 			while(idMatcher.find()) {
 				if(variables.containsKey(idMatcher.group(1)))
 					idMatcher.appendReplacement(resultBuffer, variables.get(idMatcher.group(1)));
+				else {
+					this.setUnexecutable("la variable " + idMatcher.group(1) + " no pudo ser reemplazada");
+					idMatcher.appendReplacement(resultBuffer, "");
+				}
 			}
 
 			idMatcher.appendTail(resultBuffer);
@@ -101,6 +105,7 @@ public abstract class ModelNode {
 					resultReplacement = engine.eval(resultReplacement).toString();
 				} catch (ScriptException e1) {
 					e1.printStackTrace();
+					this.setUnexecutable(e1.getMessage());
 				}
 
 			variableMatcher.appendReplacement(replacedString, resultReplacement);
@@ -183,6 +188,10 @@ public abstract class ModelNode {
 	protected String getCommand() {
 		//Este metodo se redefine en RootNode, Program y Profile. No se usa en Parameter.
 		return "";
+	}
+
+	//Por polimorfismo para el reemplazo de variables
+	protected void setUnexecutable(String motivo) {
 	}
 
 }

@@ -11,19 +11,26 @@ public class ProfileNode extends ModelNode {
 	private LinkedList<ProfileNode> subProfiles = new LinkedList<ProfileNode>();
 	private LinkedList<ParameterNode> parameters = new LinkedList<ParameterNode>();
 	private ModelNode parent;	//Solo deberia tener Profile o Program
+	private Boolean executable = true;
 
 	private void addNewProfile(Element profileNode, HashMap<String, String> variables) {
 		this.subProfiles.add(new ProfileNode(this, profileNode, variables));
 	}
 
 	private void addNewParameter(Element parameterNode, HashMap<String, String> variables) {
-
 		this.parameters.add(ParameterNode.newParameter(parameterNode, variables));
-
 	}
 
 	protected List<ParameterNode> getParameters() {
 		return parameters;
+	}
+
+	protected void setUnExecutable(String motivo) {
+		if(!executable) {
+			executable = false;
+			this.logError("Profile " + this.getAttribute("name") + " is not Executable because " + motivo);
+			subProfiles.forEach(subProfile -> subProfile.setUnExecutable("parent profile is not Executable"));
+		}
 	}
 
 	ProfileNode(ModelNode p, Element profileNode, HashMap<String, String> variables){
@@ -44,6 +51,8 @@ public class ProfileNode extends ModelNode {
 		this.elementList(profileNode.getElementsByTagName(parameterTag)).forEach((parameterNode) -> {
 			this.addNewParameter(parameterNode, declaredVariables);
 		});
+
+		this.checkConsistency();
 
 	}
 
@@ -66,10 +75,13 @@ public class ProfileNode extends ModelNode {
 	}
 
 	protected Boolean isExecutable() {
+		return executable;
+	}
 
+	protected Boolean checkConsistency() {
+		
 		return this.neccesaryAttributes().stream().allMatch(attribute -> attributes.containsKey(attribute)) &&
-				parameters.stream().allMatch(parameter -> parameter.isExecutable());
-
+		parameters.stream().allMatch(parameter -> parameter.isExecutable());
 	}
 
 	private Boolean hasClass(String className) {
@@ -80,16 +92,13 @@ public class ProfileNode extends ModelNode {
 		return this.hasClass("hidden");
 	}
 
-	protected List<String> getExecutableProfilesNames() {
+	protected List<String> 	getProfilesNames() {
 
 		List<String> profiles = new LinkedList<String>();
 
-		if(!this.isHidden()) profiles.add(this.getAttribute("name"));
+		if(!this.isHidden()) profiles.add((this.isExecutable() ? "" : "!") + this.getAttribute("name"));
 
-		subProfiles.forEach(profile -> {
-			if(profile.isExecutable())
-				profiles.addAll(profile.getExecutableProfilesNames());	
-		});
+		subProfiles.forEach(profile -> profiles.addAll(profile.getProfilesNames()));
 
 		return profiles;
 	}

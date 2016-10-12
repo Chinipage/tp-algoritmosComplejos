@@ -49,14 +49,11 @@ public class ProgramNode extends ModelNode {
 		return attributesKeys;
 	}
 
-	protected List<String> getExecutableProfilesNames() {
+	protected List<String> getProfilesNames() {
 
 		List<String> profilesNames = new LinkedList<String>();
 
-		profiles.forEach(profile ->	{
-			if(profile.isExecutable())
-				profilesNames.addAll(profile.getExecutableProfilesNames());	
-		});
+		profiles.forEach(profile ->	profilesNames.addAll(profile.getProfilesNames()));
 
 		return profilesNames;
 	}
@@ -75,4 +72,5 @@ public class ProgramNode extends ModelNode {
 	protected String getCommand() {
 		return this.getAttribute("bin");
 	}
+
 }

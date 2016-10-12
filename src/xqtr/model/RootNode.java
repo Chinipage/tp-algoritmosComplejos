@@ -97,13 +97,13 @@ public class RootNode extends ModelNode {
 		return programsList;
 	}
 
-	public List<String> getExecutableProfilesNames(String programName) {
+	public List<String> getProfilesNames(String programName) {
 
 		List<String> executableProfilesNames = new LinkedList<String>();
 		ProgramNode program = this.getProgram(programName);
 
 		if((program != null))
-			executableProfilesNames.addAll(program.getExecutableProfilesNames());
+			executableProfilesNames.addAll(program.getProfilesNames());
 		
 		return executableProfilesNames;
 	}
