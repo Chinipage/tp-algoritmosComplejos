@@ -1,7 +1,7 @@
 <xqtr version="1.0">
 	<var id="ffmpegPath" value="/bin/blah"/>
 	<program name="Programa 1" bin="{ffmpegPath}">
-		<profile name="Profile{a} 1">
+		<profile name="Profile 1">
 			<file id="audio" name="Audio source" class="open" format="mp3 wav aac" maxsize="10MB"/>
 		</profile>
 	</program>

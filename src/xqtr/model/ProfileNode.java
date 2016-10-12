@@ -78,10 +78,19 @@ public class ProfileNode extends ModelNode {
 		return executable;
 	}
 
-	protected Boolean checkConsistency() {
-		
-		return this.neccesaryAttributes().stream().allMatch(attribute -> attributes.containsKey(attribute)) &&
-		parameters.stream().allMatch(parameter -> parameter.isExecutable());
+	protected void checkNeccesaryAttributes() {
+		if(!this.neccesaryAttributes().stream().allMatch(attribute -> attributes.containsKey(attribute)))
+			this.setUnexecutable("no posee todos los atributos necesarios (" + this.neccesaryAttributes().toString() + ").");
+	}
+
+	protected void checkParametersConsistency() {
+		if(!parameters.stream().allMatch(parameter -> parameter.isExecutable()))
+			this.setUnexecutable("a parameter is not Executable");
+	}
+
+	protected void checkConsistency() {
+		this.checkNeccesaryAttributes();
+		this.checkParametersConsistency();
 	}
 
 	private Boolean hasClass(String className) {
