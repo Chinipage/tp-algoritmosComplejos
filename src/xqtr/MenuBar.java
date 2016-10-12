@@ -46,7 +46,12 @@ public class MenuBar extends JMenuBar {
 		addProgramAndProfile();
 		add("File/-");
 		add("File/_Execute|E", e -> Application.frame.execute()).setEnabled(false);
-		add("File/_Reload Config|R", e -> Application.controller.loadConfig());
+		add("File/_Reload Config|R", e -> {
+			getItem("Execute").setEnabled(false);
+			Application.frame.runButton.setEnabled(false);
+			Application.controller.loadConfig();
+			Application.frame.page.load();
+		});
 		add("File/-");
 		add("File/_Quit|Q", e -> System.exit(0));
 		

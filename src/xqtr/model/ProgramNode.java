@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.w3c.dom.Element;
 
+import com.sun.org.apache.bcel.internal.generic.NEW;
+
 public class ProgramNode extends ModelNode {
 
 	private LinkedList<ProfileNode> profiles = new LinkedList<ProfileNode>();
@@ -23,7 +25,7 @@ public class ProgramNode extends ModelNode {
 		declaredVariables.putAll(this.getVariables(programNode));
 	
 		this.initializeAttributes(programNode, variables);
-
+		
 		this.elementList(programNode.getElementsByTagName(profileTag)).forEach((profileNode) -> {
 			this.addNewProfile(profileNode, declaredVariables);
 		});

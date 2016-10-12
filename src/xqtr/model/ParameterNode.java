@@ -29,8 +29,6 @@ public abstract class ParameterNode extends ModelNode {
 				newParameter = new SequenceNode(parameterNode, variables);
 				break;
 			case "text":
-				newParameter = new TextNode(parameterNode, variables);
-				break;
 			default:
 				newParameter = new TextNode(parameterNode, variables);
 		}
@@ -72,7 +70,19 @@ public abstract class ParameterNode extends ModelNode {
 	}
 
 	public Boolean hasClass(String className) {
-		return this.hasAttribute("class") || this.getAttribute("class").contains(className);
+		return this.hasAttribute("class") && this.getAttribute("class").contains(className);
+	}
+	
+	public String getID() {
+		return getAttribute("id");
+	}
+	
+	public String getName() {
+		return getAttribute("name");
+	}
+	
+	public String getValue() {
+		return getAttribute("value");
 	}
 
 }

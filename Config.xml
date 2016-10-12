@@ -1,13 +1,55 @@
 <xqtr version="1.0">
-	<var id="ffmpegPath" value="/bin/blah"/>
-	<program name="Programa 1" bin="{ffmpegPath}">
-		<profile name="Profile 1">
+	<var id="video_editor" value="/usr/local/bin/ffmpeg"/>
+	
+	<!-- Caso de prueba 1 -->
+	<program name="Audio to Video" bin="{video_editor}" args="-i {audio} -i {image} -o {video}">
+		<profile name="Default">
 			<file id="audio" name="Audio source" class="open" format="mp3 wav aac" maxsize="10MB"/>
+			<file id="image" name="Image source" class="open" format="jpg jpeg png" maxsize="1MB"/>
+			<file id="video" name="Video target" class="save" format="mp4 mov avi" value="out.mp4"/>
+			<profile name="Extra options" args="--duration {length_in_ms} --volume-percentage {volume}">
+				<seq type="number" id="length_in_min" name="Limit duration" min="0" step="0.1" unit="min."/>
+				<var id="length_in_ms" value="{length_in_min * 60000}"/>
+				<range id="volume" name="Adjust volume" min="0" max="100" value="80" unit="%"/>
+			</profile>
 		</profile>
 	</program>
-	<program name="Programa 2" bin="{ffmpegPath}">
-		<profile name="Profile{a} 1">
-			<file id="audio" name="Audio source" class="open" format="mp3 wav aac" maxsize="10MB"/>
+	
+	<!-- Caso de prueba 2 -->
+	<program name="Video Trimmer" bin="{video_editor}" args="-s {source} -o {output} --start {from}">
+		<profile name="Trim from given time to end">
+			<file id="input"/>
+			<file id="output" action="save" value="trimmed_video.avi"/>
+			<seq type="time" id="from" format="mm:ss" value="00:00:00"/>
+			<profile name="Trim given time to given time" args="--duration {length_in_ms}">				
+				<seq type="time" id="to" format="mm:ss" value="00:10:00"/>
+				<var id="length_in_ms" value="{to - from}"/>
+			</profile>
+		</profile>
+	</program>
+	
+	<!-- Caso de prueba 3 -->
+	<program name="Video Rotator" bin="{video_editor} -s {source} -o {output} --rotate {angle}">
+		<profile class="hidden">
+			<file id="input"/>
+			<file id="output" class="save"/>
+			<profile class="visible" name="Rotate by 90 degrees">
+				<choice id="direction" name="Clockwise" value="-1"/>
+				<choice id="direction" name="Counterclockwise" value="1"/>
+				<var id="angle" value="{direction * 90}"/>
+			</profile>
+			<profile class="visible" name="Rotate by 180 degrees">
+				<check id="activated" name="Rotate" yvalue="1" nvalue="0"/>
+				<var id="angle" value="{activated * 180}"/>
+			</profile>
+		</profile>
+	</program>
+	
+	<!-- Caso de prueba 4 -->
+	<program name="Audio Merger" bin="/path/to/wav-editor -i {files} -o {output}">
+		<profile>
+			<file id="files" class="open multiple" name="Files to merge" format="wav"/>
+			<file id="output" class="save" format="wav" name="Combined file" value="merge.wav"/>
 		</profile>
 	</program>
 </xqtr>

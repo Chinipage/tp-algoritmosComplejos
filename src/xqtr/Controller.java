@@ -60,6 +60,7 @@ public class Controller {
 	//Interfaz con Modelo------------------------------------------------------------------------
 
 	public void loadConfig() {
+		modelRootNode = null;
 		Support.setTimeout(100, () -> {
 			modelRootNode = new RootNode();
 		});
@@ -75,45 +76,42 @@ public class Controller {
 		return programsNames;
 	}
 
-	//TODO Deprecado. Usar getProfilesNames()
-	public List<String> getExecutableProfilesNames(String programName) {
+	public List<String> getProfilesForCurrentProgram() {
 
 		List<String> executableProfilesNames = new LinkedList<String>();
 
-		if(modelRootNode != null)
-			executableProfilesNames.addAll(modelRootNode.getProfilesNames(programName));
+		if(modelRootNode != null && hasCurrentProgram())
+			executableProfilesNames.addAll(modelRootNode.getProfilesNames(currentProgram));
 
 		return executableProfilesNames;
 	}
 
-	public List<String> getProfilesNames(String programName) {
-
-		List<String> executableProfilesNames = new LinkedList<String>();
-
-		if(modelRootNode != null)
-			executableProfilesNames.addAll(modelRootNode.getProfilesNames(programName));
-
-		return executableProfilesNames;
-	}
-
-	public List<ParameterNode> getParameters(String programName, String profileName) {
+	public List<ParameterNode> getParametersForCurrentProfile() {
 
 		List<ParameterNode> parameters = new LinkedList<ParameterNode>();
 
-		if(modelRootNode != null)
-			parameters.addAll(modelRootNode.getParameters(programName, profileName));
+		if(modelRootNode != null && hasCurrentProfile())
+			parameters.addAll(modelRootNode.getParameters(currentProgram, currentProfile));
 
 		return parameters;
 	}
 
-	public String getCommand(String programName, String profileName, HashMap<String, String> arguments) {
+	public String getCommandForCurrentProfile(HashMap<String, String> arguments) {
 
 		String command = null;
 
-		if(modelRootNode != null)
-			command = modelRootNode.getCommand(programName, profileName, arguments);
+		if(modelRootNode != null && hasCurrentProfile())
+			command = modelRootNode.getCommand(currentProgram, currentProfile, arguments);
 	
 		return command;
+	}
+	
+	public boolean hasCurrentProgram() {
+		return currentProgram != null && !currentProgram.trim().isEmpty();
+	}
+	
+	public boolean hasCurrentProfile() {
+		return hasCurrentProgram() && currentProfile != null && !currentProfile.trim().isEmpty();
 	}
 
 	//Fin interfaz con Modelo--------------------------------------------------------------------

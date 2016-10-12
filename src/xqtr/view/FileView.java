@@ -106,6 +106,7 @@ public class FileView extends AbstractControl {
 	}
 	
 	public void setFormat(String format) {
+		if(format == null) return;
 		FileTypeFilter filter = new FileTypeFilter(format);
 		fileChooser.setFileFilter(filter);
 		validExtensions = filter.getExtensions();
@@ -199,7 +200,9 @@ public class FileView extends AbstractControl {
 	}
 	
 	public void setValue(String value) {
-		setModel(Support.map(File::new, Support.listFromString(value)));
+		if(value != null) {
+			setModel(Support.map(File::new, Support.listFromString(value)));
+		}
 	}
 	
 	public String getValue() {

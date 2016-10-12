@@ -1,7 +1,9 @@
 package xqtr;
 
+import java.awt.Component;
 import java.awt.FlowLayout;
 import java.io.File;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.swing.ImageIcon;
@@ -11,12 +13,15 @@ import javax.swing.SwingConstants;
 
 import xqtr.util.Section;
 import xqtr.util.Support;
+import xqtr.view.AbstractControl;
 import xqtr.view.ChoiceView;
 import xqtr.view.FileView;
 import xqtr.view.RangeView;
 import xqtr.view.SequenceView;
 import xqtr.view.TextView;
-import xqtr.model.ProfileNode;
+import xqtr.model.FileNode;
+import xqtr.model.ParameterNode;
+import xqtr.model.SequenceNode;
 import xqtr.util.Form;
 
 @SuppressWarnings("serial")
@@ -57,29 +62,61 @@ public class Page extends Section {
 			add(loadingLabel);
 			isLoading = true;
 		}
-		revalidate();
+		repaintFrame();
 	}
 	
-	public void load(ProfileNode profile) {
+	public void load() {
 		toggleLoading();
+		clear();
 		
-		((Section)scrollPane.getViewport().getView()).removeAll();
-		form = new Form();
-		
-		makeForm(profile);
-		
-		form.placeIn((Section) scrollPane.getViewport().getView());
-		
-		Support.setTimeout(100, () -> {
-			toggleLoading();
-			Application.frame.runButton.setEnabled(true);
-			Application.frame.menu.getItem("Execute").setEnabled(true);
+		Application.controller.whenReady(() -> {
+			System.out.println(Application.controller.getParametersForCurrentProfile().size());
+			Application.controller.getParametersForCurrentProfile().forEach(param -> add(param));
+			form.placeIn((Section) scrollPane.getViewport().getView());
+			
+			Support.setTimeout(100, () -> {
+				toggleLoading();
+				if(Application.controller.hasCurrentProfile()) {
+					Application.frame.runButton.setEnabled(true);
+					Application.frame.menu.getItem("Execute").setEnabled(true);
+				}
+			});
 		});
 	}
 	
-	private void makeForm(ProfileNode profile) {
-		// TODO Llenar el formulario de acuerdo al perfil
-		exampleForm1();
+	public void clear() {
+		((Section)scrollPane.getViewport().getView()).removeAll();
+		form = new Form();
+		repaintFrame();
+	}
+	
+	private void add(ParameterNode param) {
+		
+		AbstractControl control = null;
+		if(param instanceof FileNode) {
+			FileNode fileModel = (FileNode) param;
+			FileView fileView = new FileView();
+			fileView.setFormat(fileModel.getFormat());
+			fileView.setSaveModeEnabled(fileModel.hasClass("save"));
+			fileView.setMultiModeEnabled(fileModel.hasClass("multiple"));			
+			control = fileView;
+		} else if(param instanceof SequenceNode) {
+			SequenceNode sequenceModel = (SequenceNode) param;
+			
+		}
+		
+		if(control != null) {
+			String label = Support.getOr(param.getName(), Support.capitalize(param.getID()));
+			control.setValue(param.getValue());
+			form.addElement(label, control);
+		}
+	}
+	
+	private void repaintFrame() {
+		Support.delay(() -> {
+			Application.frame.repaint();
+			Application.frame.revalidate();
+		});
 	}
 	
 	public String print() {

@@ -1,5 +1,6 @@
 package xqtr.model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,14 +23,16 @@ public class ProfileNode extends ModelNode {
 	}
 
 	protected List<ParameterNode> getParameters() {
-		return parameters;
+		List<ParameterNode> params = parent.getParameters();
+		params.addAll(parameters);
+		return params;
 	}
 
-	protected void setUnExecutable(String motivo) {
-		if(!executable) {
+	protected void setUnexecutable(String motivo) {
+		if(executable) {
 			executable = false;
 			this.logError("Profile " + this.getAttribute("name") + " is not Executable because " + motivo);
-			subProfiles.forEach(subProfile -> subProfile.setUnExecutable("parent profile is not Executable"));
+			subProfiles.forEach(subProfile -> subProfile.setUnexecutable("parent profile is not Executable"));
 		}
 	}
 
@@ -47,9 +50,11 @@ public class ProfileNode extends ModelNode {
 		this.elementList(profileNode.getElementsByTagName(profileTag)).forEach((subProfileNode) -> {
 			this.addNewProfile(subProfileNode, declaredVariables);
 		});
-
-		this.elementList(profileNode.getElementsByTagName(parameterTag)).forEach((parameterNode) -> {
-			this.addNewParameter(parameterNode, declaredVariables);
+		
+		parameterTags.forEach(parameterTag -> {
+			this.elementList(profileNode.getElementsByTagName(parameterTag)).forEach((parameterNode) -> {
+				this.addNewParameter(parameterNode, declaredVariables);
+			});
 		});
 
 		this.checkConsistency();
@@ -67,7 +72,7 @@ public class ProfileNode extends ModelNode {
 
 	protected List<String> neccesaryAttributes() {
 
-		List<String> attributesKeys = super.attributesKeys();
+		List<String> attributesKeys = new ArrayList<>();
 
 		attributesKeys.add("name");
 
@@ -84,8 +89,9 @@ public class ProfileNode extends ModelNode {
 	}
 
 	protected void checkParametersConsistency() {
-		if(!parameters.stream().allMatch(parameter -> parameter.isExecutable()))
-			this.setUnexecutable("a parameter is not Executable");
+		if(!parameters.stream().allMatch(parameter -> parameter.isExecutable())) {
+			setUnexecutable("a parameter is not Executable");
+		}
 	}
 
 	protected void checkConsistency() {
@@ -94,18 +100,19 @@ public class ProfileNode extends ModelNode {
 	}
 
 	private Boolean hasClass(String className) {
-		return this.hasAttribute("class") || this.getAttribute("class").contains(className);
+		return this.hasAttribute("class") && this.getAttribute("class").contains(className);
 	}
 
 	private Boolean isHidden() {
 		return this.hasClass("hidden");
 	}
 
-	protected List<String> 	getProfilesNames() {
+	protected List<String> getProfilesNames() {
 
 		List<String> profiles = new LinkedList<String>();
-
-		if(!this.isHidden()) profiles.add((this.isExecutable() ? "" : "!") + this.getAttribute("name"));
+		
+		// TODO
+		if(!this.isHidden()) profiles.add((this.isExecutable() ? "" : "") + this.getAttribute("name"));
 
 		subProfiles.forEach(profile -> profiles.addAll(profile.getProfilesNames()));
 
@@ -116,7 +123,7 @@ public class ProfileNode extends ModelNode {
 
 		ProfileNode searchedProfile;
 
-		if(this.getAttribute("name") == profileName)
+		if(getAttribute("name") != null && getAttribute("name").equals(profileName))
 			return this;
 
 		for(ProfileNode prof : subProfiles)

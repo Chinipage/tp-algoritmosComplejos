@@ -124,7 +124,7 @@ public class RootNode extends ModelNode {
 
 		ProfileNode profile;
 		List<ParameterNode> parameters = new LinkedList<ParameterNode>();
-
+		
 		if((profile = this.getProfile(programName, profileName)) != null)
 			parameters.addAll(profile.getParameters());
 

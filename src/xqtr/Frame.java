@@ -160,8 +160,11 @@ public class Frame extends JFrame implements ActionListener, ItemListener {
 				setTitle(programName + " - " + Application.name);
 				controller.setCurrentProgram(programName);
 				menu.selectProgram(programName);
-				profileSelector.setModel(Support.listFromString("Perfil 1;!Perfil 2;Perfil 3"));
 				profileSelector.setEnabled(true);
+				List<String> profiles = controller.getProfilesForCurrentProgram();
+				profileSelector.setModel(profiles);
+				menu.setProfiles(profiles);
+				page.clear();
 				
 			} else if(event.getSource() == profileSelector) {
 				String profileName = event.getItem().toString();
@@ -169,6 +172,7 @@ public class Frame extends JFrame implements ActionListener, ItemListener {
 				controller.setCurrentProfile(profileName);
 				menu.selectProfile(profileName);
 				menu.getItem("Parameters").setEnabled(true);
+				page.load();
 			}
 		}
 	}

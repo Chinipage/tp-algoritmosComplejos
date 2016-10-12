@@ -73,6 +73,10 @@ public class Support {
 		return fn == null ? list : list.stream().filter(fn).collect(Collectors.toList());	
 	}
 	
+	public static <A> A getOr(A object, A alternative) {
+		return object != null ? object : alternative;
+	}
+	
 	public static Date dateFromString(String string) {
 		
 		Map<String, String> patterns = new HashMap<String, String>();
@@ -299,5 +303,9 @@ public class Support {
 			displayMessage("Error: " + fileName + " not found");
 		}
 		return result;
+	}
+	
+	public static String capitalize(String string) {
+		return string.substring(0, 1).toUpperCase() + string.substring(1);
 	}
 }

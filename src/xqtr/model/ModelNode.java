@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -19,6 +20,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import xqtr.Application;
+import xqtr.util.Support;
 
 public abstract class ModelNode {
 
@@ -28,7 +30,8 @@ public abstract class ModelNode {
 
 	protected static final String programTag = "program";
 	protected static final String profileTag = "profile";
-	protected static final String parameterTag = "parameter";
+	protected static final List<String> parameterTags = 
+			Support.listFromString("file, seq, range, text, choice");
 	protected static final String variableTag = "var";
 	protected static final String xmlVersion = "1.0";
 
@@ -65,7 +68,7 @@ public abstract class ModelNode {
 
 	protected void logError(String error) {
 		if(errorPw != null) {
-			errorPw.println(LocalDateTime.now().toString() + ":" + error);
+			errorPw.println(LocalDateTime.now().toString() + ": " + error);
 		}
 	}
 
@@ -73,7 +76,7 @@ public abstract class ModelNode {
 
 		StringBuffer replacedString = new StringBuffer();
 		Pattern variablePattern = Pattern.compile("(?:\\{)([^}]*)(?:\\})"),
-				idPattern = Pattern.compile("(_?[A-Za-z][A-Za-z0-9]*)"),
+				idPattern = Pattern.compile("(_?[A-Za-z_][A-Za-z_0-9]*)"),
 				equationPattern = Pattern.compile("^([0-9]+\\s*[-+*/]\\s*[0-9]+(\\s*[-+*/]\\s*[0-9]+)*)$");
 		ScriptEngineManager mgr = new ScriptEngineManager();
 	    ScriptEngine engine = mgr.getEngineByName("JavaScript");
@@ -117,7 +120,7 @@ public abstract class ModelNode {
 	}
 
 	protected Boolean isValidVariableId(String id) {
-		Pattern pattern = Pattern.compile("^(_?[A-Za-z][A-Za-z0-9]*)$");
+		Pattern pattern = Pattern.compile("^(_?[A-Za-z_][A-Za-z_0-9]*)$");
 	    return pattern.matcher(id).matches();
 	}
 
@@ -192,6 +195,10 @@ public abstract class ModelNode {
 
 	//Por polimorfismo para el reemplazo de variables
 	protected void setUnexecutable(String motivo) {
+	}
+	
+	protected List<ParameterNode> getParameters() {
+		return new ArrayList<>();
 	}
 
 }

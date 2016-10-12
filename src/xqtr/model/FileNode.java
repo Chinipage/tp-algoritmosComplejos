@@ -19,5 +19,9 @@ public class FileNode extends ParameterNode {
 
 		return attributesKeys;
 	}
+	
+	public String getFormat() {
+		return getAttribute("format");
+	}
 
 }
