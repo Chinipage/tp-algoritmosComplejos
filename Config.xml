@@ -2,7 +2,7 @@
 	<var id="video_editor" value="/usr/local/bin/ffmpeg"/>
 	
 	<!-- Caso de prueba 1 -->
-	<program name="Audio to Video" bin="{video_editor}" args="-i {audio} -i {image} -o {video}">
+	<program name="Audio to Video" bin="{video_editor} -i {audio} -i {image} -o {video}">
 		<profile name="Default">
 			<file id="audio" name="Audio source" class="open" format="mp3 wav aac" maxsize="10MB"/>
 			<file id="image" name="Image source" class="open" format="jpg jpeg png" maxsize="1MB"/>
@@ -15,7 +15,7 @@
 	</program>
 	
 	<!-- Caso de prueba 2 -->
-	<program name="Video Trimmer" bin="{video_editor}" args="-s {source} -o {output} --start {from}">
+	<program name="Video Trimmer" bin="{video_editor} -s {source} -o {output} --start {from}">
 		<profile name="Trim from given time to end">
 			<file id="input"/>
 			<file id="output" action="save" value="trimmed_video.avi"/>

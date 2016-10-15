@@ -30,13 +30,13 @@ public class RootNode extends ModelNode {
 		try {
 			Element rootElement = parseConfigXML();
 			
-			variables = this.getVariables(rootElement);
+			variables = getVariables(rootElement);
 	
 			this.elementList(rootElement.getElementsByTagName(programTag)).forEach(programNode -> {
-				this.addNewProgram(programNode, variables);
+				addNewProgram(programNode, variables);
 			});
 		}finally {
-			this.closeErrorLogFile();
+			closeErrorLogFile();
 		}
 	}
 	
@@ -93,7 +93,7 @@ public class RootNode extends ModelNode {
 		List<String> programsList = new LinkedList<String>();
 		
 		programs.forEach(program -> {
-			programsList.add(program.getAttribute("name"));
+			programsList.add((program.isExecutable() ? "" : "!") + program.getAttribute("name"));
 		});
 
 		return programsList;
@@ -102,7 +102,7 @@ public class RootNode extends ModelNode {
 	public List<String> getProfilesNames(String programName) {
 
 		List<String> executableProfilesNames = new LinkedList<String>();
-		ProgramNode program = this.getProgram(programName);
+		ProgramNode program = getProgram(programName);
 
 		if((program != null))
 			executableProfilesNames.addAll(program.getProfilesNames());
@@ -115,7 +115,7 @@ public class RootNode extends ModelNode {
 		ProgramNode program;
 		ProfileNode profile = null;
 
-		if((program = this.getProgram(programName)) != null)
+		if((program = getProgram(programName)) != null)
 			profile = program.getProfile(profileName);
 
 		return profile;
@@ -138,7 +138,7 @@ public class RootNode extends ModelNode {
 		String command = null;
 		ProfileNode profile;
 
-		if((profile = this.getProfile(programName, profileName)) != null)
+		if((profile = getProfile(programName, profileName)) != null)
 				command = profile.getCommand(arguments);
 
 		return command; 

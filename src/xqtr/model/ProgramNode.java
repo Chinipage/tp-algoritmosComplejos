@@ -11,9 +11,16 @@ public class ProgramNode extends ModelNode {
 	private static Integer programCounter = 1;
 	private HashMap<String, String> variables;
 	private LinkedList<ProfileNode> profiles = new LinkedList<ProfileNode>();
+	private Boolean executable = true;
 
 	private void addNewProfile(Element profileNode, HashMap<String, String> declaredVaraibles) {
 		this.profiles.add(new ProfileNode(this, profileNode, declaredVaraibles));
+	}
+
+	protected void setUnexecutable(String motivo) {
+		if(executable)
+			logError("Program " + getAttribute("name") + " is not Executable because " + motivo);
+		executable = false;
 	}
 
 	public ProgramNode(Element programNode, HashMap<String, String> inheritedVariables){
@@ -46,11 +53,10 @@ public class ProgramNode extends ModelNode {
 		return "bin";
 	}
 
-	protected List<String> neccesaryAttributes() {
+	protected List<String> necessaryAttributes() {
 
-		List<String> attributesKeys = super.attributesKeys();
+		List<String> attributesKeys = new LinkedList<>();
 
-		attributesKeys.add("name");
 		attributesKeys.add("bin");
 
 		return attributesKeys;
@@ -111,9 +117,17 @@ public class ProgramNode extends ModelNode {
 		preProcessVaraibles(getAttribute(commandVariable()), var);
 	}
 
+	protected void checkNeccesaryAttributes() {
+		if(!necessaryAttributes().stream().allMatch(attribute -> attributes.containsKey(attribute)))
+			setUnexecutable("does not have all the necessary attributes (" + necessaryAttributes().toString() + ").");
+	}
+
 	protected void checkConsistency() {
 		checkCommandAttribute();
-		//checkNeccesaryAttributes();
-		//checkParametersConsistency();
+		checkNeccesaryAttributes();
+	}
+
+	protected Boolean isExecutable() {
+		return executable;
 	}
 }

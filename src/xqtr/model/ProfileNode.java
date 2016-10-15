@@ -32,7 +32,7 @@ public class ProfileNode extends ModelNode {
 
 	protected void setUnexecutable(String motivo) {
 		if(executable)
-			this.logError("Profile " + this.getAttribute("name") + " is not Executable because " + motivo);
+			logError("Profile " + getAttribute("name") + " is not Executable because " + motivo);
 		executable = false;
 		subProfiles.forEach(subProfile -> subProfile.setUnexecutable("parent profile is not Executable"));
 	}
@@ -43,20 +43,20 @@ public class ProfileNode extends ModelNode {
 		parent = p;
 
 		/*Genero el nuevo diccionario de variables para los perfiles*/
-		declaredVariables = this.deepCopyVariables(inheritedVariables);
-		declaredVariables.putAll(this.getVariables(profileNode));
+		declaredVariables = deepCopyVariables(inheritedVariables);
+		declaredVariables.putAll(getVariables(profileNode));
 		variables = declaredVariables;
 
 		initializeAttributes(profileNode, inheritedVariables);
 
 		parameterTags.forEach(parameterTag -> {
 			getChildNodesWithTag(profileNode, parameterTag).forEach((parameterNode) -> {
-				this.addNewParameter(parameterNode, declaredVariables);
+				addNewParameter(parameterNode, declaredVariables);
 			});
 		});
 
 		getChildNodesWithTag(profileNode, profileTag).forEach((subProfileNode) -> {
-			this.addNewProfile(subProfileNode, declaredVariables);
+			addNewProfile(subProfileNode, declaredVariables);
 		});
 
 		checkConsistency();
@@ -76,7 +76,7 @@ public class ProfileNode extends ModelNode {
 		return "args";
 	}
 
-	protected List<String> neccesaryAttributes() {
+	protected List<String> necessaryAttributes() {
 
 		List<String> attributesKeys = new ArrayList<>();
 
@@ -110,8 +110,8 @@ public class ProfileNode extends ModelNode {
 	}
 
 	protected void checkNeccesaryAttributes() {
-		if(!this.neccesaryAttributes().stream().allMatch(attribute -> attributes.containsKey(attribute)))
-			this.setUnexecutable("does not have all the necessary attributes (" + this.neccesaryAttributes().toString() + ").");
+		if(!necessaryAttributes().stream().allMatch(attribute -> attributes.containsKey(attribute)))
+			setUnexecutable("does not have all the necessary attributes (" + necessaryAttributes().toString() + ").");
 	}
 
 	protected void checkParametersConsistency() {
@@ -121,8 +121,8 @@ public class ProfileNode extends ModelNode {
 	}
 
 	protected void checkName() {
-		if(!this.hasAttribute("name"))
-			this.setAttribute("name", defaultProfileName());
+		if(!hasAttribute("name"))
+			setAttribute("name", defaultProfileName());
 	}
 
 	protected void checkConsistency() {
@@ -132,19 +132,18 @@ public class ProfileNode extends ModelNode {
 	}
 
 	private Boolean hasClass(String className) {
-		return this.hasAttribute("class") && this.getAttribute("class").contains(className);
+		return hasAttribute("class") && this.getAttribute("class").contains(className);
 	}
 
 	private Boolean isHidden() {
-		return this.hasClass("hidden");
+		return hasClass("hidden");
 	}
 
 	protected List<String> getProfilesNames() {
 
 		List<String> profiles = new LinkedList<String>();
 		
-		// TODO
-		if(!this.isHidden()) profiles.add((this.isExecutable() ? "" : "!") + this.getAttribute("name"));
+		if(!isHidden()) profiles.add((isExecutable() ? "" : "!") + getAttribute("name"));
 
 		subProfiles.forEach(profile -> profiles.addAll(profile.getProfilesNames()));
 

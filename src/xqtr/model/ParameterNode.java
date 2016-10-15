@@ -70,7 +70,7 @@ public abstract class ParameterNode extends ModelNode {
 	}
 
 	public Boolean hasClass(String className) {
-		return this.hasAttribute("class") && this.getAttribute("class").contains(className);
+		return hasAttribute("class") && getAttribute("class").contains(className);
 	}
 	
 	public String getID() {
