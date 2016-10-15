@@ -33,8 +33,10 @@
 			<file id="output" class="save"/>
 			<profile class="visible" name="Rotate by 90 degrees">
 				<var id="angle" value="90"/>
-				<choice id="direction" name="Clockwise" value="-1"/>
-				<choice id="direction" name="Counterclockwise" value="1"/>
+				<choiceGroup id="direction" value="1">
+					<choice name="Clockwise" value="-1"/>
+					<choice name="Counterclockwise" value="1"/>
+				</choiceGroup>
 			</profile>
 			<profile class="visible" name="Rotate by 180 degrees">
 				<var id="angle" value="180"/>

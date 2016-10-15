@@ -30,7 +30,8 @@ public abstract class ModelNode {
 	protected static final String programTag = "program";
 	protected static final String profileTag = "profile";
 	protected static final List<String> parameterTags = 
-			Support.listFromString("file, seq, range, text, choice");
+			Support.listFromString("file, seq, range, text, choiceGroup");
+	protected static final String choiseTag = "choice";
 	protected static final String variableTag = "var";
 	protected static final String xmlVersion = "1.0";
 
