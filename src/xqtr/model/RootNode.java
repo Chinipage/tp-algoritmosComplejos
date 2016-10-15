@@ -31,9 +31,21 @@ public class RootNode extends ModelNode {
 			Element rootElement = parseConfigXML();
 			
 			variables = getVariables(rootElement);
-	
-			this.elementList(rootElement.getElementsByTagName(programTag)).forEach(programNode -> {
+
+			getChildNodesWithTag(rootElement, programTag).forEach(programNode -> {
 				addNewProgram(programNode, variables);
+			});
+
+			programs.forEach(program -> {
+				List<ProgramNode> programsFiltered = new LinkedList<>();
+
+				programs.forEach(program1 -> {
+					if(program1.getAttribute("name").equals(program.getAttribute("name")))
+						programsFiltered.add(program);
+				});
+				if(programsFiltered.size() > 1) {
+					programsFiltered.forEach(programFiltered -> programFiltered.setUnexecutable("there is more than one program with this name"));
+				}
 			});
 		}finally {
 			closeErrorLogFile();

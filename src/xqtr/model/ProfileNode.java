@@ -37,7 +37,7 @@ public class ProfileNode extends ModelNode {
 		subProfiles.forEach(subProfile -> subProfile.setUnexecutable("parent profile is not Executable"));
 	}
 
-	ProfileNode(ModelNode p, Element profileNode, HashMap<String, String> inheritedVariables){
+	public ProfileNode(ModelNode p, Element profileNode, HashMap<String, String> inheritedVariables) {
 
 		HashMap<String, String> declaredVariables;
 		parent = p;
@@ -175,5 +175,12 @@ public class ProfileNode extends ModelNode {
 		param.addAll(parameters);
 		subProfiles.forEach(subProfile -> param.addAll(subProfile.getParametersTopDown()));
 		return param;
+	}
+
+	protected List<ProfileNode> getAllProfiles() {
+		List<ProfileNode> allProfiles = new LinkedList<>();
+		allProfiles.add(this);
+		subProfiles.forEach(subProfile -> allProfiles.addAll(subProfile.getAllProfiles()));
+		return allProfiles;
 	}
 }

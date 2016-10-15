@@ -37,6 +37,18 @@ public class ProgramNode extends ModelNode {
 			this.addNewProfile(profileNode, declaredVariables);
 		});
 
+		getAllProfiles().forEach(profile -> {
+			List<ProfileNode> profilesFiltered = new LinkedList<>();
+
+			getAllProfiles().forEach(profile1 -> {
+				if(profile1.getAttribute("name").equals(profile.getAttribute("name")))
+					profilesFiltered.add(profile);
+			});
+			if(profilesFiltered.size() > 1) {
+				profilesFiltered.forEach(profileFiltered -> profileFiltered.setUnexecutable("there is more than one profile with this name"));
+			}
+		});
+
 		checkConsistency();
 	}
 
@@ -60,6 +72,12 @@ public class ProgramNode extends ModelNode {
 		attributesKeys.add("bin");
 
 		return attributesKeys;
+	}
+
+	protected List<ProfileNode> getAllProfiles() {
+		List<ProfileNode> allProfiles = new LinkedList<>();
+		profiles.forEach(profile -> allProfiles.addAll(profile.getAllProfiles()));
+		return allProfiles;
 	}
 
 	protected List<String> getProfilesNames() {
