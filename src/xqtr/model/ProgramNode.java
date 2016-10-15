@@ -9,26 +9,28 @@ import org.w3c.dom.Element;
 public class ProgramNode extends ModelNode {
 
 	private static Integer programCounter = 1;
+	private HashMap<String, String> variables;
 	private LinkedList<ProfileNode> profiles = new LinkedList<ProfileNode>();
 
 	private void addNewProfile(Element profileNode, HashMap<String, String> declaredVaraibles) {
 		this.profiles.add(new ProfileNode(this, profileNode, declaredVaraibles));
 	}
 
-	public ProgramNode(Element programNode, HashMap<String, String> variables){
+	public ProgramNode(Element programNode, HashMap<String, String> inheritedVariables){
 
 		HashMap<String, String> declaredVariables;
 
 		/*Genero el nuevo diccionario de variables para los perfiles*/
-		declaredVariables = this.deepCopyVariables(variables);
+		declaredVariables = this.deepCopyVariables(inheritedVariables);
 		declaredVariables.putAll(this.getVariables(programNode));
+		variables = declaredVariables;
 	
-		this.initializeAttributes(programNode, variables);
-		
+		this.initializeAttributes(programNode, inheritedVariables);		
 		getChildNodesWithTag(programNode, profileTag).forEach((profileNode) -> {
 			this.addNewProfile(profileNode, declaredVariables);
 		});
 
+		checkConsistency();
 	}
 
 	protected  List<String> attributesKeys() {
@@ -38,6 +40,10 @@ public class ProgramNode extends ModelNode {
 		attributesKeys.add("bin");
 
 		return attributesKeys;
+	}
+
+	protected String commandVariable() {
+		return "bin";
 	}
 
 	protected List<String> neccesaryAttributes() {
@@ -70,8 +76,10 @@ public class ProgramNode extends ModelNode {
 		return null;
 	}
 
-	protected String getCommand() {
-		return this.getAttribute("bin");
+	protected String getCommand(HashMap<String, String> arguments) {
+		HashMap<String, String> var = deepCopyVariables(variables);
+		arguments.forEach((id,value) -> var.put(id, value));
+		return replaceVariables(getAttribute("bin"), var);
 	}
 
 	protected void checkName() {
@@ -83,5 +91,29 @@ public class ProgramNode extends ModelNode {
 		String defaultProfileName = "Default" + programCounter.toString();
 		programCounter = programCounter + 1;
 		return defaultProfileName;
+	}
+
+	protected List<ParameterNode> getParametersTopDown() {
+		List<ParameterNode> parameters = new LinkedList<>();
+		profiles.forEach(profile -> parameters.addAll(profile.getParametersTopDown()));
+		return parameters;
+	}
+
+	protected List<String> getArgumentIds() {
+		List<String> arguments = new LinkedList<>();
+		getParametersTopDown().forEach(parameter -> arguments.add(parameter.getAttribute("id")));
+		return arguments;
+	}
+
+	protected void checkCommandAttribute() {
+		List<String> var = getArgumentIds();
+		variables.forEach((id,value) -> var.add(id));
+		preProcessVaraibles(getAttribute(commandVariable()), var);
+	}
+
+	protected void checkConsistency() {
+		checkCommandAttribute();
+		//checkNeccesaryAttributes();
+		//checkParametersConsistency();
 	}
 }

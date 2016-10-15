@@ -1,6 +1,7 @@
 package xqtr.model;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.w3c.dom.Element;
@@ -48,7 +49,7 @@ public abstract class ParameterNode extends ModelNode {
 
 	protected List<String> neccesaryAttributes() {
 
-		List<String> attributesKeys = super.attributesKeys();
+		List<String> attributesKeys = new LinkedList<>();
 
 		attributesKeys.add("id");
 
@@ -56,8 +57,7 @@ public abstract class ParameterNode extends ModelNode {
 	}
 
 	protected Boolean isExecutable() {
-
-		return this.neccesaryAttributes().stream().allMatch(attribute -> attributes.containsKey(attribute));
+		return neccesaryAttributes().stream().allMatch(attribute -> attributes.containsKey(attribute));
 	}
 
 	//Interfaz para la vista---------------------------------------------------------------------

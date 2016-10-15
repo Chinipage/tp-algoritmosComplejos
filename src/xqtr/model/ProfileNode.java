@@ -10,8 +10,9 @@ import org.w3c.dom.Element;
 public class ProfileNode extends ModelNode {
 
 	private static Integer profileCounter = 1;
-	private LinkedList<ProfileNode> subProfiles = new LinkedList<ProfileNode>();
-	private LinkedList<ParameterNode> parameters = new LinkedList<ParameterNode>();
+	private HashMap<String,String> variables;
+	private List<ProfileNode> subProfiles = new LinkedList<ProfileNode>();
+	private List<ParameterNode> parameters = new LinkedList<ParameterNode>();
 	private ModelNode parent;	//Solo deberia tener Profile o Program
 	private Boolean executable = true;
 
@@ -36,28 +37,29 @@ public class ProfileNode extends ModelNode {
 		subProfiles.forEach(subProfile -> subProfile.setUnexecutable("parent profile is not Executable"));
 	}
 
-	ProfileNode(ModelNode p, Element profileNode, HashMap<String, String> variables){
+	ProfileNode(ModelNode p, Element profileNode, HashMap<String, String> inheritedVariables){
 
 		HashMap<String, String> declaredVariables;
 		parent = p;
 
 		/*Genero el nuevo diccionario de variables para los perfiles*/
-		declaredVariables = this.deepCopyVariables(variables);
+		declaredVariables = this.deepCopyVariables(inheritedVariables);
 		declaredVariables.putAll(this.getVariables(profileNode));
+		variables = declaredVariables;
 
-		initializeAttributes(profileNode, variables);
+		initializeAttributes(profileNode, inheritedVariables);
 
-		getChildNodesWithTag(profileNode, profileTag).forEach((subProfileNode) -> {
-			this.addNewProfile(subProfileNode, declaredVariables);
-		});
-		
 		parameterTags.forEach(parameterTag -> {
-			this.elementList(profileNode.getElementsByTagName(parameterTag)).forEach((parameterNode) -> {
+			getChildNodesWithTag(profileNode, parameterTag).forEach((parameterNode) -> {
 				this.addNewParameter(parameterNode, declaredVariables);
 			});
 		});
 
-		this.checkConsistency();
+		getChildNodesWithTag(profileNode, profileTag).forEach((subProfileNode) -> {
+			this.addNewProfile(subProfileNode, declaredVariables);
+		});
+
+		checkConsistency();
 
 	}
 
@@ -68,6 +70,10 @@ public class ProfileNode extends ModelNode {
 		attributesKeys.add("args");
 
 		return attributesKeys;
+	}
+
+	protected String commandVariable() {
+		return "args";
 	}
 
 	protected List<String> neccesaryAttributes() {
@@ -89,9 +95,23 @@ public class ProfileNode extends ModelNode {
 		return defaultProfileName;
 	}
 
+	protected List<String> getArgumentIds() {
+		List<String> arguments = new LinkedList<>();
+		getParameters().forEach(parameter -> arguments.add(parameter.getAttribute("id")));
+		return arguments;
+	}
+
+	protected void checkCommandAttribute() {
+		List<String> var = getArgumentIds();
+		variables.forEach((id,value) -> var.add(id));
+		if(hasAttribute(commandVariable())) {
+			preProcessVaraibles(getAttribute(commandVariable()), var);
+		}
+	}
+
 	protected void checkNeccesaryAttributes() {
 		if(!this.neccesaryAttributes().stream().allMatch(attribute -> attributes.containsKey(attribute)))
-			this.setUnexecutable("no posee todos los atributos necesarios (" + this.neccesaryAttributes().toString() + ").");
+			this.setUnexecutable("does not have all the necessary attributes (" + this.neccesaryAttributes().toString() + ").");
 	}
 
 	protected void checkParametersConsistency() {
@@ -106,6 +126,7 @@ public class ProfileNode extends ModelNode {
 	}
 
 	protected void checkConsistency() {
+		checkCommandAttribute();
 		checkNeccesaryAttributes();
 		checkParametersConsistency();
 	}
@@ -123,7 +144,7 @@ public class ProfileNode extends ModelNode {
 		List<String> profiles = new LinkedList<String>();
 		
 		// TODO
-		if(!this.isHidden()) profiles.add((this.isExecutable() ? "" : "") + this.getAttribute("name"));
+		if(!this.isHidden()) profiles.add((this.isExecutable() ? "" : "!") + this.getAttribute("name"));
 
 		subProfiles.forEach(profile -> profiles.addAll(profile.getProfilesNames()));
 
@@ -144,7 +165,16 @@ public class ProfileNode extends ModelNode {
 		return null;
 	}
 
-	protected String getCommand() {
-		return parent.getCommand() + this.getAttribute("args");
+	protected String getCommand(HashMap<String, String> arguments) {
+		HashMap<String, String> var = deepCopyVariables(variables);
+		arguments.forEach((id,value) -> var.put(id, value));
+		return parent.getCommand(arguments) + replaceVariables(getAttribute("args"), var);
+	}
+
+	protected List<ParameterNode> getParametersTopDown() {
+		List<ParameterNode> param = new LinkedList<>();
+		param.addAll(parameters);
+		subProfiles.forEach(subProfile -> param.addAll(subProfile.getParametersTopDown()));
+		return param;
 	}
 }

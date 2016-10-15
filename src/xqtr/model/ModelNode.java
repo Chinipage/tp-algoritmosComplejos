@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -72,11 +71,25 @@ public abstract class ModelNode {
 		}
 	}
 
-	protected String replaceVariables(String string, HashMap<String, String> variables){
+	protected void preProcessVaraibles(String string, HashMap<String, String> variableIds) {
+		processVariables(string, variableIds, false);
+	}
+
+	protected void preProcessVaraibles(String string, List<String> variableIds) {
+		HashMap<String, String> mapedVariables = new HashMap<>();
+		variableIds.forEach(id -> mapedVariables.put(id, ""));
+		preProcessVaraibles(string, mapedVariables);
+	}
+
+	protected String replaceVariables(String string, HashMap<String, String> variables) {
+		return processVariables(string, variables, true);
+	}
+
+	protected String processVariables(String string, HashMap<String, String> variables, Boolean replace){
 
 		StringBuffer replacedString = new StringBuffer();
 		Pattern variablePattern = Pattern.compile("(?:\\{)([^}]*)(?:\\})"),
-				idPattern = Pattern.compile("(_?[A-Za-z_][A-Za-z_0-9]*)"),
+				idPattern = Pattern.compile("([A-Za-z_][A-Za-z_0-9]*)"),
 				equationPattern = Pattern.compile("^([0-9]+\\s*[-+*/]\\s*[0-9]+(\\s*[-+*/]\\s*[0-9]+)*)$");
 		ScriptEngineManager mgr = new ScriptEngineManager();
 	    ScriptEngine engine = mgr.getEngineByName("JavaScript");
@@ -91,7 +104,7 @@ public abstract class ModelNode {
 			//Reemplazo las variables con los ids que tenga en el HashMap.
 			while(idMatcher.find()) {
 				if(variables.containsKey(idMatcher.group(1)))
-					idMatcher.appendReplacement(resultBuffer, variables.get(idMatcher.group(1)));
+						idMatcher.appendReplacement(resultBuffer, variables.get(idMatcher.group(1)));
 				else {
 					setUnexecutable("the variable " + idMatcher.group(1) + " could not be replaced");
 					idMatcher.appendReplacement(resultBuffer, "");
@@ -116,11 +129,11 @@ public abstract class ModelNode {
 
 		variableMatcher.appendTail(replacedString);
 
-		return replacedString.toString();
+		return replace ? replacedString.toString() : string;
 	}
 
 	protected Boolean isValidVariableId(String id) {
-		Pattern pattern = Pattern.compile("^(_?[A-Za-z_][A-Za-z_0-9]*)$");
+		Pattern pattern = Pattern.compile("^([A-Za-z_][A-Za-z_0-9]*)$");
 	    return pattern.matcher(id).matches();
 	}
 
@@ -178,7 +191,10 @@ public abstract class ModelNode {
 	}
 
 	protected void replaceAttributes(HashMap<String, String> variables) {
-		attributes.forEach((id,value) -> setAttribute(id, replaceVariables(value, variables)));
+		attributes.forEach((id,value) -> {
+			if(!id.equals(commandVariable()))
+				setAttribute(id, replaceVariables(value, variables));
+		});
 	}
 
 	protected void initializeAttributes(Element node, HashMap<String, String> variables) {
@@ -196,7 +212,17 @@ public abstract class ModelNode {
 		return attributesKeys;
 	}
 
-	protected String getCommand() {
+	protected String commandVariable() {
+		return "";
+	}
+
+	protected List<String> configurationAttributes() {
+		List<String> attributes = attributesKeys();
+		attributes.remove(commandVariable());
+		return attributes;
+	}
+
+	protected String getCommand(HashMap<String, String> args) {
 		//Este metodo se redefine en RootNode, Program y Profile. No se usa en Parameter.
 		return "";
 	}
@@ -206,7 +232,7 @@ public abstract class ModelNode {
 	}
 	
 	protected List<ParameterNode> getParameters() {
-		return new ArrayList<>();
+		return new LinkedList<>();
 	}
 
 	protected List<Element> getChildNodesWithTag(Element element, String tag) {

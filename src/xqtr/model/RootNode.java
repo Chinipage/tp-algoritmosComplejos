@@ -127,7 +127,7 @@ public class RootNode extends ModelNode {
 		ProfileNode profile;
 		List<ParameterNode> parameters = new LinkedList<ParameterNode>();
 		
-		if((profile = this.getProfile(programName, profileName)) != null)
+		if((profile = getProfile(programName, profileName)) != null)
 			parameters.addAll(profile.getParameters());
 
 		return parameters;
@@ -139,7 +139,7 @@ public class RootNode extends ModelNode {
 		ProfileNode profile;
 
 		if((profile = this.getProfile(programName, profileName)) != null)
-				command = this.replaceVariables(profile.getCommand(), arguments);
+				command = profile.getCommand(arguments);
 
 		return command; 
 	}
