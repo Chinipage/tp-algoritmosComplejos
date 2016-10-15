@@ -47,7 +47,7 @@ public class ProfileNode extends ModelNode {
 
 		this.initializeAttributes(profileNode, variables);
 
-		this.elementList(profileNode.getElementsByTagName(profileTag)).forEach((subProfileNode) -> {
+		getChildNodesWithTag(profileNode, profileTag).forEach((subProfileNode) -> {
 			this.addNewProfile(subProfileNode, declaredVariables);
 		});
 		

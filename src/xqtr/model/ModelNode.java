@@ -201,4 +201,12 @@ public abstract class ModelNode {
 		return new ArrayList<>();
 	}
 
+	protected List<Element> getChildNodesWithTag(Element element, String tag) {
+		List<Element> childNodes = new LinkedList<>();
+		elementList(element.getElementsByTagName(tag)).forEach(child -> {
+			if(child.getParentNode().isEqualNode(element))
+				childNodes.add(child);
+		});
+		return childNodes;
+	}
 }
