@@ -27,15 +27,17 @@ public class RootNode extends ModelNode {
 
 		openErrorLogFile();
 
-		Element rootElement = parseConfigXML();
-		
-		variables = this.getVariables(rootElement);
-
-		this.elementList(rootElement.getElementsByTagName(programTag)).forEach(programNode -> {
-			this.addNewProgram(programNode, variables);
-		});
-
-		this.closeErrorLogFile();
+		try {
+			Element rootElement = parseConfigXML();
+			
+			variables = this.getVariables(rootElement);
+	
+			this.elementList(rootElement.getElementsByTagName(programTag)).forEach(programNode -> {
+				this.addNewProgram(programNode, variables);
+			});
+		}finally {
+			this.closeErrorLogFile();
+		}
 	}
 	
 	private Element parseConfigXML() {

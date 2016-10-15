@@ -93,7 +93,7 @@ public abstract class ModelNode {
 				if(variables.containsKey(idMatcher.group(1)))
 					idMatcher.appendReplacement(resultBuffer, variables.get(idMatcher.group(1)));
 				else {
-					this.setUnexecutable("la variable " + idMatcher.group(1) + " no pudo ser reemplazada");
+					setUnexecutable("the variable " + idMatcher.group(1) + " could not be replaced");
 					idMatcher.appendReplacement(resultBuffer, "");
 				}
 			}
@@ -133,12 +133,8 @@ public abstract class ModelNode {
 			String id = variable.getAttribute("id"),
 				value = variable.getAttribute("value");
 
-			/*TODO encontrar la manera de tener aca las vriables
-			 * anteriores para poder reemplazar en las actuales. Por ahora
-			 * no puede haber variables de variables.
-			 */
 			if(this.isValidVariableId(id))
-				variables.put(id, this.replaceVariables(value, variables));
+				variables.put(id, value);
 			else
 				this.logError("Invalid variable Id: " + id);
 		});
@@ -169,13 +165,25 @@ public abstract class ModelNode {
 		return newVariables;
 	}
 
-	protected void initializeAttributes(Element node, HashMap<String, String> variables) {
-
-		this.attributesKeys().forEach(attributeKey -> {
+	protected void loadAttributes(Element node) {
+		attributesKeys().forEach(attributeKey -> {
 			if(node.hasAttribute(attributeKey))
-				attributes.put(attributeKey, this.replaceVariables(node.getAttribute(attributeKey), variables));
+				attributes.put(attributeKey, node.getAttribute(attributeKey));
 		});
+		checkName();
+	}
 
+	protected void checkName() {
+		//No hace nada
+	}
+
+	protected void replaceAttributes(HashMap<String, String> variables) {
+		attributes.forEach((id,value) -> setAttribute(id, replaceVariables(value, variables)));
+	}
+
+	protected void initializeAttributes(Element node, HashMap<String, String> variables) {
+		loadAttributes(node);
+		replaceAttributes(variables);
 	}
 
 	protected  List<String> attributesKeys() {

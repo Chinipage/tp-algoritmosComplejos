@@ -8,6 +8,7 @@ import org.w3c.dom.Element;
 
 public class ProgramNode extends ModelNode {
 
+	private static Integer programCounter = 1;
 	private LinkedList<ProfileNode> profiles = new LinkedList<ProfileNode>();
 
 	private void addNewProfile(Element profileNode, HashMap<String, String> declaredVaraibles) {
@@ -73,4 +74,14 @@ public class ProgramNode extends ModelNode {
 		return this.getAttribute("bin");
 	}
 
+	protected void checkName() {
+		if(!this.hasAttribute("name"))
+			this.setAttribute("name", defaultProgramName());
+	}
+
+	private String defaultProgramName() {
+		String defaultProfileName = "Default" + programCounter.toString();
+		programCounter = programCounter + 1;
+		return defaultProfileName;
+	}
 }

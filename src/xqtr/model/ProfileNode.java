@@ -9,6 +9,7 @@ import org.w3c.dom.Element;
 
 public class ProfileNode extends ModelNode {
 
+	private static Integer profileCounter = 1;
 	private LinkedList<ProfileNode> subProfiles = new LinkedList<ProfileNode>();
 	private LinkedList<ParameterNode> parameters = new LinkedList<ParameterNode>();
 	private ModelNode parent;	//Solo deberia tener Profile o Program
@@ -29,11 +30,10 @@ public class ProfileNode extends ModelNode {
 	}
 
 	protected void setUnexecutable(String motivo) {
-		if(executable) {
-			executable = false;
+		if(executable)
 			this.logError("Profile " + this.getAttribute("name") + " is not Executable because " + motivo);
-			subProfiles.forEach(subProfile -> subProfile.setUnexecutable("parent profile is not Executable"));
-		}
+		executable = false;
+		subProfiles.forEach(subProfile -> subProfile.setUnexecutable("parent profile is not Executable"));
 	}
 
 	ProfileNode(ModelNode p, Element profileNode, HashMap<String, String> variables){
@@ -45,7 +45,7 @@ public class ProfileNode extends ModelNode {
 		declaredVariables = this.deepCopyVariables(variables);
 		declaredVariables.putAll(this.getVariables(profileNode));
 
-		this.initializeAttributes(profileNode, variables);
+		initializeAttributes(profileNode, variables);
 
 		getChildNodesWithTag(profileNode, profileTag).forEach((subProfileNode) -> {
 			this.addNewProfile(subProfileNode, declaredVariables);
@@ -83,6 +83,12 @@ public class ProfileNode extends ModelNode {
 		return executable;
 	}
 
+	private String defaultProfileName() {
+		String defaultProfileName = "Default" + profileCounter.toString();
+		profileCounter = profileCounter + 1;
+		return defaultProfileName;
+	}
+
 	protected void checkNeccesaryAttributes() {
 		if(!this.neccesaryAttributes().stream().allMatch(attribute -> attributes.containsKey(attribute)))
 			this.setUnexecutable("no posee todos los atributos necesarios (" + this.neccesaryAttributes().toString() + ").");
@@ -94,9 +100,14 @@ public class ProfileNode extends ModelNode {
 		}
 	}
 
+	protected void checkName() {
+		if(!this.hasAttribute("name"))
+			this.setAttribute("name", defaultProfileName());
+	}
+
 	protected void checkConsistency() {
-		this.checkNeccesaryAttributes();
-		this.checkParametersConsistency();
+		checkNeccesaryAttributes();
+		checkParametersConsistency();
 	}
 
 	private Boolean hasClass(String className) {
