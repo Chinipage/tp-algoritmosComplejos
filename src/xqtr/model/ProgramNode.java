@@ -3,15 +3,17 @@ package xqtr.model;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.w3c.dom.Element;
 
 public class ProgramNode extends ModelNode {
 
-	private static Integer programCounter = 1;
+	private Integer profileCounter = 1;
 	private HashMap<String, String> variables;
 	private LinkedList<ProfileNode> profiles = new LinkedList<ProfileNode>();
 	private Boolean executable = true;
+	private RootNode parent = null;
 
 	private void addNewProfile(Element profileNode, HashMap<String, String> declaredVaraibles) {
 		this.profiles.add(new ProfileNode(this, profileNode, declaredVaraibles));
@@ -23,9 +25,10 @@ public class ProgramNode extends ModelNode {
 		executable = false;
 	}
 
-	public ProgramNode(Element programNode, HashMap<String, String> inheritedVariables){
+	public ProgramNode(RootNode p, Element programNode, HashMap<String, String> inheritedVariables){
 
 		HashMap<String, String> declaredVariables;
+		parent = p;
 
 		/*Genero el nuevo diccionario de variables para los perfiles*/
 		declaredVariables = this.deepCopyVariables(inheritedVariables);
@@ -100,21 +103,19 @@ public class ProgramNode extends ModelNode {
 		return null;
 	}
 
-	protected String getCommand(HashMap<String, String> arguments) {
+	protected String getCommand(Map<String, String> arguments) {
 		HashMap<String, String> var = deepCopyVariables(variables);
 		arguments.forEach((id,value) -> var.put(id, value));
 		return replaceVariables(getAttribute("bin"), var);
 	}
 
 	protected void checkName() {
-		if(!this.hasAttribute("name"))
-			this.setAttribute("name", defaultProgramName());
+		if(!hasAttribute("name"))
+			setAttribute("name", defaultProgramName());
 	}
 
 	private String defaultProgramName() {
-		String defaultProfileName = "Default" + programCounter.toString();
-		programCounter = programCounter + 1;
-		return defaultProfileName;
+		return parent.defaultProgramName();
 	}
 
 	protected List<ParameterNode> getParametersTopDown() {
@@ -148,4 +149,15 @@ public class ProgramNode extends ModelNode {
 	protected Boolean isExecutable() {
 		return executable;
 	}
+
+	protected String defaultProfileName() {
+		String name = "Default" + profileCounter.toString();
+		profileCounter = profileCounter + 1;
+		return name;
+	}
+
+	protected ProgramNode program() {
+		return this;
+	}
+
 }

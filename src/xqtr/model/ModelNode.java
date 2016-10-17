@@ -102,7 +102,7 @@ public abstract class ModelNode {
 			StringBuffer resultBuffer = new StringBuffer();
 			String resultReplacement;
 			Matcher idMatcher = idPattern.matcher(variableMatcher.group(1)), equationMatcher;
-
+		
 			//Reemplazo las variables con los ids que tenga en el HashMap.
 			while(idMatcher.find()) {
 				if(variables.containsKey(idMatcher.group(1)))
@@ -244,5 +244,9 @@ public abstract class ModelNode {
 				childNodes.add(child);
 		});
 		return childNodes;
+	}
+
+	protected ProgramNode program() {
+		return null;
 	}
 }

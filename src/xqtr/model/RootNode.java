@@ -21,6 +21,7 @@ import xqtr.util.Support;
 public class RootNode extends ModelNode {
 
 	private LinkedList<ProgramNode> programs = new LinkedList<ProgramNode>();
+	private Integer programCounter = 1;
 
 	public RootNode() {
 
@@ -93,8 +94,7 @@ public class RootNode extends ModelNode {
 	}
 
 	private void addNewProgram(Element programNode, HashMap<String, String> variables){
-
-		this.programs.add(new ProgramNode(programNode, variables));
+		programs.add(new ProgramNode(this, programNode, variables));
 	}
 
 	private ProgramNode getProgram(String programName) {
@@ -151,10 +151,16 @@ public class RootNode extends ModelNode {
 		String command = null;
 		ProfileNode profile;
 
-		if((profile = getProfile(programName, profileName)) != null)
-				command = profile.getCommand(arguments);
+		if((profile = getProfile(programName, profileName)) != null) {
+			command = profile.getCommand(arguments);
+		}
 
 		return command; 
 	}
 
+	protected String defaultProgramName() {
+		String defaultProfileName = "Default" + programCounter.toString();
+		programCounter = programCounter + 1;
+		return defaultProfileName;
+	}
 }

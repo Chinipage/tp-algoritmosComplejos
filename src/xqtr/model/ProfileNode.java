@@ -4,16 +4,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.w3c.dom.Element;
 
 public class ProfileNode extends ModelNode {
 
-	private static Integer profileCounter = 1;
 	private HashMap<String,String> variables;
 	private List<ProfileNode> subProfiles = new LinkedList<ProfileNode>();
 	private List<ParameterNode> parameters = new LinkedList<ParameterNode>();
-	private ModelNode parent;	//Solo deberia tener Profile o Program
+	private ModelNode parent = null;	//Solo deberia tener Profile o Program
 	private Boolean executable = true;
 
 	private void addNewProfile(Element profileNode, HashMap<String, String> variables) {
@@ -89,10 +89,12 @@ public class ProfileNode extends ModelNode {
 		return executable;
 	}
 
+	protected ProgramNode program() {
+		return parent.program();
+	}
+
 	private String defaultProfileName() {
-		String defaultProfileName = "Default" + profileCounter.toString();
-		profileCounter = profileCounter + 1;
-		return defaultProfileName;
+		return program().defaultProfileName();
 	}
 
 	protected List<String> getArgumentIds() {
@@ -164,10 +166,14 @@ public class ProfileNode extends ModelNode {
 		return null;
 	}
 
-	protected String getCommand(HashMap<String, String> arguments) {
+	protected String getCommand(Map<String, String> arguments) {
 		HashMap<String, String> var = deepCopyVariables(variables);
+		String tmp = "";
 		arguments.forEach((id,value) -> var.put(id, value));
-		return parent.getCommand(arguments) + replaceVariables(getAttribute("args"), var);
+		tmp = parent.getCommand(arguments);
+		if(hasAttribute("args"))
+			 tmp = tmp + replaceVariables(getAttribute("args"), var);
+		return tmp;
 	}
 
 	protected List<ParameterNode> getParametersTopDown() {
