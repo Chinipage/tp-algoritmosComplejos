@@ -92,7 +92,7 @@ public abstract class ModelNode {
 		StringBuffer replacedString = new StringBuffer();
 		Pattern variablePattern = Pattern.compile("(?:\\{)([^}]*)(?:\\})"),
 				idPattern = Pattern.compile("([A-Za-z_][A-Za-z_0-9]*)"),
-				equationPattern = Pattern.compile("^([0-9]+\\s*[-+*/]\\s*[0-9]+(\\s*[-+*/]\\s*[0-9]+)*)$");
+				equationPattern = Pattern.compile("^([0-9]+(.[0-9])*\\s*[-+*/]\\s*[0-9]+(.[0-9])*(\\s*[-+*/]\\s*[0-9](.[0-9])*+)*)$");
 		ScriptEngineManager mgr = new ScriptEngineManager();
 	    ScriptEngine engine = mgr.getEngineByName("JavaScript");
 		Matcher variableMatcher = variablePattern.matcher(string); 
@@ -118,13 +118,14 @@ public abstract class ModelNode {
 
 			//Si lo que quedo es una ecuacion, resuelvo la ecuacion.
 			equationMatcher = equationPattern.matcher(resultBuffer);
-			if(equationMatcher.matches())
+			if(equationMatcher.matches()) {
 				try {
 					resultReplacement = engine.eval(resultReplacement).toString();
 				} catch (ScriptException e1) {
 					e1.printStackTrace();
 					this.setUnexecutable(e1.getMessage());
 				}
+			}
 
 			variableMatcher.appendReplacement(replacedString, resultReplacement);
 		}
