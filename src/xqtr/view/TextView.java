@@ -11,7 +11,7 @@ import xqtr.Application;
 import xqtr.util.Support;
 
 @SuppressWarnings("serial")
-public class TextView extends AbstractControl {
+public class TextView extends Control {
 	
 	private JPasswordField textField = new JPasswordField();
 	private ActionListener deleteAction = e -> textField.replaceSelection("");
@@ -36,7 +36,7 @@ public class TextView extends AbstractControl {
 	public void setConcealed(boolean concealed) {
 		
 		if(concealed) {
-			textField.setEchoChar('�');
+			textField.setEchoChar('\u2022');
 		} else {
 			textField.setEchoChar((char)0);
 		}
@@ -47,7 +47,9 @@ public class TextView extends AbstractControl {
 	}
 	
 	public void setValue(String value) {
-		textField.setText(value);
+		if(value != null) {
+			textField.setText(value);
+		}
 	}
 	
 	private void changeListener(ChangeEvent e) {

@@ -5,7 +5,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -49,11 +48,11 @@ public class MenuBar extends JMenuBar {
 		add("File/_Reload Config|R", e -> {
 			getItem("Execute").setEnabled(false);
 			Application.frame.runButton.setEnabled(false);
-			Application.controller.loadConfig();
-			Application.frame.page.load();
+			Application.frame.load();
+			Support.delay(() -> Application.controller.loadConfig());
 		});
 		add("File/-");
-		add("File/_Quit|Q", e -> System.exit(0));
+		add("File/_Quit|Q", e -> Support.delay(() -> System.exit(0)));
 		
 		add("_Edit/Undo").setAction(Application.undoHandler.getUndoAction());
 		add("Edit/Redo").setAction(Application.undoHandler.getRedoAction());
@@ -144,9 +143,8 @@ public class MenuBar extends JMenuBar {
 		pasteItem.setMnemonic('P');
 		pasteItem.setAccelerator(KeyStroke.getKeyStroke("control V"));
 		
-		Action action = Arrays.asList(new JTextField().getActions()).stream().filter(a -> {
-			return a.getValue(Action.NAME).equals(DefaultEditorKit.selectAllAction);
-		}).findFirst().get();
+		Action action = Support.find(a -> a.getValue(Action.NAME).equals(DefaultEditorKit.selectAllAction),
+				Support.list(new JTextField().getActions()));
 		
 		add("Edit/_Delete").setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
 		
@@ -178,11 +176,11 @@ public class MenuBar extends JMenuBar {
 	}
 	
 	public JMenu getMenu(String name) {
-		return menus.stream().filter(o -> o.getText().equals(name)).findFirst().orElse(null);
+		return Support.find(o -> o.getText().equals(name), menus);
 	}
 	
 	public JMenuItem getItem(String name) {
-		return items.stream().filter(o -> o.getText().equals(name)).findFirst().orElse(null);
+		return Support.find(o -> o.getText().equals(name), items);
 	}
 	
 	public JMenuItem add(String path) {

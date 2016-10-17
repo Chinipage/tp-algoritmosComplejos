@@ -3,10 +3,21 @@ package xqtr.view;
 import javax.swing.JLabel;
 import javax.swing.JSlider;
 
+import xqtr.util.Support;
+
 @SuppressWarnings("serial")
 public class RangeView extends Unitable {
 	
-	JSlider slider;
+	private JSlider slider = new JSlider();
+	private JLabel minLabel = new JLabel();
+	private JLabel maxLabel = new JLabel();
+	
+	private Integer min;
+	private Integer max;
+	
+	public RangeView() {
+		this(0, 100);
+	}
 	
 	public RangeView(int min, int max) {
 		this(min, max, (max - min) / 2);
@@ -18,39 +29,67 @@ public class RangeView extends Unitable {
 	
 	public RangeView(int min, int max, int value, int step) {
 		
-		slider = new JSlider(min, max);
+		this.min = min;
+		this.max = max;
+		
 		slider.setPaintTicks(true);
 		slider.setSnapToTicks(true);
-		slider.setMajorTickSpacing((max - min) / 2);
 		slider.setFont(defaultFont);
-		setStep(step);
-		setValue(value);
 		
-		add(new JLabel(Integer.toString(min)));
+		setMinimum(min);
+		setMaximum(max);
+		setValue(value);
+		setStep(step);
+		
+		add(minLabel);
 		add(createSeparator());
 		add(slider);
 		add(createSeparator());
-		add(new JLabel(Integer.toString(max)));
+		add(maxLabel);
 	}
 	
-	public void setMinimum(int min) {
+	private void updateLimits() {
+		
 		slider.setMinimum(min);
-	}
-	
-	public void setMaximum(int max) {
 		slider.setMaximum(max);
+		slider.setMajorTickSpacing((max - min) / 2);
+		minLabel.setText(Integer.toString(min));
+		maxLabel.setText(Integer.toString(max));
 	}
 	
-	public void setStep(int step) {
-		int range = slider.getMaximum() - slider.getMinimum();
-		slider.setMinorTickSpacing(range * step / range);
+	public void setMinimum(Integer min) {
+		if(min != null) {
+			this.min = min;
+			updateLimits();
+		}
+	}
+	
+	public void setMaximum(Integer max) {
+		if(max != null) {
+			this.max = max;
+			updateLimits();
+		}
+	}
+	
+	public void setStep(Integer step) {
+		if(step != null) {
+			int range = slider.getMaximum() - slider.getMinimum();
+			slider.setMinorTickSpacing(range * step / range);
+		} else {
+			setStep((max - min) * 1 / 10);
+		}
 	}
 	
 	public void setValue(String value) {
-		setValue(Integer.parseInt(value));
+		Integer intValue = Support.integerFromString(value);
+		if(intValue != null) {
+			setValue(intValue);
+		} else {
+			setValue((max - min) / 2);
+		}
 	}
 	
-	public void setValue(int value) {
+	public void setValue(Integer value) {
 		slider.setValue(value);
 	}
 	

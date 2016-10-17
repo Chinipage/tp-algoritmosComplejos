@@ -3,7 +3,7 @@
 	
 	<!-- Caso de prueba 1 -->
 	<program name="Audio to Video" bin="{video_editor} -i {audio} -i {image} -o {video}">
-		<profile name="Default">
+		<profile>
 			<file id="audio" name="Audio source" class="open" format="mp3 wav aac" maxsize="10MB"/>
 			<file id="image" name="Image source" class="open" format="jpg jpeg png" maxsize="1MB"/>
 			<file id="video" name="Video target" class="save" format="mp4 mov avi" value="out.mp4"/>
@@ -15,7 +15,7 @@
 	</program>
 	
 	<!-- Caso de prueba 2 -->
-	<program name="Video Trimmer" bin="{video_editor} -s {source} -o {output} --start {from}">
+	<program name="Video Trimmer" bin="{video_editor} -s {input} -o {output} --start {from}">
 		<profile name="Trim from given time to end">
 			<file id="input"/>
 			<file id="output" action="save" value="trimmed_video.avi"/>
@@ -27,20 +27,20 @@
 	</program>
 	
 	<!-- Caso de prueba 3 -->
-	<program name="Video Rotator" bin="{video_editor} -s {source} -o {output} --rotate {angle * direction}">
+	<program name="Video Rotator" bin="{video_editor} -s {input} -o {output} --rotate {angle * direction}">
 		<profile class="hidden">
 			<file id="input"/>
 			<file id="output" class="save"/>
 			<profile class="visible" name="Rotate by 90 degrees">
 				<var id="angle" value="90"/>
-				<choiceGroup id="direction" value="1">
+				<choicegroup id="direction" value="1">
 					<choice name="Clockwise" value="-1"/>
 					<choice name="Counterclockwise" value="1"/>
-				</choiceGroup>
+				</choicegroup>
 			</profile>
 			<profile class="visible" name="Rotate by 180 degrees">
 				<var id="angle" value="180"/>
-				<check id="direction" name="Rotate" yvalue="1" nvalue="0"/>
+				<check id="direction" name="Rotate" class="selected" yvalue="1" nvalue="0" value="Yes/No"/>
 			</profile>
 		</profile>
 	</program>
@@ -50,6 +50,8 @@
 		<profile>
 			<file id="files" class="open multiple" name="Files to merge" format="wav"/>
 			<file id="output" class="save" format="wav" name="Combined file" value="merge.wav"/>
+			<text id="test"/>
+			<text id="test2" class="concealed"/>
 		</profile>
 	</program>
 </xqtr>

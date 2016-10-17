@@ -5,6 +5,9 @@ import java.util.List;
 
 import org.w3c.dom.Element;
 
+import xqtr.util.Support;
+import xqtr.view.SequenceView;
+
 public class SequenceNode extends ParameterNode {
 
 	SequenceNode(Element parameterNode, HashMap<String, String> variables) {
@@ -16,9 +19,42 @@ public class SequenceNode extends ParameterNode {
 		List<String> attributesKeys = super.attributesKeys();
 
 		attributesKeys.add("type");
-		attributesKeys.add("format");
+		attributesKeys.add("min");
+		attributesKeys.add("max");
+		attributesKeys.add("step");
+		attributesKeys.add("unit");
 
 		return attributesKeys;
 	}
+	
+	public String getType() {
+		return getAttribute("type");
+	}
+	
+	public Double getMinimum() {
+		return Support.doubleFromString(getAttribute("min"));
+	}
+	
+	public Double getMaximum() {
+		return Support.doubleFromString(getAttribute("max"));
+	}
+	
+	public Double getStep() {
+		return Support.doubleFromString(getAttribute("step"));
+	}
+	
+	public String getUnit() {
+		return getAttribute("unit");
+	}
 
+	public SequenceView getView() {
+		SequenceView view = new SequenceView(getType());
+		
+		view.setMinimum(getMinimum());
+		view.setMaximum(getMaximum());
+		view.setStep(getStep());
+		view.setUnit(getUnit());
+		
+		return view;
+	}
 }

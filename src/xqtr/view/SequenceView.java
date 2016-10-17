@@ -1,5 +1,7 @@
 package xqtr.view;
 
+import java.util.List;
+
 import javax.swing.JSpinner;
 import javax.swing.SpinnerDateModel;
 import javax.swing.SpinnerModel;
@@ -12,6 +14,8 @@ public class SequenceView extends Unitable {
 	
 	public static final int NUMBER = 0;
 	public static final int TIME = 1;
+	private static List<String> types = Support.listFromString("number, time");
+	
 	private int type;
 	
 	private JSpinner spinner = new JSpinner();
@@ -21,17 +25,21 @@ public class SequenceView extends Unitable {
 		this(NUMBER);
 	}
 	
+	public SequenceView(String type) {
+		this(Support.keyFromValue(types, type.toLowerCase(), 0));
+	}
+	
 	public SequenceView(int type) {
 		
 		this.type = type;
 		switch(type) {
 		case TIME:
-			
 			model = new SpinnerDateModel();
 			spinner.setModel(model);
 			spinner.setEditor(new JSpinner.DateEditor(spinner, "HH:mm:ss.SSS"));
 			setValue("00:00");
 			break;
+			
 		case NUMBER:
 		default:
 			model = new SpinnerNumberModel();
@@ -44,20 +52,23 @@ public class SequenceView extends Unitable {
 		add(spinner);
 	}
 	
-	public void setMinimum(double min) {
+	public void setMinimum(Double min) {
+		if(min == null) return;
 		((SpinnerNumberModel) model).setMinimum(min);
 	}
 	
-	public void setMaximum(double max) {
+	public void setMaximum(Double max) {
+		if(max == null) return;
 		((SpinnerNumberModel) model).setMaximum(max);
 	}
 	
-	public void setStep(double step) {
+	public void setStep(Double step) {
+		if(step == null) return;
 		((SpinnerNumberModel) model).setStepSize(step);
 	}
 	
 	public void setValue(String value) {
-		
+		if(value == null) return;
 		switch(type) {
 		case TIME:
 			model.setValue(Support.dateFromString(value));
@@ -68,8 +79,8 @@ public class SequenceView extends Unitable {
 		}
 	}
 	
-	public void setValue(double value) {
-		setValue(Double.toString(value));
+	public void setValue(Double value) {
+		setValue(value.toString());
 	}
 	
 	public String getValue() {

@@ -13,8 +13,8 @@ public class ErrorLog extends TextDialog {
 		if(result == null) {
 			Support.delay(() -> dispose());
 		} else {
-			result = "<font face=\"monospace\" size=3><b>" + result.replaceFirst(":", ":</b>")
-			.replaceAll("\\n", "<br>") + "</font>";
+			result = result.replaceAll("(?m)(^.+?)\\s", "<b>$1</b> ");
+			result = "<font face=\"monospace\" size=3>" + result.replaceAll("\\n", "<br>") + "</font>";
 			displayText(result);
 		}
 		

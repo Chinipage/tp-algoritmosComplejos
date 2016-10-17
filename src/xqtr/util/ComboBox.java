@@ -17,6 +17,7 @@ import javax.swing.plaf.basic.BasicComboBoxRenderer;
 public class ComboBox extends JComboBox<String> {
 	
 	private List<Integer> disabledIndices = Support.map(Integer::new, Support.listFromString("0"));
+	private boolean emptySelectable;
 	
 	public ComboBox() {
 		
@@ -47,10 +48,16 @@ public class ComboBox extends JComboBox<String> {
 		model.forEach(item -> addItem(item));
 	}
 	
+	public void clear() {
+		emptySelectable = true;
+		setSelectedItem("");
+		emptySelectable = false;
+	}
+	
 	class MyComboModel extends DefaultComboBoxModel<String> {
 	    public void setSelectedItem(Object item) {
 	    	String value = item.toString();
-	        if(!value.isEmpty() && !value.startsWith("!")) {
+	        if(emptySelectable || !value.isEmpty() && !value.startsWith("!")) {
 	        	super.setSelectedItem(item);
 	        }
 	    };

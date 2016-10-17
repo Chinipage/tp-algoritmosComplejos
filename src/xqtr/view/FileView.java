@@ -25,7 +25,7 @@ import xqtr.util.Support;
 import xqtr.util.FileList;
 
 @SuppressWarnings("serial")
-public class FileView extends AbstractControl {
+public class FileView extends Control {
 
 	private JTextField pathField = new JTextField();
 	private Button browseButton = new Button("Browse");
@@ -139,9 +139,9 @@ public class FileView extends AbstractControl {
 	
 	private List<File> getSelectedFiles() {
 		if(multiModeEnabled) {
-			return Support.map(null, fileChooser.getSelectedFiles());
+			return Support.list(fileChooser.getSelectedFiles());
 		} else {
-			return Support.map(null, fileChooser.getSelectedFile());
+			return Support.list(fileChooser.getSelectedFile());
 		}
 	}
 	
@@ -191,7 +191,7 @@ public class FileView extends AbstractControl {
 		public boolean importData(TransferSupport info) {
 			List<File> files = getDroppedFiles(info);
 			if(files == null) return false;
-			files = Support.filter(file -> areFilesValid(Support.map(null, file)), files);
+			files = Support.filter(file -> areFilesValid(Support.list(file)), files);
 			if(!files.isEmpty()) {
 				setModel(files);
 			}

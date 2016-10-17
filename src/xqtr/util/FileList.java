@@ -114,7 +114,7 @@ public class FileList extends Dialog implements ActionListener {
 	}
 	
 	private boolean addFiles(File[] files, int index) {
-		List<File> fileList = Support.map(null, files);
+		List<File> fileList = Support.list(files);
 		if(!areFilesValid(fileList)) {
 			Support.displayMessage("Warning: Invalid file");
 			return false;
@@ -180,7 +180,7 @@ public class FileList extends Dialog implements ActionListener {
 		}
 		
 		public void add(int index, JLabel item) {
-			if(!areFilesValid(Support.map(null, new File(item.getToolTipText())))) return;
+			if(!areFilesValid(Support.list(new File(item.getToolTipText())))) return;
 			model.add(index, item);
 			fireIntervalAdded(this, index, index);
 		}

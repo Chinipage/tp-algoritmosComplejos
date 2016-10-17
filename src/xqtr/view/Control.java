@@ -11,12 +11,14 @@ import javax.swing.JPanel;
 import xqtr.util.Support;
 
 @SuppressWarnings("serial")
-public abstract class AbstractControl extends JPanel {
+public abstract class Control extends JPanel {
 	
 	static Font defaultFont = new Font(null, Font.BOLD, 12);
 	static Dimension defaultSize = new Dimension(0, 29);
 	
-	AbstractControl() {
+	private String id;
+	
+	Control() {
 		
 		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 	}
@@ -27,6 +29,14 @@ public abstract class AbstractControl extends JPanel {
 	
 	static Component createSeparator(int length) {
 		return Box.createRigidArea(new Dimension(length, 0));
+	}
+	
+	public String getID() {
+		return id;
+	}
+	
+	public void setID(String id) {
+		this.id = id;
 	}
 	
 	public abstract String getValue();

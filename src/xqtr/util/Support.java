@@ -58,15 +58,13 @@ public class Support {
 		
 		return IntStream.range(0, list.getLength()).mapToObj(list::item).collect(Collectors.toList());
 	}
-
-	@SuppressWarnings("unchecked")
-	public static <A, B> List<B> map(Function<A, B> fn, List<A> list) {
-		return fn == null ? (List<B>) list : list.stream().map(fn).collect(Collectors.toList());	
+	
+	public static <A> List<A> list(@SuppressWarnings("unchecked") A... values) {
+		return Arrays.asList(values);
 	}
 	
-	@SafeVarargs
-	public static <A, B> List<B> map(Function<A, B> fn, A... list) {
-		return map(fn, Arrays.asList(list));
+	public static <A, B> List<B> map(Function<A, B> fn, List<A> list) {
+		return list.stream().map(fn).collect(Collectors.toList());	
 	}
 	
 	public static <A> List<A> filter(Predicate<? super A> fn, List<A> list) {
@@ -143,7 +141,7 @@ public class Support {
 		comp.addMouseListener(new MouseListener() {
 			
 			private boolean isMethod(String candidate) {
-				return map(String::toLowerCase, method.split(" ")).contains(candidate);
+				return map(String::toLowerCase, list(method.split(" "))).contains(candidate);
 			}
 			
 			private ActionEvent mouseToAction(MouseEvent event) {
@@ -188,7 +186,7 @@ public class Support {
 		comp.addKeyListener(new KeyAdapter() {
 			
 			private boolean isKey(String candidate) {
-				return map(String::toLowerCase, key.split(" ")).contains(candidate.toLowerCase());
+				return map(String::toLowerCase, list(key.split(" "))).contains(candidate.toLowerCase());
 			}
 			
 			private ActionEvent keyToAction(KeyEvent event) {
@@ -307,5 +305,32 @@ public class Support {
 	
 	public static String capitalize(String string) {
 		return string.substring(0, 1).toUpperCase() + string.substring(1);
+	}
+	
+	public static Double doubleFromString(String string) {
+		try {
+			return Double.valueOf(string);
+		} catch(NumberFormatException | NullPointerException ex1) {
+			return null;
+		}
+	}
+	
+	public static Integer integerFromString(String string) {
+		Double number = doubleFromString(string);
+		return number != null ? number.intValue() : null;
+	}
+	
+	public static <A> Integer keyFromValue(List<A> list, A value, Integer defaultValue) {
+		A elem = find(o -> o.equals(value), list);
+		return elem != null ? list.indexOf(elem) : defaultValue;
+	}
+	
+	public static <A> A find(Predicate<? super A> fn, List<A> list) {
+		return find(fn, list, null);
+	}
+	
+	public static <A> A find(Predicate<? super A> fn, List<A> list, A defaultValue) {
+		Optional<A> firstValue = list.stream().filter(fn).findFirst();
+		return firstValue.isPresent() ? firstValue.get() : defaultValue;
 	}
 }

@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.w3c.dom.Element;
 
+import xqtr.view.CheckView;
+
 public class CheckNode extends ParameterNode {
 
 	CheckNode(Element parameterNode, HashMap<String, String> variables) {
@@ -21,5 +23,15 @@ public class CheckNode extends ParameterNode {
 		attributesKeys.addAll(super.attributesKeys());
 
 		return attributesKeys;
+	}
+	
+	public CheckView getView() {
+		CheckView view = new CheckView(getValue());
+		
+		view.setValueForNo(getAttribute("nvalue"));
+		view.setValueForYes(getAttribute("yvalue"));
+		view.setSelected(hasClass("selected"));
+		
+		return view;
 	}
 }

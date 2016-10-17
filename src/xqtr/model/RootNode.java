@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -145,7 +146,7 @@ public class RootNode extends ModelNode {
 		return parameters;
 	}
 
-	public String getCommand(String programName, String profileName, HashMap<String, String> arguments) {
+	public String getCommand(String programName, String profileName, Map<String, String> arguments) {
 		
 		String command = null;
 		ProfileNode profile;

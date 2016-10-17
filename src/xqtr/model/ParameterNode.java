@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.w3c.dom.Element;
 
+import xqtr.view.Control;
+
 public abstract class ParameterNode extends ModelNode {
 
 	public static ParameterNode newParameter(Element parameterNode, HashMap<String, String> variables) {
@@ -17,7 +19,7 @@ public abstract class ParameterNode extends ModelNode {
 			case "check":
 				newParameter = new CheckNode(parameterNode, variables);
 				break;
-			case "choiceGroup":
+			case "choicegroup":
 				newParameter = new ChoiceGroupNode(parameterNode, variables);
 				break;
 			case "file":
@@ -83,6 +85,10 @@ public abstract class ParameterNode extends ModelNode {
 	
 	public String getValue() {
 		return getAttribute("value");
+	}
+	
+	public Control getView() {
+		return null;
 	}
 
 }

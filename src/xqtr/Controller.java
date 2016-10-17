@@ -1,8 +1,8 @@
 package xqtr;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import xqtr.model.ParameterNode;
 import xqtr.model.RootNode;
@@ -96,7 +96,7 @@ public class Controller {
 		return parameters;
 	}
 
-	public String getCommandForCurrentProfile(HashMap<String, String> arguments) {
+	public String getCommandForCurrentProfile(Map<String, String> arguments) {
 
 		String command = null;
 

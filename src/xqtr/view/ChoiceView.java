@@ -10,7 +10,7 @@ import xqtr.util.RadioGroup;
 import xqtr.util.Support;
 
 @SuppressWarnings("serial")
-public class ChoiceView extends AbstractControl {
+public class ChoiceView extends Control {
 
 	private Map<String, String> model;
 	private ComboBox comboBox;
@@ -49,11 +49,14 @@ public class ChoiceView extends AbstractControl {
 	
 	public void setValue(String value) {
 		
-		if(isComboMode()) {
-			comboBox.setSelectedItem(value);
-		} else {
-			radioGroup.setSelectedItem(value);
-		}
+		if(value == null) return;
+		model.keySet().stream().filter(k -> model.get(k).equals(value)).findAny().ifPresent(key -> {
+			if(isComboMode()) {
+				comboBox.setSelectedItem(key);
+			} else {
+				radioGroup.setSelectedItem(key);
+			}
+		});
 	}
 	
 	public String getValue() {

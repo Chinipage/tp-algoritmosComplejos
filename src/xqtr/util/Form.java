@@ -12,7 +12,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
-import xqtr.view.AbstractControl;
+import xqtr.view.Control;
 
 import javax.swing.JLabel;
 
@@ -82,12 +82,23 @@ public class Form {
 		outer.remove(outer.getComponents().length-1);
 	}
 	
-	public Map<String, String> submit() {
+	public Map<String, String> getWithNames() {
 		
 		Map<String, String> result = new LinkedHashMap<>();
 		elements.forEach((name, control) -> {
-			if(control instanceof AbstractControl) {
-				result.put(name, ((AbstractControl) control).getValue());
+			if(control instanceof Control) {
+				result.put(name, ((Control) control).getValue());
+			}
+		});
+		return result;
+	}
+	
+	public Map<String, String> getWithIDs() {
+		
+		Map<String, String> result = new LinkedHashMap<>();
+		elements.values().forEach(control -> {
+			if(control instanceof Control) {
+				result.put(((Control) control).getID(), ((Control) control).getValue());
 			}
 		});
 		return result;

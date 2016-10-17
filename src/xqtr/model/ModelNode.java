@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -30,8 +31,8 @@ public abstract class ModelNode {
 	protected static final String programTag = "program";
 	protected static final String profileTag = "profile";
 	protected static final List<String> parameterTags = 
-			Support.listFromString("file, seq, range, text, choiceGroup");
-	protected static final String choiseTag = "choice";
+			Support.listFromString("file, seq, range, text, choicegroup, check");
+	protected static final String choiceTag = "choice";
 	protected static final String variableTag = "var";
 	protected static final String xmlVersion = "1.0";
 
@@ -68,7 +69,7 @@ public abstract class ModelNode {
 
 	protected void logError(String error) {
 		if(errorPw != null) {
-			errorPw.println(LocalDateTime.now().toString() + ": " + error);
+			errorPw.println(LocalDateTime.now().toString() + " " + error);
 		}
 	}
 
@@ -223,7 +224,7 @@ public abstract class ModelNode {
 		return attributes;
 	}
 
-	protected String getCommand(HashMap<String, String> args) {
+	protected String getCommand(Map<String, String> args) {
 		//Este metodo se redefine en RootNode, Program y Profile. No se usa en Parameter.
 		return "";
 	}

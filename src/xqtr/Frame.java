@@ -75,24 +75,31 @@ public class Frame extends JFrame implements ActionListener, ItemListener {
 		header.setBorder(0, 0, 1, 0);
 		
 		programSelector = new ComboBox();
-		programSelector.setEnabled(false);
 		profileSelector = new ComboBox();
-		profileSelector.setEnabled(false);
 		
 		Form form = new Form();
 		form.addElement("Program", programSelector);
 		form.addElement("Profile", profileSelector);
 		form.placeIn(header);			
 		
+		load();
+		return header;
+	}
+	
+	public void load() {
+		page.toggleLoading();
+		programSelector.clear();
+		profileSelector.clear();
+		programSelector.setEnabled(false);
+		profileSelector.setEnabled(false);
 		controller.whenReady(() -> {
 			List<String> programs = controller.getProgramsNames();
 			programSelector.setModel(programs);
 			programSelector.setEnabled(true);
+			programSelector.requestFocus();
 			menu.setPrograms(programs);
 			page.toggleLoading();
 		});
-		
-		return header;
 	}
 	
 	private Section makeFooter() {
@@ -124,7 +131,10 @@ public class Frame extends JFrame implements ActionListener, ItemListener {
 	}
 	
 	public void execute() {
-		new Result("ping -c 3 google.com");
+		
+		String cmd = controller.getCommandForCurrentProfile(page.form.getWithIDs());
+		System.out.println("Command: \"" + cmd + "\"");
+//		new Result(cmd);
 	}
 	
 	public void showAboutDialog() {
