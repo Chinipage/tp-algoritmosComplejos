@@ -165,7 +165,7 @@ public class Frame extends JFrame implements ActionListener, ItemListener {
 			if(event.getSource() == programSelector) {
 				String programName = event.getItem().toString();
 				
-				setTitle(programName + " - " + Application.name);
+				setTitle(programName + (programName.isEmpty() ? "" : " - ") + Application.name);
 				controller.setCurrentProgram(programName);
 				menu.selectProgram(programName);
 				profileSelector.setEnabled(true);
@@ -179,7 +179,7 @@ public class Frame extends JFrame implements ActionListener, ItemListener {
 				
 				controller.setCurrentProfile(profileName);
 				menu.selectProfile(profileName);
-				menu.getItem("Parameters").setEnabled(true);
+				menu.getItem("Parameters").setEnabled(!profileName.isEmpty());
 				page.load();
 			}
 		}

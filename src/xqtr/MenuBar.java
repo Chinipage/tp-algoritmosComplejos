@@ -80,8 +80,9 @@ public class MenuBar extends JMenuBar {
 		JMenu profile = getMenu("Profile");
 		
 		Support.setInterval(500, s -> {
-			program.setEnabled(program.getSubElements().length > 0);
-			profile.setEnabled(profile.getSubElements().length > 0);
+			program.setEnabled(Application.frame.programSelector.getItemCount() > 0);
+			profile.setEnabled(Application.frame.profileSelector.getItemCount() > 0 &&
+					Application.controller.hasCurrentProgram());
 		});
 	}
 	
