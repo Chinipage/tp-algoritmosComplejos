@@ -1,6 +1,7 @@
 package xqtr.libs;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,7 +17,7 @@ import javax.swing.BorderFactory;
 import javax.swing.InputMap;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
+import javax.swing.JTextPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.text.AbstractDocument;
@@ -24,6 +25,9 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultEditorKit;
 import javax.swing.text.DocumentFilter;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyleContext;
 
 import xqtr.util.Support;
 
@@ -36,7 +40,7 @@ interface CommandListener {
 @SuppressWarnings("serial")
 public class Terminal extends JPanel implements CommandListener {
 
-	private JTextArea textArea;
+	private JTextPane textArea;
 	private int userInputStart;
 	private Command command;
 	
@@ -44,10 +48,9 @@ public class Terminal extends JPanel implements CommandListener {
 		
 		command = new Command(this);
 		setLayout(new BorderLayout());
-		textArea = new JTextArea();
+		textArea = new JTextPane();
 		textArea.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-		textArea.setLineWrap(true);
-		textArea.setWrapStyleWord(true);
+		setInputAttributes();
 		add(new JScrollPane(textArea));
 		((AbstractDocument) textArea.getDocument()).setDocumentFilter(new CustomDocumentFilter());
 		
@@ -83,9 +86,8 @@ public class Terminal extends JPanel implements CommandListener {
 		Support.setTimeout(100, () -> {
 			if(!command.isRunning()) {
 				command.execute(commandText);
-	        }
+			}
 		});
-
 	}
 	
 	private class Command {
@@ -103,9 +105,9 @@ public class Terminal extends JPanel implements CommandListener {
 		
 		public void execute(String cmd) {
 			cmd = cmd.replaceAll("\"", " ").replaceAll("\\s+",  " ").trim();
-			if(cmd.isEmpty()) return;
-			List<String> values = Arrays.asList(cmd.split(" "));
-			runner = new ProcessRunner(listener, values);
+			if(!cmd.isEmpty()) {
+				runner = new ProcessRunner(listener, Arrays.asList(cmd.split(" ")));
+			}
 		}
 		
 		public void send(String cmd) {
@@ -133,13 +135,14 @@ public class Terminal extends JPanel implements CommandListener {
         	
         	try {
         		ProcessBuilder processBuilder = new ProcessBuilder(cmds);
-            	processBuilder.redirectErrorStream();
 				process = processBuilder.start();
-				StreamReader streamReader = new StreamReader(listener, process.getInputStream());
+				StreamReader streamReader1 = new StreamReader(listener, process.getInputStream(), false);
+				StreamReader streamReader2 = new StreamReader(listener, process.getErrorStream(), true);
 				
 	        	int result = process.waitFor();
+	        	streamReader1.join();
+	        	streamReader2.join();
 	        	
-	        	streamReader.join();
 	        	String cmd = cmds.stream().collect(Collectors.joining(" "));
 	        	listener.commandCompleted(cmd, result);
 			} catch(InterruptedException e) {
@@ -167,10 +170,12 @@ public class Terminal extends JPanel implements CommandListener {
 		
 		private InputStream inputStream;
         private CommandListener listener;
+        private boolean isErrorStream;
         
-        public StreamReader(CommandListener listener, InputStream inputStream) {
-        	this.inputStream= inputStream;
+        public StreamReader(CommandListener listener, InputStream inputStream, boolean isErrorStream) {
+        	this.inputStream = inputStream;
             this.listener = listener;
+            this.isErrorStream = isErrorStream;
             start();
         }
         
@@ -178,8 +183,12 @@ public class Terminal extends JPanel implements CommandListener {
         	
         	try {
         		int value = -1;
+        		
 				while((value = inputStream.read()) != -1) {
+					if(isErrorStream) setErrorAttributes(); 
+					else setOutputAttributes();
 					listener.commandOutput(Character.toString((char) value));
+					setInputAttributes();
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -191,16 +200,19 @@ public class Terminal extends JPanel implements CommandListener {
 		
         public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr)
         		throws BadLocationException {
+        	setInputAttributes();
             if (offset >= userInputStart) super.insertString(fb, offset, string, attr);
         }
 
         public void remove(FilterBypass fb, int offset, int length)
         		throws BadLocationException {
+        	setInputAttributes();
             if (offset >= userInputStart) super.remove(fb, offset, length);
         }
         
         public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs)
         		throws BadLocationException {
+        	setInputAttributes();
             if (offset >= userInputStart) super.replace(fb, offset, length, text, attrs);
         }
     }
@@ -210,26 +222,56 @@ public class Terminal extends JPanel implements CommandListener {
 	}
 	
 	public void commandCompleted(String cmd, int result) {
+		setInfoAttributes();
 		appendText("\n----------\nProcess complete (Exit status " + result + ")\n");
 		SwingUtilities.invokeLater(() -> textArea.setEditable(false));
 	}
 	
 	public void commandFailed(Exception ex) {
-		appendText("Command failed - " + ex.getMessage());
-	}
-	
-	private void appendText(String text) {
-		SwingUtilities.invokeLater(() -> { 
-			textArea.append(text);
-			int pos = textArea.getCaretPosition();
-			textArea.setCaretPosition(textArea.getText().length());
-			userInputStart = pos;
-		});
+		setErrorAttributes();
+		appendText(ex.getMessage());
 	}
 	
 	public void terminate() {
+		
 		command.abort();
-		appendText("\n----------\nProcess terminated\n");
+		
+		boolean finalNewline = textArea.getText().lastIndexOf("\n") == textArea.getText().length() - 1;
+		String text = (finalNewline ? "" : "\n") + "\n----------\nProcess terminated\n";
+		
+		setInfoAttributes();
+		appendText(text);
 		SwingUtilities.invokeLater(() -> textArea.setEditable(false));
+	}
+	
+	private void appendText(String text) {
+		textArea.replaceSelection(text);
+		int len = textArea.getDocument().getLength();
+		textArea.setCaretPosition(len);
+		userInputStart = len;
+    }
+	
+	private void setOutputAttributes() {
+		setAttributes(Color.BLACK, false);
+	}
+	
+	private void setInputAttributes() {
+		setAttributes(Color.BLACK, true);
+	}
+	
+	private void setErrorAttributes() {
+		setAttributes(Color.RED, true);
+	}
+	
+	private void setInfoAttributes() {
+		setAttributes(Color.BLUE, true);
+	}
+	
+	private void setAttributes(Color color, boolean bold) {
+		StyleContext styleContext = StyleContext.getDefaultStyleContext();
+		AttributeSet attributeSet = SimpleAttributeSet.EMPTY;
+		attributeSet = styleContext.addAttribute(attributeSet, StyleConstants.Foreground, color);
+		attributeSet = styleContext.addAttribute(attributeSet, StyleConstants.Bold, bold);
+		textArea.setCharacterAttributes(attributeSet, false);
 	}
 }

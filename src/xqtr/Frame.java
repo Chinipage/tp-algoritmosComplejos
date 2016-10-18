@@ -132,9 +132,7 @@ public class Frame extends JFrame implements ActionListener, ItemListener {
 	
 	public void execute() {
 		
-		String cmd = controller.getCommandForCurrentProfile(page.form.getWithIDs());
-		System.out.println("Command: \"" + cmd + "\"");
-//		new Result(cmd);
+		new Result(controller.getCommandForCurrentProfile(page.form.getWithIDs()));
 	}
 	
 	public void showAboutDialog() {
