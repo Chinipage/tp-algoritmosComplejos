@@ -1,0 +1,57 @@
+<xqtr version="1.0">
+	<var id="video_editor" value="/usr/local/bin/ffmpeg"/>
+	
+	<!-- Caso de prueba 1 -->
+	<program name="Audio to Video" bin="{video_editor} -i {audio} -i {image} -o {video}">
+		<profile>
+			<file id="audio" name="Audio source" class="open" format="mp3 wav aac" maxsize="10MB"/>
+			<file id="image" name="Image source" class="open" format="jpg jpeg png" maxsize="1MB"/>
+			<file id="video" name="Video target" class="save" format="mp4 mov avi" value="out.mp4"/>
+			<profile name="Extra options" args="--duration {length_in_min * 60000} --volume-percentage {volume}">
+				<seq type="number" id="length_in_min" name="Limit duration" min="0" step="0.1" unit="min."/>
+				<range id="volume" name="Adjust volume" min="0" max="100" value="80" unit="%"/>
+			</profile>
+		</profile>
+	</program>
+	
+	<!-- Caso de prueba 2 -->
+	<program name="Video Trimmer" bin="{video_editor} -s {input} -o {output} --start {from}">
+		<profile name="Trim from given time to end">
+			<file id="input"/>
+			<file id="output" action="save" value="trimmed_video.avi"/>
+			<seq type="time" id="from" format="mm:ss" value="00:00:00"/>
+			<profile name="Trim given time to given time" args="--duration {to - from}">				
+				<seq type="time" id="to" format="mm:ss" value="00:10:00"/>
+			</profile>
+		</profile>
+	</program>
+	
+	<!-- Caso de prueba 3 -->
+	<program name="Video Rotator" bin="{video_editor} -s {input} -o {output} --rotate {angle * direction}">
+		<profile class="hidden">
+			<file id="input"/>
+			<file id="output" class="save"/>
+			<profile class="visible" name="Rotate by 90 degrees">
+				<var id="angle" value="90"/>
+				<choicegroup id="direction" value="1">
+					<choice name="Clockwise" value="-1"/>
+					<choice name="Counterclockwise" value="1"/>
+				</choicegroup>
+			</profile>
+			<profile class="visible" name="Rotate by 180 degrees">
+				<var id="angle" value="180"/>
+				<check id="direction" name="Rotate" class="selected" yvalue="1" nvalue="0" value="Yes/No"/>
+			</profile>
+		</profile>
+	</program>
+	
+	<!-- Caso de prueba 4 -->
+	<program name="Audio Merger" bin="/path/to/wav-editor -i {files} -o {output}">
+		<profile>
+			<file id="files" class="open multiple" name="Files to merge" format="wav"/>
+			<file id="output" class="save" format="wav" name="Combined file" value="merge.wav"/>
+			<text id="test"/>
+			<text id="test2" class="concealed"/>
+		</profile>
+	</program>
+</xqtr>

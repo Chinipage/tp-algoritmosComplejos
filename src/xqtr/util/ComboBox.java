@@ -26,10 +26,6 @@ public class ComboBox extends JComboBox<String> {
 	
 	@SuppressWarnings("unchecked")
 	public ComboBox(List<String> model) {
-		if(model != null) {
-			setModel(model);
-		}
-		
 		putClientProperty("JComboBox.isTableCellEditor", Boolean.TRUE);
 		Support.setTimeout(500, () ->
 			addItemListener((ItemListener) SwingUtilities.getRoot(this))
@@ -40,6 +36,8 @@ public class ComboBox extends JComboBox<String> {
 		Support.addKeyListener(this, "DOWN UP", e -> {
 			if(!isPopupVisible()) showPopup();
 		});
+		
+		if(model != null) setModel(model);
 	}
 	
 	public void setModel(List<String> model) {

@@ -59,7 +59,8 @@ public class Support {
 		return IntStream.range(0, list.getLength()).mapToObj(list::item).collect(Collectors.toList());
 	}
 	
-	public static <A> List<A> list(@SuppressWarnings("unchecked") A... values) {
+	@SuppressWarnings("unchecked")
+	public static <A> List<A> list(A... values) {
 		return Arrays.asList(values);
 	}
 	

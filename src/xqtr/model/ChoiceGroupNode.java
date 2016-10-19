@@ -1,6 +1,7 @@
 package xqtr.model;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +41,7 @@ public class ChoiceGroupNode extends ParameterNode {
 	
 	public ChoiceView getView() {
 		
-		Map<String, String> model = new HashMap<>();
+		Map<String, String> model = new LinkedHashMap<>();
 		
 		choiceNodes.forEach(choice -> {
 			model.put(choice.getName(), choice.getValue());

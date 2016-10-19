@@ -20,7 +20,7 @@ import xqtr.util.UserProperties;
 public class Application {
 	
 	public static final String name = "XQTR";
-	public static final String version = "0.9.7";	
+	public static final String version = "0.9.9";	
 	
 	public static Frame frame;
 	public static Controller controller;

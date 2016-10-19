@@ -77,7 +77,6 @@ public class Page extends Section {
 	}
 	
 	private void add(ParameterNode param) {
-		
 		Control control = param.getView();
 		if(control != null) {
 			String label = Support.getOr(param.getName(), Support.capitalize(param.getID()));

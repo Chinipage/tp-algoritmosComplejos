@@ -172,7 +172,7 @@ public class ProfileNode extends ModelNode {
 		arguments.forEach((id,value) -> var.put(id, value));
 		tmp = parent.getCommand(arguments);
 		if(hasAttribute("args"))
-			 tmp = tmp + replaceVariables(getAttribute("args"), var);
+			 tmp = tmp + " " + replaceVariables(getAttribute("args"), var);
 		return tmp;
 	}
 
