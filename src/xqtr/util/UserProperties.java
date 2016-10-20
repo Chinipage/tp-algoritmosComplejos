@@ -1,6 +1,5 @@
 package xqtr.util;
 
-import java.io.FileInputStream;
 import java.util.Properties;
 
 @SuppressWarnings("serial")
@@ -10,14 +9,14 @@ public class UserProperties extends Properties {
 	
 	public UserProperties() {
 		try {
-			load(new FileInputStream(Support.loadResource("User.properties")));
+			load(Support.loadResource("User.properties"));
 		} catch (Exception e) {
 			Support.displayMessage("Critical Error: There was a problem loading user properties\n" + e.getMessage());
 		}
 		
-		String defaults = "config.file.path: Config.xml;"
-						+ "error.log.path: Error.log;"
-						+ "cmd.history.path: History.log;"
+		String defaults = "config.file.path: rsc/Config.xml;"
+						+ "error.log.path: rsc/logs/Error.log;"
+						+ "cmd.history.path: rsc/History.log;"
 						+ "header.visible: true;"
 						+ "footer.visible: true;"
 						+ "frame.width: 440;"
@@ -32,6 +31,6 @@ public class UserProperties extends Properties {
 		if(property == null || property.isEmpty()) {
 			property = defaultProperties.getProperty(name);
 		}
-		return property;
+		return Support.getOr(property, "");
 	}
 }

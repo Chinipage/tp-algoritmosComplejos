@@ -1,6 +1,6 @@
 package xqtr.model;
 
-import java.io.File;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -56,11 +56,8 @@ public class RootNode extends ModelNode {
 	
 	private Element parseConfigXML() {
 		String configFileName = Application.properties.get("config.file.path");
-		File configFile = Support.loadResource(configFileName);
+		InputStream configFile = Support.loadResource(configFileName);
 		
-		if(!Support.getFileExtension(configFile).equals("xml")) {
-			Support.displayMessage("Critical Error: Configuration file must be an XML");
-		}
 		try {
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder builder = factory.newDocumentBuilder();

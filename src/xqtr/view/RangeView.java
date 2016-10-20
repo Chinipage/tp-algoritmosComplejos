@@ -6,7 +6,7 @@ import javax.swing.JSlider;
 import xqtr.util.Support;
 
 @SuppressWarnings("serial")
-public class RangeView extends Unitable {
+public class RangeView extends Control {
 	
 	private JSlider slider = new JSlider();
 	private JLabel minLabel = new JLabel();

@@ -8,7 +8,6 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.List;
 
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
 import xqtr.util.Button;
@@ -55,7 +54,7 @@ public class Frame extends JFrame implements ActionListener, ItemListener {
 		setFrameSize();
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setIconImage(new ImageIcon("Icon.png").getImage());
+		setIconImage(Support.getImageResource("Icon.png"));
 	}
 	
 	private void setFrameSize() {

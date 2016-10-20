@@ -150,7 +150,8 @@ public class RadioGroup extends JPanel {
 	public void setSelectedItem(String value) {
 		buttonList.forEach(button -> {
 			button.setSelected(button.getText().equals(value));
-			selected = (JRadioButton) button;
+			if(button.isSelected())
+				selected = (JRadioButton) button;
 		});
 	}
 }

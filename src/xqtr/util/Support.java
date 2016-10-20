@@ -1,5 +1,6 @@
 package xqtr.util;
 
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -9,7 +10,10 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.ParseException;
@@ -32,6 +36,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
@@ -59,7 +64,7 @@ public class Support {
 		return IntStream.range(0, list.getLength()).mapToObj(list::item).collect(Collectors.toList());
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SafeVarargs
 	public static <A> List<A> list(A... values) {
 		return Arrays.asList(values);
 	}
@@ -284,22 +289,32 @@ public class Support {
 		}
 	}
 	
-	public static File loadResource(String name) {
-		File resource = new File(name);
-		if(!resource.exists()) {
+	public static InputStream loadResource(String name) {
+		name = replaceTilde(name);
+		InputStream resource;
+		try {
+			resource = new FileInputStream(name);
+		} catch (FileNotFoundException e) {
+			resource = null;
+		}
+		if(resource == null) {
+			resource = Application.class.getClassLoader().getResourceAsStream(name);
+		}
+		if(resource == null) {
 			displayMessage("Critical Error: Resource " + name + " not found");
 		}
 		return resource;
 	}
 	
-	public static String readFile(String fileName) {
+	public static String readFile(String name) {
+		name = replaceTilde(name);
 		String result = null;
 		try {
-			result = Files.lines(Paths.get(fileName)).reduce("", (a, b) -> a + "\n" + b).substring(1);
+			result = Files.lines(Paths.get(name)).reduce("", (a, b) -> a + "\n" + b).substring(1);
 		} catch (IndexOutOfBoundsException e) {
 			result = "";
 		} catch (IOException e) {
-			displayMessage("Error: " + fileName + " not found");
+			displayMessage("Error: " + name + " not found");
 		}
 		return result;
 	}
@@ -333,5 +348,31 @@ public class Support {
 	public static <A> A find(Predicate<? super A> fn, List<A> list, A defaultValue) {
 		Optional<A> firstValue = list.stream().filter(fn).findFirst();
 		return firstValue.isPresent() ? firstValue.get() : defaultValue;
+	}
+	
+	public static Image getImageResource(String name) {
+		try {
+			return ImageIO.read(Support.loadResource(name));
+		} catch (IOException e) {
+			displayMessage("Critical Error: Image " + name + " could not be loaded");
+		}
+		return null;
+	}
+	
+	public static File createFile(String path) {
+		File file = new File(replaceTilde(path));
+		if(!file.exists()) {
+			try {
+				file.getParentFile().mkdirs();
+				file.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return file;
+	}
+	
+	public static String replaceTilde(String path) {
+		return path.replaceFirst("^~", System.getProperty("user.home"));
 	}
 }

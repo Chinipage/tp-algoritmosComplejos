@@ -45,6 +45,7 @@ public abstract class ParameterNode extends ModelNode {
 
 		attributesKeys.add("id");
 		attributesKeys.add("value");
+		attributesKeys.add("unit");
 
 		return attributesKeys;
 	}
@@ -89,6 +90,10 @@ public abstract class ParameterNode extends ModelNode {
 	
 	public Control getView() {
 		return null;
+	}
+	
+	public String getUnit() {
+		return getAttribute("unit");
 	}
 
 }

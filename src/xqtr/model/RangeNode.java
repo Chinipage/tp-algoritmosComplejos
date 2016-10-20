@@ -21,7 +21,6 @@ public class RangeNode extends ParameterNode {
 		attributesKeys.add("min");
 		attributesKeys.add("max");
 		attributesKeys.add("step");
-		attributesKeys.add("unit");
 		attributesKeys.addAll(super.attributesKeys());
 		
 		return attributesKeys;
@@ -39,17 +38,12 @@ public class RangeNode extends ParameterNode {
 		return Support.integerFromString(getAttribute("step"));
 	}
 	
-	public String getUnit() {
-		return getAttribute("unit");
-	}
-	
 	public RangeView getView() {
 		RangeView view = new RangeView();
 		
 		view.setMinimum(getMinimum());
 		view.setMaximum(getMaximum());
 		view.setStep(getStep());
-		view.setUnit(getUnit());
 		
 		return view;
 	}

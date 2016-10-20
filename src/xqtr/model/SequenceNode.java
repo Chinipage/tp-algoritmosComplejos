@@ -22,7 +22,6 @@ public class SequenceNode extends ParameterNode {
 		attributesKeys.add("min");
 		attributesKeys.add("max");
 		attributesKeys.add("step");
-		attributesKeys.add("unit");
 
 		return attributesKeys;
 	}
@@ -42,10 +41,6 @@ public class SequenceNode extends ParameterNode {
 	public Double getStep() {
 		return Support.doubleFromString(getAttribute("step"));
 	}
-	
-	public String getUnit() {
-		return getAttribute("unit");
-	}
 
 	public SequenceView getView() {
 		SequenceView view = new SequenceView(getType());
@@ -53,7 +48,6 @@ public class SequenceNode extends ParameterNode {
 		view.setMinimum(getMinimum());
 		view.setMaximum(getMaximum());
 		view.setStep(getStep());
-		view.setUnit(getUnit());
 		
 		return view;
 	}

@@ -60,7 +60,6 @@ public class ChoiceView extends Control {
 	}
 	
 	public String getValue() {
-		
 		if(isComboMode()) {
 			return model.get(comboBox.getSelectedItem());
 		} else {

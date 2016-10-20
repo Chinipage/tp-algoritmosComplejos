@@ -1,5 +1,7 @@
 package xqtr.view;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.JSpinner;
@@ -10,7 +12,7 @@ import javax.swing.SpinnerNumberModel;
 import xqtr.util.Support;
 
 @SuppressWarnings("serial")
-public class SequenceView extends Unitable {
+public class SequenceView extends Control {
 	
 	public static final int NUMBER = 0;
 	public static final int TIME = 1;
@@ -36,14 +38,14 @@ public class SequenceView extends Unitable {
 		case TIME:
 			model = new SpinnerDateModel();
 			spinner.setModel(model);
-			spinner.setEditor(new JSpinner.DateEditor(spinner, "HH:mm:ss.SSS"));
+			spinner.setEditor(new JSpinner.DateEditor(spinner, "HH:mm:ss"));
 			setValue("00:00");
 			break;
 			
 		case NUMBER:
 		default:
 			model = new SpinnerNumberModel();
-			setValue(0.0);
+			setValue("0.0");
 			spinner.setModel(model);
 		}
 		
@@ -79,11 +81,22 @@ public class SequenceView extends Unitable {
 		}
 	}
 	
-	public void setValue(Double value) {
-		setValue(value.toString());
-	}
-	
 	public String getValue() {
-		return model.getValue().toString();
+		switch(type) {
+		case TIME:
+			Date date = (Date) model.getValue();
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(date);
+			int i = cal.get(Calendar.SECOND) + cal.get(Calendar.MINUTE) * 60 + cal.get(Calendar.HOUR) * 3600;
+			return new Integer(i).toString();
+		case NUMBER:
+		default:
+			SpinnerNumberModel numberModel = (SpinnerNumberModel) model;
+			Object number = numberModel.getValue();
+			if(numberModel.getStepSize() instanceof Integer) {
+				number = new Integer(((Double) number).intValue());
+			}
+			return number.toString();
+		}
 	}
 }

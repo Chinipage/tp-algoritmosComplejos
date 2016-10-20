@@ -31,7 +31,7 @@ public abstract class ModelNode {
 	protected static final String programTag = "program";
 	protected static final String profileTag = "profile";
 	protected static final List<String> parameterTags = 
-			Support.listFromString("file, seq, range, text, choicegroup, check");
+			Support.listFromString("file, seq, range, text, check, choicegroup");
 	protected static final String choiceTag = "choice";
 	protected static final String variableTag = "var";
 	protected static final String xmlVersion = "1.0";
@@ -50,7 +50,7 @@ public abstract class ModelNode {
 
 	protected Boolean openErrorLogFile() {
 		
-		File errorLogFile = new File(Application.properties.get("error.log.path"));
+		File errorLogFile = Support.createFile(Application.properties.get("error.log.path"));
 
 		try {
 			fw = new FileWriter(errorLogFile, true); //True para usar append
@@ -92,7 +92,7 @@ public abstract class ModelNode {
 		StringBuffer replacedString = new StringBuffer();
 		Pattern variablePattern = Pattern.compile("(?:\\{)([^}]*)(?:\\})"),
 				idPattern = Pattern.compile("([A-Za-z_][A-Za-z_0-9]*)"),
-				equationPattern = Pattern.compile("^([0-9]+(.[0-9])*\\s*[-+*/]\\s*[0-9]+(.[0-9])*(\\s*[-+*/]\\s*[0-9](.[0-9])*+)*)$");
+				equationPattern = Pattern.compile("^([0-9]+(.[0-9]+)?\\s*[-+*/]\\s*[0-9]+(.[0-9]+)?(\\s*[-+*/]\\s*[0-9](.[0-9])*+)*)$");
 		ScriptEngineManager mgr = new ScriptEngineManager();
 	    ScriptEngine engine = mgr.getEngineByName("JavaScript");
 		Matcher variableMatcher = variablePattern.matcher(string); 

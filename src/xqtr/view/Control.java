@@ -6,6 +6,7 @@ import java.awt.Font;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import xqtr.util.Support;
@@ -15,6 +16,8 @@ public abstract class Control extends JPanel {
 	
 	static Font defaultFont = new Font(null, Font.BOLD, 12);
 	static Dimension defaultSize = new Dimension(0, 29);
+	private JLabel unitLabel = new JLabel();
+	private Component separator = createSeparator(6);
 	
 	private String id;
 	
@@ -57,5 +60,21 @@ public abstract class Control extends JPanel {
 				oldValue = getValue();
 			}
 		});
+	}
+	
+	protected void toggleUnit() {
+		if(!unitLabel.getText().isEmpty()) {
+			add(separator);
+			add(unitLabel);
+		} else {
+			remove(separator);
+			remove(unitLabel);
+		}
+	}
+	
+	public void setUnit(String unit) {
+		if(unit == null) return;
+		unitLabel.setText(unit);
+		toggleUnit();
 	}
 }

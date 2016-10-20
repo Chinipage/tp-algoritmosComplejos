@@ -96,11 +96,19 @@ public class Form {
 	public Map<String, String> getWithIDs() {
 		
 		Map<String, String> result = new LinkedHashMap<>();
-		elements.values().forEach(control -> {
-			if(control instanceof Control) {
-				result.put(((Control) control).getID(), ((Control) control).getValue());
-			}
-		});
+		elements.values().stream().filter(c -> c instanceof Control)
+			.forEach(c -> result.put(((Control) c).getID(), ((Control) c).getValue()));
 		return result;
+	}
+	
+	public boolean isFilled() {
+		
+		if(elements.isEmpty()) return false;
+		return elements.values().stream().filter(c -> c instanceof Control)
+			.allMatch(c -> !((Control) c).getValue().isEmpty());
+	}
+	
+	public void clear() {
+		elements.clear();
 	}
 }

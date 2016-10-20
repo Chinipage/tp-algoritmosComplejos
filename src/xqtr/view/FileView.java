@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
@@ -36,6 +37,7 @@ public class FileView extends Control {
 	private List<String> validExtensions;
 	private List<File> model;
 	private ActionListener deleteAction = e -> pathField.setText("");
+	private String separator = "";
 	
 	public FileView() {
 		this(new ArrayList<>());
@@ -43,7 +45,6 @@ public class FileView extends Control {
 	
 	public FileView(List<File> model) {
 		setModel(model);
-		setDefaultDirectory();
 		
 		Application.undoHandler.handle(pathField);
 		pathField.setFont(defaultFont);
@@ -66,11 +67,17 @@ public class FileView extends Control {
 	
 	private void setDefaultDirectory() {
 		
-		String path = Application.properties.get("browser.default.dir");
-		path = path.replaceFirst("^~", System.getProperty("user.home"));
-		File dir = new File(path);
-		if(dir != null && dir.exists() && dir.isDirectory()) {
-			fileChooser.setCurrentDirectory(dir);
+		Support.listFromString("default, " + (saveModeEnabled ? "save" : "open")).forEach(w -> {
+			File dir = new File(Support.replaceTilde(Application.properties.get("browser.dir." + w)));
+			if(dir != null && dir.exists() && dir.isDirectory()) {
+				fileChooser.setCurrentDirectory(dir);
+			}
+		});
+	}
+	
+	public void setSeparator(String sep) {
+		if(sep != null) {
+			separator = sep;
 		}
 	}
 	
@@ -122,6 +129,7 @@ public class FileView extends Control {
 	
 	public void setSaveModeEnabled(boolean newValue) {
 		saveModeEnabled = newValue;
+		setDefaultDirectory();
 	}
 	
 	public void setMultiModeEnabled(boolean newValue) {
@@ -207,7 +215,7 @@ public class FileView extends Control {
 	
 	public String getValue() {
 		if(pathField.getText().isEmpty()) return "";
-		return model.stream().map(f -> f.getPath()).reduce("", (a,b) -> a + " \"" + b + "\"").trim();
+		return "\"" + model.stream().map(f -> f.getPath()).collect(Collectors.joining("\"" + separator + "\"")) + "\"";
 	}
 	
 	private void changeListener(ChangeEvent e) {

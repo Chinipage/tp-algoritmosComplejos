@@ -1,0 +1,54 @@
+<xqtr version="1.0">
+    <var id="editor" value="ffmpeg -y"/>
+    <var id="default" value="out"/>
+    <var id="video" value="mp4 mov mkv avi mpg wmv"/>
+
+	<!-- Caso de prueba 1 -->
+	<program name="Audio to Video" bin="{editor} -loop 1 -i {image} -i {audio} -shortest -c:v libx264 -c:a copy {video}">
+		<profile>
+			<file id="audio" name="Audio source" class="open" format="mp3 wav aac"/>
+			<file id="image" name="Image source" class="open" format="jpg jpeg png"/>
+			<file id="video" name="Video target" class="save" format="mp4 mov avi" value="out.mp4"/>
+		</profile>
+	</program>
+	
+	<!-- Caso de prueba 2 -->
+	<program name="Video Trimmer" bin="{editor} -i {input} -ss {from}">
+	    <profile class="hidden">
+	        <file id="input"/>
+			<file id="output" action="save" value="trimmed_video.avi"/>
+			<seq type="time" id="from"/>
+			<profile name="Trim from given time for duration" args="-t {duration} {output}">
+			    <seq type="time" id="duration"/>
+			</profile>
+			<profile name="Trim from given time to given time" args="-t {to - from} {output}">
+			    <seq type="time" id="to"/>
+			</profile>
+	    </profile>
+	</program>
+	
+	<!-- Caso de prueba 3 -->
+	<program name="Video Rotator" bin="{editor} -i {input} -vf &quot;rotate={direction}*{angle}*{unit}&quot; {output}">
+		<profile>
+			<file id="input" class="open" format="{video}"/>
+			<file id="output" class="save" format="{video}" value="{default}"/>
+			<seq type="number" id="angle" min="0" max="360"/>
+			<choicegroup id="unit" value="PI/180">
+				<choice name="Degrees" value="PI/180"/>
+				<choice name="Radians" value="1"/>
+			</choicegroup>
+			<choicegroup id="direction" value="1">
+				<choice name="Clockwise" value="1"/>
+				<choice name="Counterclockwise" value="-1"/>
+			</choicegroup>
+		</profile>
+	</program>
+	
+	<!-- Caso de prueba 4 -->
+	<program name="Audio Merger" bin="{editor} -i 'concat:{files}' -codec copy {output}">
+		<profile>
+			<file id="files" class="open multiple" name="Files to merge" format="wav" separator="|"/>
+			<file id="output" class="save" format="wav" name="Combined file" value="merge.wav"/>
+		</profile>
+	</program>
+</xqtr>

@@ -1,6 +1,5 @@
 package xqtr;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -12,7 +11,7 @@ import xqtr.util.TextDialog;
 @SuppressWarnings("serial")
 public class History extends TextDialog {
 	
-	private static final String path = Application.properties.get("cmd.history.path");
+	private static final String path = Support.replaceTilde(Application.properties.get("cmd.history.path"));
 	
 	public History() {
 		
@@ -32,11 +31,7 @@ public class History extends TextDialog {
 	}
 	
 	public static void init() {
-		try {
-			new File(path).createNewFile();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		Support.createFile(path);
 	}
 	
 	public static void log(String command) {

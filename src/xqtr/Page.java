@@ -36,7 +36,17 @@ public class Page extends Section {
 		scrollPane.setViewportView(view);
 		
 		loadingLabel = new JLabel("Loading...", SwingConstants.CENTER);
-		loadingLabel.setIcon(new ImageIcon("Spinner.gif"));
+		loadingLabel.setIcon(new ImageIcon(Support.getImageResource("Spinner.gif")));
+		
+		form = new Form();
+		
+		Support.setInterval(500, s -> {
+			boolean isExecutable = form.isFilled();
+			if(Application.controller.isReady()) {
+				Application.frame.runButton.setEnabled(isExecutable);
+				Application.frame.menu.getItem("Execute").setEnabled(isExecutable);
+			}
+		});
 	}
 	
 	public void toggleLoading() {
@@ -62,17 +72,13 @@ public class Page extends Section {
 			
 			Support.setTimeout(100, () -> {
 				toggleLoading();
-				if(Application.controller.hasCurrentProfile()) {
-					Application.frame.runButton.setEnabled(true);
-					Application.frame.menu.getItem("Execute").setEnabled(true);
-				}
 			});
 		});
 	}
 	
 	public void clear() {
 		((Section)scrollPane.getViewport().getView()).removeAll();
-		form = new Form();
+		form.clear();
 		repaintFrame();
 	}
 	
@@ -82,6 +88,7 @@ public class Page extends Section {
 			String label = Support.getOr(param.getName(), Support.capitalize(param.getID()));
 			control.setID(param.getID());
 			control.setValue(param.getValue());
+			control.setUnit(param.getUnit());
 			form.addElement(label, control);
 		}
 	}
@@ -94,7 +101,7 @@ public class Page extends Section {
 	}
 	
 	public String print() {
-
+		
 		return "<html>" + form.getWithNames().entrySet().stream()
 				.map(e -> "<b>" + e.getKey().replaceFirst("\\*$", "") + ":</b> " + e.getValue())
 				.collect(Collectors.joining("<br>"));

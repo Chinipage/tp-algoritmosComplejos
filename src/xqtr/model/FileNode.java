@@ -18,6 +18,7 @@ public class FileNode extends ParameterNode {
 		List<String> attributesKeys = super.attributesKeys();
 
 		attributesKeys.add("format");
+		attributesKeys.add("separator");
 
 		return attributesKeys;
 	}
@@ -26,10 +27,16 @@ public class FileNode extends ParameterNode {
 		return getAttribute("format");
 	}
 	
+	public String getSeparator() {
+		return getAttribute("separator");
+	}
+	
 	public FileView getView() {
 		FileView view = new FileView();
 		
 		view.setFormat(getFormat());
+		
+		view.setSeparator(getSeparator());
 		view.setSaveModeEnabled(hasClass("save"));
 		view.setMultiModeEnabled(hasClass("multiple"));
 		
