@@ -47,9 +47,8 @@ public class ProgramNode extends ModelNode {
 				if(profile1.getAttribute("name").equals(profile.getAttribute("name")))
 					profilesFiltered.add(profile);
 			});
-			if(profilesFiltered.size() > 1) {
+			if(profilesFiltered.size() > 1)
 				profilesFiltered.forEach(profileFiltered -> profileFiltered.setUnexecutable("there is more than one profile with this name"));
-			}
 		});
 
 		checkConsistency();
@@ -131,14 +130,16 @@ public class ProgramNode extends ModelNode {
 	}
 
 	protected void checkCommandAttribute() {
-		List<String> var = getArgumentIds();
-		variables.forEach((id,value) -> var.add(id));
-		preProcessVaraibles(getAttribute(commandVariable()), var);
+		if(hasAttribute(commandVariable())) {
+			List<String> var = getArgumentIds();
+			variables.forEach((id,value) -> var.add(id));
+			preProcessVaraibles(getAttribute(commandVariable()), var);
+		}
 	}
 
 	protected void checkNeccesaryAttributes() {
 		if(!necessaryAttributes().stream().allMatch(attribute -> attributes.containsKey(attribute)))
-			setUnexecutable("does not have all the necessary attributes (" + necessaryAttributes().toString() + ").");
+			setUnexecutable("does not have all the necessary attributes " + necessaryAttributes().toString() + ".");
 	}
 
 	protected void checkConsistency() {

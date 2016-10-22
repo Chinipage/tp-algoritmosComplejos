@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -17,6 +18,7 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import xqtr.Application;
@@ -74,7 +76,7 @@ public abstract class ModelNode {
 	}
 
 	protected void preProcessVaraibles(String string, HashMap<String, String> variableIds) {
-		processVariables(string, variableIds, false);
+		processVariables(string, variableIds);
 	}
 
 	protected void preProcessVaraibles(String string, List<String> variableIds) {
@@ -84,10 +86,10 @@ public abstract class ModelNode {
 	}
 
 	protected String replaceVariables(String string, HashMap<String, String> variables) {
-		return processVariables(string, variables, true);
+		return processVariables(string, variables);
 	}
 
-	protected String processVariables(String string, HashMap<String, String> variables, Boolean replace){
+	protected String processVariables(String string, HashMap<String, String> variables){
 
 		StringBuffer replacedString = new StringBuffer();
 		Pattern variablePattern = Pattern.compile("(?:\\{)([^}]*)(?:\\})"),
@@ -132,7 +134,7 @@ public abstract class ModelNode {
 
 		variableMatcher.appendTail(replacedString);
 
-		return replace ? replacedString.toString() : string;
+		return replacedString.toString();
 	}
 
 	protected Boolean isValidVariableId(String id) {
@@ -144,15 +146,15 @@ public abstract class ModelNode {
 
 		HashMap<String, String> variables = new HashMap<String, String>();
 
-		this.elementList(node.getElementsByTagName(variableTag)).forEach((variable) -> {
+		elementList(node.getElementsByTagName(variableTag)).forEach((variable) -> {
 			
 			String id = variable.getAttribute("id"),
 				value = variable.getAttribute("value");
 
-			if(this.isValidVariableId(id))
+			if(isValidVariableId(id))
 				variables.put(id, value);
 			else
-				this.logError("Invalid variable Id: " + id);
+				logError("Invalid variable Id: " + id);
 		});
 
 		return variables;
@@ -162,9 +164,8 @@ public abstract class ModelNode {
 
 		List<Element> elementList = new LinkedList<Element>();
 
-		for(int i=0; i<list.getLength(); i++) {
+		for(int i=0; i<list.getLength(); i++)
 			elementList.add((Element) list.item(i));
-		}
 
 		return elementList;
 	}
@@ -245,6 +246,24 @@ public abstract class ModelNode {
 				childNodes.add(child);
 		});
 		return childNodes;
+	}
+
+	protected List<Element> getChildNodesWithTags(Element element, List<String> tagsList) {
+		NodeList nodeList = element.getChildNodes();
+		List<Node> childNodes = new ArrayList<>();
+		List<Element> elementChildNodes = new LinkedList<>();
+
+		for(int i=0; i<nodeList.getLength(); i++)
+			childNodes.add(nodeList.item(i));
+
+		childNodes.forEach(node -> {
+			if(node.getNodeType() == Node.ELEMENT_NODE &&
+				node.getParentNode().equals(element) &&
+				tagsList.contains(node.getNodeName()))
+				elementChildNodes.add((Element)node);
+		});
+
+		return elementChildNodes;
 	}
 
 	protected ProgramNode program() {

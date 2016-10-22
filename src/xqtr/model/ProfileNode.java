@@ -49,13 +49,11 @@ public class ProfileNode extends ModelNode {
 
 		initializeAttributes(profileNode, inheritedVariables);
 
-		parameterTags.forEach(parameterTag -> {
-			getChildNodesWithTag(profileNode, parameterTag).forEach((parameterNode) -> {
-				addNewParameter(parameterNode, declaredVariables);
-			});
+		getChildNodesWithTags(profileNode, parameterTags).forEach(parameterNode -> {
+			addNewParameter(parameterNode, declaredVariables);
 		});
 
-		getChildNodesWithTag(profileNode, profileTag).forEach((subProfileNode) -> {
+		getChildNodesWithTag(profileNode, profileTag).forEach(subProfileNode -> {
 			addNewProfile(subProfileNode, declaredVariables);
 		});
 
@@ -104,9 +102,9 @@ public class ProfileNode extends ModelNode {
 	}
 
 	protected void checkCommandAttribute() {
-		List<String> var = getArgumentIds();
-		variables.forEach((id,value) -> var.add(id));
 		if(hasAttribute(commandVariable())) {
+			List<String> var = getArgumentIds();
+			variables.forEach((id,value) -> var.add(id));
 			preProcessVaraibles(getAttribute(commandVariable()), var);
 		}
 	}
@@ -118,7 +116,7 @@ public class ProfileNode extends ModelNode {
 
 	protected void checkParametersConsistency() {
 		if(!parameters.stream().allMatch(parameter -> parameter.isExecutable())) {
-			setUnexecutable("a parameter is not Executable");
+			setUnexecutable("a parameter is not executable");
 		}
 	}
 
