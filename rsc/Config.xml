@@ -45,9 +45,9 @@
 	</program>
 	
 	<!-- Caso de prueba 4 -->
-	<program name="Audio Merger" bin="{editor} -i 'concat:{files}' -codec copy {output}">
+	<program name="Audio Merger" bin="{editor} -f concat -safe 0 -i &lt;(for f in {files};do echo &quot;file $f&quot;;done) -c copy {output}">
 		<profile>
-			<file id="files" class="open multiple" name="Files to merge" format="wav" separator="|"/>
+			<file id="files" class="open multiple" name="Files to merge" format="wav" separator=" "/>
 			<file id="output" class="save" format="wav" name="Combined file" value="merge.wav"/>
 		</profile>
 	</program>

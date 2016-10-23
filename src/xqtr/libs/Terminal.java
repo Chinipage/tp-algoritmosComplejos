@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -115,8 +116,11 @@ public class Terminal extends JPanel implements CommandListener {
         		quotes = quotes.replaceAll(" ", "%20");
         		cmd = before + quotes + after;
         	}
-			
-			List<String> cmds = Support.map(s -> s.replaceAll("%20", "\\ "), Support.list(cmd.split(" ")));
+
+			List<String> cmds = new ArrayList<String>();
+			cmds.add("bash");
+			cmds.add("-c");
+			cmds.add(cmd.replaceAll("%20", "\\ "));
 			runner = new ProcessRunner(listener, cmds);
 		}
 		

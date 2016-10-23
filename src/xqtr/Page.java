@@ -39,14 +39,16 @@ public class Page extends Section {
 		loadingLabel.setIcon(new ImageIcon(Support.getImageResource("Spinner.gif")));
 		
 		form = new Form();
-		
+
 		Support.setInterval(500, s -> {
 			boolean isExecutable = form.isFilled();
 			if(Application.controller.isReady()) {
 				Application.frame.runButton.setEnabled(isExecutable);
-				Application.frame.menu.getItem("Execute").setEnabled(isExecutable);
+				if(Application.frame.menu.getItem("Execute") != null)
+					Application.frame.menu.getItem("Execute").setEnabled(isExecutable);
 			}
-		});
+		});			
+
 	}
 	
 	public void toggleLoading() {
