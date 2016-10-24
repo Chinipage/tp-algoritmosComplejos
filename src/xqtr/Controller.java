@@ -102,7 +102,7 @@ public class Controller {
 
 		if(modelRootNode != null && hasCurrentProfile())
 			command = modelRootNode.getCommand(currentProgram, currentProfile, arguments);
-	
+		
 		return command;
 	}
 	

@@ -19,7 +19,6 @@ import javax.swing.JLabel;
 public class Form {
 	
 	private Map<String, Component> elements;
-	private Dimension labelSize;
 	
 	public Form() {
 		
@@ -29,7 +28,6 @@ public class Form {
 	public Form(JPanel container, Map<String, Component> elements) {
 		
 		this.elements = elements;
-		labelSize = calculatelabelSize();
 	}
 	
 	private Dimension calculatelabelSize() {
@@ -49,9 +47,7 @@ public class Form {
 	public void placeIn(JPanel container) {
 		if(elements.isEmpty()) return;
 		
-		if(labelSize == null) {
-			labelSize = calculatelabelSize();
-		}
+		Dimension labelSize = calculatelabelSize();
 		
 		@SuppressWarnings("serial")
 		JPanel outer = new JPanel() {

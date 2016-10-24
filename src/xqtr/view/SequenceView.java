@@ -1,6 +1,5 @@
 package xqtr.view;
 
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -38,7 +37,7 @@ public class SequenceView extends Control {
 		case TIME:
 			model = new SpinnerDateModel();
 			spinner.setModel(model);
-			spinner.setEditor(new JSpinner.DateEditor(spinner, "HH:mm:ss"));
+			spinner.setEditor(new JSpinner.DateEditor(spinner, "HH:mm:ss.SSS"));
 			setValue("00:00");
 			break;
 			
@@ -85,10 +84,7 @@ public class SequenceView extends Control {
 		switch(type) {
 		case TIME:
 			Date date = (Date) model.getValue();
-			Calendar cal = Calendar.getInstance();
-			cal.setTime(date);
-			int i = cal.get(Calendar.SECOND) + cal.get(Calendar.MINUTE) * 60 + cal.get(Calendar.HOUR) * 3600;
-			return new Integer(i).toString();
+			return Support.stringFromDate(date, "HH:mm:ss.SSS");
 		case NUMBER:
 		default:
 			SpinnerNumberModel numberModel = (SpinnerNumberModel) model;

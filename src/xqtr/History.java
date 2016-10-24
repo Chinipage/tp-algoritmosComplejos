@@ -20,6 +20,7 @@ public class History extends TextDialog {
 		if(result == null) {
 			Support.delay(() -> dispose());
 		} else {
+			result = Support.escapeHTML(result);
 			result = "<font face=\"monospace\" size=3>" + result.replaceAll("(?m)^(\\S+ )", "<b>$1</b>")
 			.replaceAll("\\n", "<br>") + "</font>";
 			displayText(result);

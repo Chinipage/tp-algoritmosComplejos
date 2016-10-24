@@ -37,7 +37,7 @@ public class FileView extends Control {
 	private List<String> validExtensions;
 	private List<File> model;
 	private ActionListener deleteAction = e -> pathField.setText("");
-	private String separator = "";
+	private String separator = " ";
 	
 	public FileView() {
 		this(new ArrayList<>());

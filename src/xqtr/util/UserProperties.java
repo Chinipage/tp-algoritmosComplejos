@@ -15,7 +15,7 @@ public class UserProperties extends Properties {
 		}
 		
 		String defaults = "config.file.path: rsc/Config.xml;"
-						+ "error.log.path: rsc/logs/Error.log;"
+						+ "error.log.path: rsc/Error.log;"
 						+ "cmd.history.path: rsc/History.log;"
 						+ "header.visible: true;"
 						+ "footer.visible: true;"
