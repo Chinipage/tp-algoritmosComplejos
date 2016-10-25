@@ -227,7 +227,7 @@ public class Support {
 	public static List<String> listFromString(String string) {
 		List<String> list = new ArrayList<>();
 		
-		String separator = string.indexOf(";") != -1 ? ";" : ",";
+		String separator = string.indexOf(",") != -1 ? "," : ";";
 		
 		for(String element : string.split(separator)) {
 			list.add(element.trim());

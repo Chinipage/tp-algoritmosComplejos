@@ -1,22 +1,24 @@
 <xqtr version="1.0">
     <var id="editor" value="ffmpeg -y"/>
-    <var id="default" value="out"/>
-    <var id="video" value="mp4 mov mkv avi mpg wmv"/>
+    <var id="default_name" value="out"/>
+    <var id="video_format" value="mp4 mov mkv avi mpg wmv"/>
+    <var id="audio_format" value="mp3 wav aac ogg m4a wma"/>
+    <var id="image_format" value="jpg jpeg png gif tif tiff"/>
 
 	<!-- Caso de prueba 1 -->
-	<program name="Audio to Video" bin="{editor} -loop 1 -i {image} -i {audio} -shortest -c:v libx264 -c:a copy {video}">
+	<program name="Audio to Video" bin="{editor} -loop 1 -i {image} -i {audio} -shortest {video}">
 		<profile>
-			<file id="audio" name="Audio source" class="open" format="mp3 wav aac"/>
-			<file id="image" name="Image source" class="open" format="jpg jpeg png"/>
-			<file id="video" name="Video target" class="save" format="mp4 mov avi" value="out.mp4"/>
+			<file id="audio" name="Audio source" class="open" format="{audio_format}"/>
+			<file id="image" name="Image source" class="open" format="{image_format}"/>
+			<file id="video" name="Video target" class="save" format="{video_format}" value="{default_name}"/>
 		</profile>
 	</program>
 	
-	<!-- Caso de prueba 2 -->
-	<program name="Video Trimmer" bin="{editor} -i {input} -ss {from} -c copy">
+	<!-- Caso de prueba 2 --> 
+	<program name="Video Trimmer" bin="{editor} -i {input} -c:v libx264 -ss {from}">
 	    <profile class="hidden">
-	        <file id="input" format="{video}"/>
-			<file id="output" class="save" value="trimmed_video.avi"/>
+	        <file id="input" format="{video_format}"/>
+			<file id="output" class="save" format="{video_format}" value="{default_name}"/>
 			<seq type="time" id="from"/>
 			<profile name="Trim from given time for duration" args="-t {duration} {output}">
 			    <seq type="number" id="duration" unit="s"/>
@@ -30,8 +32,8 @@
 	<!-- Caso de prueba 3 -->
 	<program name="Video Rotator" bin="{editor} -i {input} -vf &quot;rotate={direction}*{angle}*{unit}&quot; {output}">
 		<profile>
-			<file id="input" class="open" format="{video}"/>
-			<file id="output" class="save" format="{video}" value="{default}"/>
+			<file id="input" class="open" format="{video_format}"/>
+			<file id="output" class="save" format="{video_format}" value="{default_name}"/>
 			<seq type="number" id="angle" min="0" max="360"/>
 			<choicegroup id="unit" value="PI/180">
 				<choice name="Degrees" value="PI/180"/>
@@ -45,10 +47,10 @@
 	</program>
 	
 	<!-- Caso de prueba 4 -->
-	<program name="Audio Merger" bin="{editor} -f concat -safe 0 -i &lt;(for f in {files};do echo &quot;file $f&quot;;done) -c copy {output}">
+	<program name="Audio Merger" bin="{editor} -f concat -safe 0 -i &lt;(for f in {files};do echo &quot;file $f&quot;;done) {output}">
 		<profile>
-			<file id="files" class="open multiple" name="Files to merge" format="wav"/>
-			<file id="output" class="save" format="wav" name="Combined file" value="merge.wav"/>
+			<file id="files" class="multiple" name="Files to merge" format="{audio_format}"/>
+			<file id="output" class="save" name="Combined file" format="{audio_format}" value="{default}"/>
 		</profile>
 	</program>
 </xqtr>
