@@ -30,15 +30,16 @@
 	</program>
 	
 	<!-- Caso de prueba 3 -->
-	<program name="Video Rotator" bin="{editor} -i {input} -vf &quot;rotate={direction}*{angle}*{unit}&quot; {output}">
-		<profile>
+	<program name="Video Rotator" bin="{editor} -i {input}">
+		<profile class="hidden">
 			<file id="input" class="open" format="{video_format}"/>
 			<file id="output" class="save" format="{video_format}" value="{default_name}"/>
-			<seq type="number" id="angle" min="0" max="360"/>
-			<choicegroup id="unit" value="PI/180">
-				<choice name="Degrees" value="PI/180"/>
-				<choice name="Radians" value="1"/>
-			</choicegroup>
+			<profile name="Rotate by angle in degrees" args="-vf &quot;rotate={direction}*{angle}*PI/180&quot; {output}">
+				<range id="angle" min="0" step="10" max="360" unit="°" value="0"/>
+			</profile>
+			<profile name="Rotate by angle in radians" args="-vf &quot;rotate={direction}*{angle}&quot; {output}">
+				<seq type="number" id="angle" min="0" step="0.01" unit="rad" value="0"/>
+			</profile>
 			<choicegroup id="direction" value="1">
 				<choice name="Clockwise" value="1"/>
 				<choice name="Counterclockwise" value="-1"/>
