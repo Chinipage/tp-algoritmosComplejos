@@ -3,7 +3,12 @@ package xqtr.model;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -94,7 +99,8 @@ public abstract class ModelNode {
 		StringBuffer replacedString = new StringBuffer();
 		Pattern variablePattern = Pattern.compile("(?:\\{)([^}]*)(?:\\})"),
 				idPattern = Pattern.compile("([A-Za-z_][A-Za-z_0-9]*)"),
-				equationPattern = Pattern.compile("^([0-9]+(.[0-9]+)?\\s*[-+*/]\\s*[0-9]+(.[0-9]+)?(\\s*[-+*/]\\s*[0-9](.[0-9])*+)*)$");
+				equationPattern = Pattern.compile("^([0-9]+([.][0-9]+)?\\s*[-+*/]\\s*[0-9]+([.][0-9]+)?(\\s*[-+*/]\\s*[0-9]([.][0-9])*+)*)$"),
+				timeEquationPattern = Pattern.compile("^([0-9]{2}:[0-9]{2}:[0-9]{2}[.][0-9]{3})\\s*([-+])\\s*([0-9]{2}:[0-9]{2}:[0-9]{2}[.][0-9]{3})$");
 		ScriptEngineManager mgr = new ScriptEngineManager();
 	    ScriptEngine engine = mgr.getEngineByName("JavaScript");
 		Matcher variableMatcher = variablePattern.matcher(string); 
@@ -103,7 +109,7 @@ public abstract class ModelNode {
 
 			StringBuffer resultBuffer = new StringBuffer();
 			String resultReplacement;
-			Matcher idMatcher = idPattern.matcher(variableMatcher.group(1)), equationMatcher;
+			Matcher idMatcher = idPattern.matcher(variableMatcher.group(1)), equationMatcher, timeEquationMatcher;
 		
 			//Reemplazo las variables con los ids que tenga en el HashMap.
 			while(idMatcher.find()) {
@@ -126,6 +132,24 @@ public abstract class ModelNode {
 				} catch (ScriptException e1) {
 					e1.printStackTrace();
 					this.setUnexecutable(e1.getMessage());
+				}
+			} else {
+				timeEquationMatcher = timeEquationPattern.matcher(resultBuffer);
+				if(timeEquationMatcher.matches()) {
+					LocalTime time = LocalTime.parse(timeEquationMatcher.group(1)), resultTime;
+					String operation = timeEquationMatcher.group(2);
+					List<String> durationList = new ArrayList<>();
+					Duration duration;
+					
+					for(String item : timeEquationMatcher.group(3).split("[:]"))
+						durationList.add(item);
+					
+					duration = Duration.parse("PT" + durationList.get(0) + "H" + durationList.get(1) + "M" + durationList.get(2) + "S");
+
+					if(operation.equals("+")) resultTime = time.plus(duration);
+					else resultTime = time.minus(duration);
+
+					resultReplacement = resultTime.format(new DateTimeFormatterBuilder().appendValue(ChronoField.HOUR_OF_DAY).appendLiteral(":").appendValue(ChronoField.MINUTE_OF_HOUR).appendLiteral(":").appendValue(ChronoField.SECOND_OF_MINUTE).appendLiteral(".").appendValue(ChronoField.MILLI_OF_SECOND).toFormatter());
 				}
 			}
 
